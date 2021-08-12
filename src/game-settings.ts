@@ -11,6 +11,7 @@ export enum RoleIds {
   WereWolf = 'werewolf',
   Villager = 'villager',
   Seer = 'seer',
+  BodyGuard = 'bodyguard',
 }
 
 type GameSettings = {
@@ -40,5 +41,6 @@ export const gameSettings: GameSettings = {
     [MAIN_TEXT_CHANNEL, { visibility: 'public', type: 'GUILD_TEXT' }],
     [RoleIds.WereWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
     [RoleIds.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [RoleIds.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 }

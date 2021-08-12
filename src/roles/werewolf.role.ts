@@ -1,3 +1,4 @@
+import { isString } from 'lodash'
 import { RoleIds } from '../game-settings'
 import { gameState } from '../game-state'
 import { Player } from '../player'
@@ -14,6 +15,12 @@ export class WereWolf implements IRole {
   }
 
   kill(player: Player | string) {
-    gameState.markPlayerAsDeath(player.raw.id)
+    const resolvedUser: Player = (
+      isString(player) ? gameState.findPlayer(player) : player
+    ) as Player
+
+    if (!resolvedUser.isGuarded) {
+      gameState.markPlayerAsDeath(player)
+    }
   }
 }

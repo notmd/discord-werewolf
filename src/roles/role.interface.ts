@@ -5,7 +5,7 @@ export interface IRole {
   readonly id: RoleIds
   readonly name: string
   readonly roleAssignedNotification: boolean
-  readonly roomName?: string
+  readonly roomName?: RoleIds
   readonly faction: 'village' | 'wolf'
 
   is(role: RoleIds): boolean

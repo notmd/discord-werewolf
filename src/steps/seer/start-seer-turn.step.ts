@@ -4,7 +4,7 @@ import { gameState } from '../../game-state'
 import { Thumbsup } from '../../icons'
 import { logger } from '../../logger'
 import { IStep } from '../step'
-import { StartWereWolfTurn } from '../werewolf/start-werewolf-voting.step'
+import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 import { CheckSeerSelectionStep } from './check-seer-selection.step'
 
 export class StartSeerTurn implements IStep {

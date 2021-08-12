@@ -2,7 +2,6 @@ import { TextChannel } from 'discord.js'
 import {
   checkVillagerWin,
   checkWereWolfWin,
-  checkWin,
   getVotesFromMessages,
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
@@ -12,8 +11,8 @@ import {
 } from '../hepler'
 import { gameState } from '../game-state'
 import { IStep } from './step'
-import { StartWereWolfTurn } from './werewolf/start-werewolf-voting.step'
 import { logger } from '../logger'
+import { StartSleep } from './start-sleep.step'
 
 export class CheckDiscussionVotingResult implements IStep {
   readonly __is_step = true
@@ -36,7 +35,9 @@ export class CheckDiscussionVotingResult implements IStep {
       await this.sendNoOneVotedNotification()
     } else {
       const votedPlayerId = selectRandomPlayerFromVotes(votes)
-      gameState.markPlayerAsDeath(votedPlayerId)
+      gameState.markPlayerAsDeath(votedPlayerId, {
+        ignoreLastRoundActualDeath: true,
+      })
       await muteAllDeathPlayer()
       await this.sendVotedUserNotification(votedPlayerId)
     }
@@ -49,24 +50,19 @@ export class CheckDiscussionVotingResult implements IStep {
       await sendVillagerWinMessage()
       return null
     }
-    gameState.clearVotingMessages('discussion')
 
-    return new StartWereWolfTurn().handle()
+    return new StartSleep().handle()
   }
 
   async sendNoOneVotedNotification() {
-    await this.mainTextChannel.send(
-      `Hum nay khum ai chết cả.\nĐi ngủ thui nào các pạn.`
-    )
+    await this.mainTextChannel.send(`Hum nay khum ai chết cả.\n`)
   }
 
   async sendVotedUserNotification(deathPlayerId: string) {
     await this.mainTextChannel.send(
       `${
         gameState.findPlayer(deathPlayerId)?.raw
-      } đã bị chết như 1 con cho rach.\n${
-        !checkWin() && 'Đi ngủ thui nào các pạn.'
-      }`
+      } đã bị chết như 1 con cho rach.`
     )
   }
 }

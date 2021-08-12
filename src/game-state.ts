@@ -13,11 +13,14 @@ export class GameState {
   roleTextChannels: Map<RoleIds, TextChannel> = new Map()
   otherTextChannels: Map<'main', TextChannel> = new Map()
   players: Player[] = []
-  wereWoflVotingMessages: Message[] = []
-  discussionVotingMessages: Message[] = []
-  seerSelectionMessages: Message[] = []
   deathPlayers: Set<string> = new Set()
   lastRoundActualDeath: Set<string> = new Set()
+  discussionVotingMessages: Message[] = []
+  wereWoflVotingMessages: Message[] = []
+  seerSelectionMessages: Message[] = []
+  bodyGuardSelectionMessages: Message[] = []
+  bodyGuardLastSelection: null | string = null // userid
+  bodyGuardSelection: null | string = null //userId
   constructor() {
     this.voiceChannels = {
       main: undefined,
@@ -64,17 +67,34 @@ export class GameState {
   }
 
   findTextChannelByRole(role: IRole | RoleIds): TextChannel | undefined {
-    return this.roleTextChannels.get(isString(role) ? role : role.id)
+    if (isString(role)) {
+      return this.roleTextChannels.get(role)
+    }
+    if (role.roomName) {
+      return this.roleTextChannels.get(role.roomName)
+    }
+    return undefined
   }
 
   findAllPlayersByRole(role: RoleIds): Player[] {
     return this.players.filter((p) => p.role.id === role)
   }
 
-  markPlayerAsDeath(player: string | Player) {
+  findPlayByRole(role: RoleIds) {
+    return this.players.find((p) => p.role.id === role)
+  }
+
+  markPlayerAsDeath(
+    player: string | Player,
+    options: {
+      ignoreLastRoundActualDeath?: boolean
+    } = {}
+  ) {
     const playerId = isString(player) ? player : player.raw.id
     this.deathPlayers.add(playerId)
-    this.lastRoundActualDeath.add(playerId)
+    if (options.ignoreLastRoundActualDeath) {
+      this.lastRoundActualDeath.add(playerId)
+    }
   }
 
   clearVotingMessages(type: 'werewolf' | 'discussion' | 'seer') {

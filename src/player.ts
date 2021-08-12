@@ -22,6 +22,10 @@ export class Player {
     return gameState.deathPlayers.has(this.raw.id)
   }
 
+  get isGuarded() {
+    return gameState.bodyGuardSelection === this.raw.id
+  }
+
   toJSON() {
     return {
       isDeath: this.isDeath,

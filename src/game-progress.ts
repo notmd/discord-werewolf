@@ -1,12 +1,12 @@
 import { Message } from 'discord.js'
 import { gameState } from './game-state'
 import { StartSeerTurn } from './steps/seer/start-seer-turn.step'
-import { StartSleepStep } from './steps/start-sleep.step'
+import { StartSleep } from './steps/start-sleep.step'
 import { IStep } from './steps/step'
 import { isStep } from './utils'
 
 class GameProgress {
-  private currentStep: IStep = new StartSleepStep()
+  private currentStep: IStep = new StartSleep()
   private nextStep: IStep | undefined
   constructor() {}
   async next(message: Message) {
