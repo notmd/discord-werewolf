@@ -19,6 +19,7 @@ import _ from 'lodash'
 import { gameState } from '../../game-state'
 import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
+import { logger } from '../../logger'
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>
   private readonly totalRolesCount: number
@@ -72,6 +73,7 @@ export class StartGameCommandHandler {
     await this.assignPermisstionToPlayers(roleAssignedPlayers)
     this.sendRoleAssignedNotificationMessage(roleAssignedPlayers)
     this.message.reply('Game started. Please checkout your roles.')
+    logger.info('Game started.')
   }
 
   private async validateMainTextChannel(channel: TextChannel | undefined) {

@@ -12,6 +12,5 @@ discordClient.once('ready', () => {
   console.log('ready')
 })
 
-discordClient.login(
-  'ODczODYwNTgzNzM1Mjk2MDEw.YQ-kFg.oNnKQql-BS6RTM9rgys-gsaNT_8'
-)
+// @ts-expect-error
+discordClient.login(process.env.DISCORD_TOKEN)

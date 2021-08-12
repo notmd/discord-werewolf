@@ -10,11 +10,11 @@ export const COMMAND_PREFIX = '!ww'
 export enum RoleIds {
   WereWolf = 'werewolf',
   Villager = 'villager',
-  Seer = 'Seer',
+  Seer = 'seer',
 }
 
 type GameSettings = {
-  roles: Map<RoleIds, IRole>
+  roles: Map<RoleIds | typeof RoleIds, IRole>
   channels: Map<
     // | typeof MAIN_VOICE_CHANNLE
     // | typeof MAIN_TEXT_CHANNEL
@@ -28,6 +28,7 @@ type GameSettings = {
 }
 
 export const gameSettings: GameSettings = {
+  // @ts-expect-error
   roles: new Map([
     [RoleIds.WereWolf, new WereWolf()],
     [RoleIds.Villager, new Villager()],
@@ -38,5 +39,6 @@ export const gameSettings: GameSettings = {
     [DEATH_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
     [MAIN_TEXT_CHANNEL, { visibility: 'public', type: 'GUILD_TEXT' }],
     [RoleIds.WereWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [RoleIds.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 }

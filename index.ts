@@ -1,7 +1,6 @@
 import { discordClient } from './src/discord-client'
 import { GameHandler } from './src/game-command-handler'
 import * as dotenv from 'dotenv'
-import { VotingHandler } from './src/voting.handler'
 
 dotenv.config()
 

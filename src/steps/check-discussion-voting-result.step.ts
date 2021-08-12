@@ -11,11 +11,12 @@ import {
   unmuteEveryone,
 } from '../hepler'
 import { gameState } from '../game-state'
-import { ITurn } from './turn'
-import { StartWereWolfTurn } from './werewolf/start-werewolf-voting.turn'
+import { IStep } from './step'
+import { StartWereWolfTurn } from './werewolf/start-werewolf-voting.step'
+import { logger } from '../logger'
 
-export class CheckDiscussionVotingResult implements ITurn {
-  readonly __is_turn = true
+export class CheckDiscussionVotingResult implements IStep {
+  readonly __is_step = true
   private mainTextChannel: TextChannel
   constructor() {
     const mainTextChannel = gameState.otherTextChannels.get('main')
@@ -26,8 +27,10 @@ export class CheckDiscussionVotingResult implements ITurn {
   }
 
   async handle() {
+    logger.info('Checking discussion voting result.')
+    gameState.clearVotingMessages('discussion')
     const votingMessages = gameState.discussionVotingMessages
-    console.log(votingMessages)
+
     const votes = await getVotesFromMessages(votingMessages)
     if (votes.size === 0) {
       await this.sendNoOneVotedNotification()

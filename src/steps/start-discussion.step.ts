@@ -7,11 +7,11 @@ import {
 } from '../hepler'
 import { gameState } from '../game-state'
 import { Thumbsup } from '../icons'
-import { ITurn } from './turn'
-import { CheckDiscussionVotingResult } from './check-discussion-voting-result.turn'
+import { IStep } from './step'
+import { CheckDiscussionVotingResult } from './check-discussion-voting-result.step'
 
-export class StartDisscusion implements ITurn {
-  readonly __is_turn = true
+export class StartDisscusion implements IStep {
+  readonly __is_step = true
   private mainTextChannel: TextChannel
   private deathPlayerMeation: string
   constructor() {

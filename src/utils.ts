@@ -1,10 +1,10 @@
-import { ITurn } from './turns/turn'
+import { IStep } from './steps/step'
 
 export const randomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export const isTurn = (val: unknown): val is ITurn => {
+export const isStep = (val: unknown): val is IStep => {
   // @ts-expect-error
-  return !!val?.__is_turn === true
+  return val.__is_step === true
 }

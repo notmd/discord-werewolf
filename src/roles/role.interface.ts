@@ -1,4 +1,5 @@
 import { RoleIds } from '../game-settings'
+import { Player } from '../player'
 
 export interface IRole {
   readonly id: RoleIds
@@ -6,4 +7,8 @@ export interface IRole {
   readonly roleAssignedNotification: boolean
   readonly roomName?: string
   readonly faction: 'village' | 'wolf'
+
+  is(role: RoleIds): boolean
+
+  kill(player: Player | string): void
 }

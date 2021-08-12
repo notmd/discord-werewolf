@@ -13,9 +13,10 @@ export class GameState {
   roleTextChannels: Map<RoleIds, TextChannel> = new Map()
   otherTextChannels: Map<'main', TextChannel> = new Map()
   players: Player[] = []
-  deathPlayers: Set<string> = new Set()
   wereWoflVotingMessages: Message[] = []
   discussionVotingMessages: Message[] = []
+  seerSelectionMessages: Message[] = []
+  deathPlayers: Set<string> = new Set()
   lastRoundActualDeath: Set<string> = new Set()
   constructor() {
     this.voiceChannels = {
@@ -58,6 +59,9 @@ export class GameState {
   addDiscussionVotingMessage(m: Message) {
     this.discussionVotingMessages.push(m)
   }
+  addSeerSelectionMessage(m: Message) {
+    this.seerSelectionMessages.push(m)
+  }
 
   findTextChannelByRole(role: IRole | RoleIds): TextChannel | undefined {
     return this.roleTextChannels.get(isString(role) ? role : role.id)
@@ -67,22 +71,29 @@ export class GameState {
     return this.players.filter((p) => p.role.id === role)
   }
 
-  markPlayerAsDeath(player: string) {
-    this.deathPlayers.add(player)
-    this.lastRoundActualDeath.add(player)
+  markPlayerAsDeath(player: string | Player) {
+    const playerId = isString(player) ? player : player.raw.id
+    this.deathPlayers.add(playerId)
+    this.lastRoundActualDeath.add(playerId)
   }
 
-  clearVotingMessages(type: 'werewolf' | 'discussion') {
+  clearVotingMessages(type: 'werewolf' | 'discussion' | 'seer') {
     if (type === 'werewolf') {
       this.wereWoflVotingMessages = []
     } else if (type === 'discussion') {
       this.discussionVotingMessages = []
+    } else if (type === 'seer') {
+      this.seerSelectionMessages = []
     }
   }
 
   clearLastRoundAcctualDeath() {
     this.lastRoundActualDeath.clear()
   }
+
+  // clearLastRoundDeath() {
+  //   this.
+  // }
 
   findPlayer(playerId: string) {
     return this.players.find((p) => p.raw.id === playerId)

@@ -1,21 +1,24 @@
 import { Message } from 'discord.js'
 import { gameState } from './game-state'
-import { ITurn, ITurnConstrucable } from './turns/turn'
-import { StartWereWolfTurn } from './turns/werewolf/start-werewolf-voting.turn'
-import { isTurn } from './utils'
+import { StartSeerTurn } from './steps/seer/start-seer-turn.step'
+import { StartSleepStep } from './steps/start-sleep.step'
+import { IStep } from './steps/step'
+import { isStep } from './utils'
 
 class GameProgress {
-  private currentTurn: ITurn = new StartWereWolfTurn()
-  private nextTurn: ITurn | undefined
+  private currentStep: IStep = new StartSleepStep()
+  private nextStep: IStep | undefined
   constructor() {}
   async next(message: Message) {
     if (!gameState.isRunning) {
       await message.reply(`Game not started yet.`)
       return
     }
-    const turn = this.nextTurn || this.currentTurn
+    const turn = this.nextStep || this.currentStep
     const res = await turn.handle()
-    if (isTurn(res)) this.nextTurn = res
+    if (isStep(res)) {
+      this.nextStep = res
+    }
   }
 }
 export const gameProgress = new GameProgress()
