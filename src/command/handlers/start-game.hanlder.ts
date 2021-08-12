@@ -10,6 +10,7 @@ import { Arguments } from 'yargs'
 
 import {
   CHANNEL_NAME_PREFIX,
+  DEATH_VOICE_CHANNLE,
   gameSettings,
   MAIN_TEXT_CHANNEL,
   MAIN_VOICE_CHANNLE,
@@ -64,6 +65,9 @@ export class StartGameCommandHandler {
     this.revokeTextChannelsPermissions()
     const roleAssignedPlayers = this.assignRoleToPlayers(players)
     gameState.setMainVoiceChannelId(mainVoiceChannel)
+    gameState.setDeathVoiceChannelId(
+      (await this.getDeathVoiceChannelFromDiscord()) as VoiceChannel
+    )
     gameState.setPlayers(roleAssignedPlayers)
     gameState.setIsRunning(true)
     gameState.setMainTextChannel(mainTextChannel as TextChannel)
@@ -180,6 +184,20 @@ export class StartGameCommandHandler {
       (channel) =>
         channel.isVoice() &&
         channel.name === CHANNEL_NAME_PREFIX + MAIN_VOICE_CHANNLE
+    )
+
+    return channel as VoiceChannel | undefined
+  }
+  private async getDeathVoiceChannelFromDiscord(): Promise<
+    VoiceChannel | undefined
+  > {
+    const channels = await this.message.guild?.channels.fetch(undefined, {
+      force: true,
+    })
+    const channel = channels?.find(
+      (channel) =>
+        channel.isVoice() &&
+        channel.name === CHANNEL_NAME_PREFIX + DEATH_VOICE_CHANNLE
     )
 
     return channel as VoiceChannel | undefined

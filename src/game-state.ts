@@ -35,9 +35,9 @@ export class GameState {
   setMainVoiceChannelId(channel: VoiceChannel) {
     this.voiceChannels.main = channel
   }
-  // setDeathVoiceChannelId(id: string) {
-  // this.channels.voice.death = id
-  // }
+  setDeathVoiceChannelId(channel: VoiceChannel) {
+    this.voiceChannels.death = channel
+  }
   setPlayers(players: Player[]) {
     this.players = players
   }
@@ -110,10 +110,6 @@ export class GameState {
   clearLastRoundAcctualDeath() {
     this.lastRoundActualDeath.clear()
   }
-
-  // clearLastRoundDeath() {
-  //   this.
-  // }
 
   findPlayer(playerId: string) {
     return this.players.find((p) => p.raw.id === playerId)

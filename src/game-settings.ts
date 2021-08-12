@@ -15,8 +15,8 @@ export enum RoleIds {
 }
 
 type GameSettings = {
-  roles: Map<RoleIds | typeof RoleIds, IRole>
-  channels: Map<
+  readonly roles: Map<RoleIds | typeof RoleIds, IRole>
+  readonly channels: Map<
     // | typeof MAIN_VOICE_CHANNLE
     // | typeof MAIN_TEXT_CHANNEL
     // | typeof DEATH_VOICE_CHANNLE
@@ -43,4 +43,4 @@ export const gameSettings: GameSettings = {
     [RoleIds.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
     [RoleIds.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
-}
+} as const

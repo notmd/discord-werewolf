@@ -9,7 +9,7 @@ import { gameProgress } from './game-progress'
 
 const ADMIN_ID = '621326534803849218'
 
-export class GameHandler {
+export class CommandHandler {
   async handle(e: Message) {
     if (e.author.id !== ADMIN_ID && !e.content.startsWith(COMMAND_PREFIX))
       return
