@@ -32,10 +32,10 @@ export class GameState {
     return this.players.filter((p) => !p.isDeath)
   }
 
-  setMainVoiceChannelId(channel: VoiceChannel) {
+  setMainVoiceChannel(channel: VoiceChannel) {
     this.voiceChannels.main = channel
   }
-  setDeathVoiceChannelId(channel: VoiceChannel) {
+  setDeathVoiceChannel(channel: VoiceChannel) {
     this.voiceChannels.death = channel
   }
   setPlayers(players: Player[]) {

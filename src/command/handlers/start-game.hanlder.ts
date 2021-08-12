@@ -64,8 +64,8 @@ export class StartGameCommandHandler {
 
     this.revokeTextChannelsPermissions()
     const roleAssignedPlayers = this.assignRoleToPlayers(players)
-    gameState.setMainVoiceChannelId(mainVoiceChannel)
-    gameState.setDeathVoiceChannelId(
+    gameState.setMainVoiceChannel(mainVoiceChannel)
+    gameState.setDeathVoiceChannel(
       (await this.getDeathVoiceChannelFromDiscord()) as VoiceChannel
     )
     gameState.setPlayers(roleAssignedPlayers)
