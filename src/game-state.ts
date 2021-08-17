@@ -14,6 +14,7 @@ export class GameState {
   otherTextChannels: Map<'main', TextChannel> = new Map()
   players: Player[] = []
   deathPlayers: Set<string> = new Set()
+  lastRoundDeath: Set<string> = new Set()
   lastRoundActualDeath: Set<string> = new Set()
   discussionVotingMessages: Message[] = []
   wereWoflVotingMessages: Message[] = []
@@ -21,6 +22,12 @@ export class GameState {
   bodyGuardSelectionMessages: Message[] = []
   bodyGuardLastSelection: null | string = null // userid
   bodyGuardSelection: null | string = null //userId
+  witchUseKilled: boolean = false
+  witchUseSaved: boolean = false
+  witchSelectionMessages: Collection<'skip' | 'kill' | 'save', Message> =
+    new Collection()
+  witchKillSelectionMessages: Message[] = []
+  witchSaveSelectMessages: Message[] = []
   constructor() {
     this.voiceChannels = {
       main: undefined,
@@ -88,12 +95,16 @@ export class GameState {
     player: string | Player,
     options: {
       ignoreLastRoundActualDeath?: boolean
+      ignoreLastRounDeath?: boolean
     } = {}
   ) {
     const playerId = isString(player) ? player : player.raw.id
     this.deathPlayers.add(playerId)
-    if (options.ignoreLastRoundActualDeath) {
+    if (!options.ignoreLastRoundActualDeath) {
       this.lastRoundActualDeath.add(playerId)
+    }
+    if (!options.ignoreLastRounDeath) {
+      this.lastRoundDeath.add(playerId)
     }
   }
 

@@ -15,4 +15,8 @@ export class Villager implements IRole {
   kill(_player: Player | string) {
     throw new Error('Villger can not kill anyone.')
   }
+
+  cleanUpState() {
+    // skip
+  }
 }

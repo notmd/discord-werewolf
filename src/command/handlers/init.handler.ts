@@ -27,7 +27,7 @@ export class InitCommandHandler {
       return undefined
     }
 
-    const channel = discordClient.channels.cache.find((channel) => {
+    const channel = this.message.guild?.channels.cache.find((channel) => {
       const parseChannel = channel.toJSON() as {
         name: string
       }

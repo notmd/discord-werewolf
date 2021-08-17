@@ -1,7 +1,9 @@
+import { BodyGuard } from './roles/body-guard.role'
 import { IRole } from './roles/role.interface'
 import { Seer } from './roles/seer.role'
 import { Villager } from './roles/villager.role'
 import { WereWolf } from './roles/werewolf.role'
+import { Witch } from './roles/witch.role'
 export const MAIN_VOICE_CHANNLE = 'main'
 export const MAIN_TEXT_CHANNEL = 'text-main'
 export const DEATH_VOICE_CHANNLE = 'death'
@@ -12,6 +14,7 @@ export enum RoleIds {
   Villager = 'villager',
   Seer = 'seer',
   BodyGuard = 'bodyguard',
+  Witch = 'witch',
 }
 
 type GameSettings = {
@@ -34,6 +37,8 @@ export const gameSettings: GameSettings = {
     [RoleIds.WereWolf, new WereWolf()],
     [RoleIds.Villager, new Villager()],
     [RoleIds.Seer, new Seer()],
+    [RoleIds.BodyGuard, new BodyGuard()],
+    [RoleIds.Witch, new Witch()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
@@ -42,5 +47,6 @@ export const gameSettings: GameSettings = {
     [RoleIds.WereWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
     [RoleIds.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
     [RoleIds.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [RoleIds.Witch, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

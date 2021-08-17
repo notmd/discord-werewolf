@@ -11,4 +11,6 @@ export interface IRole {
   is(role: RoleIds): boolean
 
   kill(player: Player | string): void
+
+  cleanUpState(): void
 }

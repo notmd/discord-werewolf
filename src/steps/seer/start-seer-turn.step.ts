@@ -22,7 +22,9 @@ export class StartSeerTurn implements IStep {
     }
 
     const channel = gameState.findTextChannelByRole(RoleIds.Seer) as TextChannel
-    await channel.send(`Bạn mún tiên tri ai? Chọn ${Thumbsup}.`)
+    await channel.send(
+      `Dậy đi nào Tiên tri ei.\nBạn mún tiên tri ai? Chọn ${Thumbsup}.`
+    )
     const alivePlayers = gameState.alivePlayers.filter(
       (p) => p.role.id !== RoleIds.Seer
     )

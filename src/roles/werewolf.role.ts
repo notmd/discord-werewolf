@@ -23,4 +23,8 @@ export class WereWolf implements IRole {
       gameState.markPlayerAsDeath(player)
     }
   }
+
+  cleanUpState() {
+    gameState.wereWoflVotingMessages = []
+  }
 }

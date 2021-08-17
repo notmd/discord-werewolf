@@ -27,7 +27,6 @@ export class CheckDiscussionVotingResult implements IStep {
 
   async handle() {
     logger.info('Checking discussion voting result.')
-    gameState.clearVotingMessages('discussion')
     const votingMessages = gameState.discussionVotingMessages
 
     const votes = await getVotesFromMessages(votingMessages)

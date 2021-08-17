@@ -1,6 +1,7 @@
+import { forEach } from 'lodash'
 import { gameState } from '../game-state'
 import { logger } from '../logger'
-import { StartSeerTurn } from './seer/start-seer-turn.step'
+import { StartBodyGuardTurn } from './bodyguard/start-body-guard-turn.step'
 import { IStep } from './step'
 
 export class StartSleep implements IStep {
@@ -12,12 +13,10 @@ export class StartSleep implements IStep {
     logger.info('Start sleep.')
     gameState.clearLastRoundAcctualDeath()
     gameState.clearVotingMessages('discussion')
-    gameState.clearVotingMessages('werewolf')
-    gameState.clearVotingMessages('seer')
+    gameState.players.forEach((p) => {
+      p.role.cleanUpState()
+    })
 
-    gameState.bodyGuardLastSelection = gameState.bodyGuardSelection
-    gameState.bodyGuardSelection = null
-
-    return new StartSeerTurn().handle()
+    return new StartBodyGuardTurn().handle()
   }
 }

@@ -1,5 +1,4 @@
 import { Collection, Message } from 'discord.js'
-import { RoleIds } from './game-settings'
 import { gameState } from './game-state'
 import { Thumbsup } from './icons'
 

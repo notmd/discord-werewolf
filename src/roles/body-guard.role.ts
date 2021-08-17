@@ -1,4 +1,5 @@
 import { RoleIds } from '../game-settings'
+import { gameState } from '../game-state'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
@@ -13,5 +14,10 @@ export class BodyGuard implements IRole {
   }
   kill(_player: Player | string) {
     throw new Error(`${this.name} can not kill anyone.`)
+  }
+
+  cleanUpState() {
+    gameState.bodyGuardLastSelection = gameState.bodyGuardSelection
+    gameState.bodyGuardSelection = null
   }
 }
