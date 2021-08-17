@@ -1,5 +1,4 @@
 import { Message, Permissions } from 'discord.js'
-import { discordClient } from '../../discord-client'
 import { CHANNEL_NAME_PREFIX, gameSettings } from '../../game-settings'
 
 export class InitCommandHandler {
@@ -53,7 +52,7 @@ export class InitCommandHandler {
               : [],
         }
       )
-      return `Created ${options.name} ${options.type} room.`
+      return `Created ${options.name} room.`
     }
 
     return undefined

@@ -108,16 +108,6 @@ export class GameState {
     }
   }
 
-  clearVotingMessages(type: 'werewolf' | 'discussion' | 'seer') {
-    if (type === 'werewolf') {
-      this.wereWoflVotingMessages = []
-    } else if (type === 'discussion') {
-      this.discussionVotingMessages = []
-    } else if (type === 'seer') {
-      this.seerSelectionMessages = []
-    }
-  }
-
   clearLastRoundAcctualDeath() {
     this.lastRoundActualDeath.clear()
   }

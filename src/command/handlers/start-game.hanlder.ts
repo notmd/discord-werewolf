@@ -125,8 +125,6 @@ export class StartGameCommandHandler {
                 Permissions.FLAGS.ADD_REACTIONS,
               id: player.raw.id,
             },
-            // { allow: Permissions.FLAGS.SEND_MESSAGES, id: player.raw.id },
-            // { allow: Permissions.FLAGS.ADD_REACTIONS, id: player.raw.id },
             {
               deny: Permissions.FLAGS.VIEW_CHANNEL,
               id: this.message.guild!.roles.everyone,

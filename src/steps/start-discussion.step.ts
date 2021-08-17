@@ -1,7 +1,9 @@
 import { TextChannel } from 'discord.js'
 import {
+  checkVillagerWin,
   checkWereWolfWin,
   muteAllDeathPlayer,
+  sendVillagerWinMessage,
   sendWereWolfWinMessage,
   unmuteEveryone,
 } from '../hepler'
@@ -27,12 +29,17 @@ export class StartDisscusion implements IStep {
       await unmuteEveryone()
       return null
     }
+    if (checkVillagerWin()) {
+      await sendVillagerWinMessage()
+      await unmuteEveryone()
+      return null
+    }
     await muteAllDeathPlayer()
-    await this.sendVoteResultMessage()
+    await this.sendVotingMessages()
     return new CheckDiscussionVotingResult()
   }
 
-  async sendVoteResultMessage() {
+  async sendVotingMessages() {
     await this.mainTextChannel.send(`Chọn ${Thumbsup} để vote.`)
 
     const alivePlayers = gameState.alivePlayers

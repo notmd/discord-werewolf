@@ -1,6 +1,5 @@
 import { Message } from 'discord.js'
 import { gameState } from './game-state'
-import { StartSeerTurn } from './steps/seer/start-seer-turn.step'
 import { StartSleep } from './steps/start-sleep.step'
 import { IStep } from './steps/step'
 import { isStep } from './utils'

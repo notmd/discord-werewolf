@@ -6,6 +6,7 @@ import { StartGameCommandHandler } from './command/handlers/start-game.hanlder'
 import { InitCommandHandler } from './command/handlers/init.handler'
 import { COMMAND_PREFIX } from './game-settings'
 import { gameProgress } from './game-progress'
+import { ShowRoleCommandHandler } from './command/handlers/show-role.handle'
 
 const ADMIN_ID = '621326534803849218'
 
@@ -35,6 +36,9 @@ export class CommandHandler {
       })
       .command('next', 'next turn', {}, () => {
         gameProgress.next(e)
+      })
+      .command('roles', 'show all roles', {}, () => {
+        new ShowRoleCommandHandler(e).handle()
       })
       .exitProcess(false)
       .parse(e.content.slice(COMMAND_PREFIX.length).trim())

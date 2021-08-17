@@ -1,4 +1,3 @@
-import { forEach } from 'lodash'
 import { gameState } from '../game-state'
 import { logger } from '../logger'
 import { StartBodyGuardTurn } from './bodyguard/start-body-guard-turn.step'
@@ -12,7 +11,7 @@ export class StartSleep implements IStep {
     await mainTextChannel?.send(`Đi ngủ thui nào các pạn nhỏ.`)
     logger.info('Start sleep.')
     gameState.clearLastRoundAcctualDeath()
-    gameState.clearVotingMessages('discussion')
+    gameState.discussionVotingMessages = []
     gameState.players.forEach((p) => {
       p.role.cleanUpState()
     })

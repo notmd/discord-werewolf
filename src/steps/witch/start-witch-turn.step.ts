@@ -7,7 +7,7 @@ import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 import { CheckWitchSelection } from './check-witch-selection.step'
 
-export class StartBodyGuardTurn implements IStep {
+export class StartWitchTurn implements IStep {
   readonly __is_step = true
 
   async handle() {

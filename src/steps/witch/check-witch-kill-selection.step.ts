@@ -1,5 +1,3 @@
-import { pl } from 'date-fns/locale'
-import { Collection, Message } from 'discord.js'
 import { RoleIds } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { getVotesFromMessages, selectRandomPlayerFromVotes } from '../../hepler'
@@ -23,13 +21,17 @@ export class CheckWitchKillSelection implements IStep {
     const witch = gameState.alivePlayers.find(
       (p) => p.role.id === RoleIds.Witch
     )
-    witch?.role.kill(player)
-
-    gameState.lastRoundActualDeath.add(playerId)
-    gameState.witchUseKilled = true
-    await gameState
-      .findTextChannelByRole(RoleIds.Witch)
-      ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
+    try {
+      witch?.role.kill(player)
+      gameState.lastRoundActualDeath.add(playerId)
+      gameState.witchUseKilled = true
+      await gameState
+        .findTextChannelByRole(RoleIds.Witch)
+        ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
+    } catch (e) {
+      logger.error('Error while perform Witch kill step.')
+      logger.error(e)
+    }
 
     return new WakeUp().handle()
   }
