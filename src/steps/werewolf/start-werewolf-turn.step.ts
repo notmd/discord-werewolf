@@ -19,10 +19,8 @@ export class StartWereWolfTurn implements IStep {
     await wereWoflChannel.send(
       `Dậy đi nào mấy con sói già.\nChọn ${Thumbsup} để vote.`
     )
-    const notWerWolfPlayers = gameState.players.filter(
-      (p) => p.role.id !== RoleIds.WereWolf
-    )
-    for (const p of notWerWolfPlayers) {
+
+    for (const p of gameState.alivePlayers) {
       const message = await wereWoflChannel.send(`${p.raw}`)
       gameState.addWereWolfVotingMessage(message)
     }

@@ -29,7 +29,9 @@ export class Player {
   toJSON() {
     return {
       name: this.raw.nickname || this.raw.displayName,
-      role: this._role,
+      role: {
+        name: this._role.name,
+      },
       isDeath: this.isDeath,
     }
   }

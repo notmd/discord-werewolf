@@ -44,7 +44,10 @@ export class CommandHandler {
       .parse(e.content.slice(COMMAND_PREFIX.length).trim())
   }
 
-  private sendGameState(e: Message) {
-    e.reply(JSON.stringify(gameState, null, 2))
+  private async sendGameState(e: Message) {
+    try {
+      await e.reply(JSON.stringify(gameState, null, 2))
+    } catch (e) {}
+    console.log(JSON.stringify(gameState, null, 2))
   }
 }
