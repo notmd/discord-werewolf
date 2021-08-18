@@ -12,16 +12,23 @@ export class GameState {
   }
   roleTextChannels: Map<RoleIds, TextChannel> = new Map()
   otherTextChannels: Map<'main', TextChannel> = new Map()
+
   players: Player[] = []
+
   deathPlayers: Set<string> = new Set()
   lastRoundDeath: Set<string> = new Set()
   lastRoundActualDeath: Set<string> = new Set()
+
   discussionVotingMessages: Message[] = []
+
   wereWoflVotingMessages: Message[] = []
+
   seerSelectionMessages: Message[] = []
+
   bodyGuardSelectionMessages: Message[] = []
   bodyGuardLastSelection: null | string = null // userid
   bodyGuardSelection: null | string = null //userId
+
   witchUseKilled: boolean = false
   witchUseSaved: boolean = false
   witchSelectionMessages: Collection<'skip' | 'kill' | 'save', Message> =
@@ -59,19 +66,6 @@ export class GameState {
       )
     })
   }
-  setMainTextChannel(channel: TextChannel) {
-    this.otherTextChannels.set('main', channel)
-  }
-
-  addWereWolfVotingMessage(m: Message) {
-    this.wereWoflVotingMessages.push(m)
-  }
-  addDiscussionVotingMessage(m: Message) {
-    this.discussionVotingMessages.push(m)
-  }
-  addSeerSelectionMessage(m: Message) {
-    this.seerSelectionMessages.push(m)
-  }
 
   findTextChannelByRole(role: IRole | RoleIds): TextChannel | undefined {
     if (isString(role)) {
@@ -91,6 +85,9 @@ export class GameState {
     return this.players.find((p) => p.role.id === role)
   }
 
+  /**
+   * @deprecated move logic to Player class
+   */
   markPlayerAsDeath(
     player: string | Player,
     options: {
@@ -108,6 +105,9 @@ export class GameState {
     }
   }
 
+  /**
+   * @deprecated
+   */
   clearLastRoundAcctualDeath() {
     this.lastRoundActualDeath.clear()
   }

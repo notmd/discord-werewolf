@@ -12,6 +12,7 @@ export class StartSleep implements IStep {
     logger.info('Start sleep.')
     gameState.clearLastRoundAcctualDeath()
     gameState.discussionVotingMessages = []
+    gameState.lastRoundDeath.clear()
     gameState.players.forEach((p) => {
       p.role.cleanUpState()
     })

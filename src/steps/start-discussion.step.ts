@@ -45,7 +45,7 @@ export class StartDisscusion implements IStep {
     const alivePlayers = gameState.alivePlayers
     for (const alivePlayer of alivePlayers) {
       const message = await this.mainTextChannel.send(`${alivePlayer.raw}`)
-      gameState.addDiscussionVotingMessage(message)
+      gameState.discussionVotingMessages.push(message)
     }
   }
 }

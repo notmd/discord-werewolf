@@ -22,7 +22,7 @@ export class StartWereWolfTurn implements IStep {
 
     for (const p of gameState.alivePlayers) {
       const message = await wereWoflChannel.send(`${p.raw}`)
-      gameState.addWereWolfVotingMessage(message)
+      gameState.wereWoflVotingMessages.push(message)
     }
     logger.info('Wating for werewolf voting result.')
     return new CheckWereWolfVotingResult()

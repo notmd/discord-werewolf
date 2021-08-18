@@ -9,10 +9,11 @@ import { gameProgress } from './game-progress'
 import { ShowRoleCommandHandler } from './command/handlers/show-role.handle'
 
 const ADMIN_ID = '621326534803849218'
+const validIds = new Set([ADMIN_ID])
 
 export class CommandHandler {
   async handle(e: Message) {
-    if (e.author.id !== ADMIN_ID && !e.content.startsWith(COMMAND_PREFIX))
+    if (!validIds.has(e.author.id) || !e.content.startsWith(COMMAND_PREFIX))
       return
     yargs()
       .scriptName(COMMAND_PREFIX)

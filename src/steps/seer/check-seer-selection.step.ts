@@ -20,7 +20,11 @@ export class CheckSeerSelectionStep implements IStep {
     const playerId = selectRandomPlayerFromVotes(votes)
     const channel = gameState.findTextChannelByRole(RoleIds.Seer) as TextChannel
     const player = gameState.findPlayer(playerId)
-    await channel.send(`${player?.raw.displayName} là ${player?.role.name}`)
+    await channel.send(
+      `${player?.raw.displayName} ${
+        player?.role.id === RoleIds.WereWolf ? 'là sói.' : 'hem phải là sói.'
+      }`
+    )
     return new StartWereWolfTurn().handle()
   }
 }

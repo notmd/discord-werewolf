@@ -5,7 +5,7 @@ import { IStep } from './steps/step'
 import { isStep } from './utils'
 
 class GameProgress {
-  private currentStep: IStep = new StartSleep()
+  private startStep: IStep = new StartSleep()
   private nextStep: IStep | undefined
   constructor() {}
   async next(message: Message) {
@@ -13,9 +13,9 @@ class GameProgress {
       await message.reply(`Game not started yet.`)
       return
     }
-    const turn = this.nextStep || this.currentStep
-    const res = await turn.handle()
-    if (isStep(res)) {
+    const step = this.nextStep || this.startStep
+    const res = await step.handle()
+    if (res && isStep(res)) {
       this.nextStep = res
     }
   }

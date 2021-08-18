@@ -30,9 +30,9 @@ export class StartGameCommandHandler {
     private argv: Arguments<{ roles?: string; ignore?: string }>
   ) {
     const rolesArg = this.argv.roles as string
-    const splittedRole = rolesArg.split(',').map((r) => r.split(':')) as Array<
-      [string, string]
-    >
+    const splittedRole = rolesArg
+      .split(',')
+      .map((r) => r.trim().split(':')) as Array<[string, string]>
     this.roles = new Map(
       splittedRole.map((role) => [role[0], parseInt(role[1])])
     )
@@ -70,7 +70,7 @@ export class StartGameCommandHandler {
     )
     gameState.setPlayers(roleAssignedPlayers)
     gameState.setIsRunning(true)
-    gameState.setMainTextChannel(mainTextChannel as TextChannel)
+    gameState.otherTextChannels.set('main', mainTextChannel as TextChannel)
     gameState.setTextChannels(
       this.fetchTextChannels() as Collection<string, TextChannel>
     )
@@ -97,9 +97,7 @@ export class StartGameCommandHandler {
       if (player.role.roleAssignedNotification) {
         const channel = gameState.findTextChannelByRole(player.role)
         if (channel) {
-          channel.send(
-            `${player.raw} là ${player.role.name}. Chơi cho đàng hoàng vào!`
-          )
+          channel.send(`${player.raw} là ${player.role.name}.`)
         }
       }
     })
@@ -114,9 +112,12 @@ export class StartGameCommandHandler {
 
   private async assignPermisstionToPlayers(players: Player[]) {
     for (const player of players) {
-      if (player.role.roomName) {
-        const channel = gameState.findTextChannelByRole(player.role)
-        await channel?.edit({
+      if (player.role.roomName !== undefined) {
+        const channel = gameState.findTextChannelByRole(
+          player.role
+        ) as TextChannel
+        await channel.fetch(true)
+        await channel.edit({
           permissionOverwrites: [
             {
               allow:

@@ -73,7 +73,7 @@ export const sendVillagerWinMessage = async (): Promise<void> => {
   await mainTextChannel.send(
     `Phe dân làng đã win.\n${gameState.players
       .map((p) => `${p.raw} là \`${p.role.name}`)
-      .join('\n')}}`
+      .join('\n')}`
   )
 }
 export const sendWereWolfWinMessage = async (): Promise<void> => {

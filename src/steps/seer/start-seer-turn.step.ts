@@ -30,7 +30,7 @@ export class StartSeerTurn implements IStep {
     )
     for (const player of alivePlayers) {
       const message = await channel.send(`${player.raw}`)
-      gameState.addSeerSelectionMessage(message)
+      gameState.seerSelectionMessages.push(message)
     }
 
     logger.info('Waiting Seer selection.')
