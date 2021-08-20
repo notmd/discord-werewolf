@@ -1,9 +1,12 @@
+import { Role } from '../game-settings'
 import { gameState } from '../game-state'
+import { StartHunterTurn } from './hunter/start-hunter-turn.step'
 import { StartDisscusion } from './start-discussion.step'
 import { IStep } from './step'
 
 export class WakeUp implements IStep {
   readonly __is_step = true
+  // @ts-ignore
   async handle() {
     const deathPlayerMeation = Array.from(
       gameState.lastRoundActualDeath.values()
@@ -16,6 +19,11 @@ export class WakeUp implements IStep {
     await mainTextChannel?.send(
       `Dậy đi nào các pạn nhỏ êi. Đêm qua ${deathPlayerMeation} đã chết.`
     )
+
+    const hunter = gameState.findPlayerByRole(Role.Hunter)
+    if (hunter && gameState.lastRoundActualDeath.has(hunter.raw.id)) {
+      return new StartHunterTurn(true).handle()
+    }
 
     return new StartDisscusion().handle()
   }

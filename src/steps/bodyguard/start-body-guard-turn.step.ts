@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js'
-import { gameSettings, RoleIds } from '../../game-settings'
+import { gameSettings, Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { Thumbsup } from '../../icons'
 import { logger } from '../../logger'
@@ -10,15 +10,11 @@ import { IStep } from '../step'
 export class StartBodyGuardTurn implements IStep {
   readonly __is_step = true
 
-  async handle() {
-    const bodyGuard = gameState.players.find((p) =>
-      p.role.is(RoleIds.BodyGuard)
-    )
-    logger.info(
-      `Start ${gameSettings.roles.get(RoleIds.BodyGuard)?.name} turn.`
-    )
+  async handle(): Promise<any> {
+    const bodyGuard = gameState.players.find((p) => p.role.is(Role.BodyGuard))
+    logger.info(`Start ${gameSettings.roles.get(Role.BodyGuard)?.name} turn.`)
     if (!bodyGuard) {
-      logger.warn(`Game does not has ${RoleIds.BodyGuard} role. Skip...`)
+      logger.warn(`Game does not has ${Role.BodyGuard} role. Skip...`)
       return new StartSeerTurn().handle()
     }
 
@@ -32,7 +28,7 @@ export class StartBodyGuardTurn implements IStep {
       (p) => p.raw.id !== gameState.bodyGuardLastSelection
     )
     const channel = gameState.findTextChannelByRole(
-      RoleIds.BodyGuard
+      Role.BodyGuard
     ) as TextChannel
     channel.send(`Dậy đi nào bảo vệ ei.\nBạn mún bảo vệ ai? Chọn ${Thumbsup}`)
     for (const player of protectablePlayers) {

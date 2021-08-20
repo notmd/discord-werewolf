@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js'
-import { RoleIds } from '../../game-settings'
+import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { Thumbsup } from '../../icons'
 import { logger } from '../../logger'
@@ -14,7 +14,7 @@ export class StartWereWolfTurn implements IStep {
     logger.info('Start werewolf turn.')
 
     const wereWoflChannel = gameState.findTextChannelByRole(
-      RoleIds.WereWolf
+      Role.WereWolf
     ) as TextChannel
     await wereWoflChannel.send(
       `Dậy đi nào mấy con sói già.\nChọn ${Thumbsup} để vote.`

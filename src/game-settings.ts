@@ -9,21 +9,22 @@ export const MAIN_TEXT_CHANNEL = 'text-main'
 export const DEATH_VOICE_CHANNLE = 'death'
 export const CHANNEL_NAME_PREFIX = 'ww_'
 export const COMMAND_PREFIX = '!ww'
-export enum RoleIds {
+export enum Role {
   WereWolf = 'werewolf',
   Villager = 'villager',
   Seer = 'seer',
   BodyGuard = 'bodyguard',
   Witch = 'witch',
+  Hunter = 'hunter',
 }
 
 type GameSettings = {
-  readonly roles: Map<RoleIds | typeof RoleIds, IRole>
+  readonly roles: Map<Role | typeof Role, IRole>
   readonly channels: Map<
     // | typeof MAIN_VOICE_CHANNLE
     // | typeof MAIN_TEXT_CHANNEL
     // | typeof DEATH_VOICE_CHANNLE
-    string | RoleIds,
+    string | Role,
     {
       visibility: 'public' | 'private'
       type: 'GUILD_TEXT' | 'GUILD_VOICE'
@@ -34,19 +35,19 @@ type GameSettings = {
 export const gameSettings: GameSettings = {
   // @ts-expect-error
   roles: new Map([
-    [RoleIds.WereWolf, new WereWolf()],
-    [RoleIds.Villager, new Villager()],
-    [RoleIds.Seer, new Seer()],
-    [RoleIds.BodyGuard, new BodyGuard()],
-    [RoleIds.Witch, new Witch()],
+    [Role.WereWolf, new WereWolf()],
+    [Role.Villager, new Villager()],
+    [Role.Seer, new Seer()],
+    [Role.BodyGuard, new BodyGuard()],
+    [Role.Witch, new Witch()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
     [DEATH_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
     [MAIN_TEXT_CHANNEL, { visibility: 'public', type: 'GUILD_TEXT' }],
-    [RoleIds.WereWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
-    [RoleIds.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
-    [RoleIds.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
-    [RoleIds.Witch, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.WereWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Witch, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

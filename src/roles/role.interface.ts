@@ -1,14 +1,14 @@
-import { RoleIds } from '../game-settings'
+import { Role } from '../game-settings'
 import { Player } from '../player'
 
 export interface IRole {
-  readonly id: RoleIds
+  readonly id: Role
   readonly name: string
   readonly roleAssignedNotification: boolean
-  readonly roomName?: RoleIds
+  readonly roomName?: Role
   readonly faction: 'village' | 'wolf'
 
-  is(role: RoleIds): boolean
+  is(role: Role): boolean
 
   kill(player: Player | string): void
 

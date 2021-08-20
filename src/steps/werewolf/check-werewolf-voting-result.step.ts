@@ -2,7 +2,7 @@ import { getVotesFromMessages } from '../../hepler'
 import { gameState } from '../../game-state'
 import { IStep } from '../step'
 import { logger } from '../../logger'
-import { RoleIds } from '../../game-settings'
+import { Role } from '../../game-settings'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
 
 export class CheckWereWolfVotingResult implements IStep {
@@ -16,7 +16,7 @@ export class CheckWereWolfVotingResult implements IStep {
 
     const max = Math.max.apply(null, Array.from(votes.values()))
     const playerId = votes.filter((v) => v === max).randomKey()
-    const wolfs = gameState.findAllPlayersByRole(RoleIds.WereWolf)
+    const wolfs = gameState.findAllPlayersByRole(Role.WereWolf)
     wolfs.forEach((w) => {
       w.role.kill(playerId)
     })

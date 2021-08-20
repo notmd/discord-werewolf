@@ -1,15 +1,15 @@
-import { RoleIds } from '../game-settings'
+import { Role } from '../game-settings'
 import { gameState } from '../game-state'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class BodyGuard implements IRole {
-  readonly id = RoleIds.BodyGuard
+  readonly id = Role.BodyGuard
   readonly name = 'Bảo vệ'
   readonly faction = 'village'
-  readonly roomName = RoleIds.BodyGuard
+  readonly roomName = Role.BodyGuard
   readonly roleAssignedNotification = true
-  is(role: RoleIds) {
+  is(role: Role) {
     return this.id === role
   }
   kill(_player: Player | string) {

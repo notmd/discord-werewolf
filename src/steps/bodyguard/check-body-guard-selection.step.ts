@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js'
-import { RoleIds } from '../../game-settings'
+import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { getVotesFromMessages, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
@@ -18,11 +18,11 @@ export class CheckBodyGuardSelection implements IStep {
       return new StartSeerTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
-    const channel = gameState.findTextChannelByRole(RoleIds.Seer) as TextChannel
+    const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
     gameState.bodyGuardSelection = playerId
 
     const player = gameState.findPlayer(playerId)
-    logger.info(`${RoleIds.BodyGuard} has protect ${player?.raw.displayName}`)
+    logger.info(`${Role.BodyGuard} has protect ${player?.raw.displayName}`)
     await channel.send(`Bạn đã bảo vệ ${player?.raw.displayName}`)
 
     return new StartSeerTurn().handle()

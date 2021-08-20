@@ -14,7 +14,7 @@ import {
   gameSettings,
   MAIN_TEXT_CHANNEL,
   MAIN_VOICE_CHANNLE,
-  RoleIds,
+  Role,
 } from '../../game-settings'
 import _ from 'lodash'
 import { gameState } from '../../game-state'
@@ -140,7 +140,7 @@ export class StartGameCommandHandler {
     const roles: IRole[] = []
     this.roles.forEach((num, role) => {
       for (let i = 0; i < num; i++) {
-        roles.push(gameSettings.roles.get(role as RoleIds) as IRole)
+        roles.push(gameSettings.roles.get(role as Role) as IRole)
       }
     })
     return roles
@@ -164,7 +164,7 @@ export class StartGameCommandHandler {
 
   private async validateRoles() {
     const invalidRoles = Array.from(this.roles.keys()).filter((role) => {
-      return !gameSettings.roles.has(role as RoleIds)
+      return !gameSettings.roles.has(role as Role)
     })
 
     if (invalidRoles.length > 0) {
@@ -253,11 +253,12 @@ export class StartGameCommandHandler {
 
   private parseIgnore() {
     const res: Set<string> = new Set()
-    if (!this.argv.ignore) return res
-    const ignores = this.argv.ignore.split(',')
+    if (!this.argv.ignore || this.argv.ignore.trim()) return res
+    const ignores = this.argv.ignore.trim().split(',')
     ignores.forEach((ignore) => {
-      if (ignore.startsWith('<@') && ignore.endsWith('>')) {
-        let mention = ignore.slice(2, -1)
+      const trimed = ignore.trim()
+      if (trimed.startsWith('<@') && trimed.endsWith('>')) {
+        let mention = trimed.slice(2, -1)
 
         if (mention.startsWith('!')) {
           mention = mention.slice(1)

@@ -1,16 +1,16 @@
 import { isString } from 'lodash'
-import { RoleIds } from '../game-settings'
+import { Role } from '../game-settings'
 import { gameState } from '../game-state'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class WereWolf implements IRole {
-  readonly id = RoleIds.WereWolf
+  readonly id = Role.WereWolf
   readonly name = 'Sói'
   readonly roleAssignedNotification = true
-  readonly roomName = RoleIds.WereWolf
+  readonly roomName = Role.WereWolf
   readonly faction = 'wolf'
-  is(role: RoleIds) {
+  is(role: Role) {
     return this.id === role
   }
 

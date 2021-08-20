@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js'
-import { RoleIds } from '../../game-settings'
+import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { Thumbsup } from '../../icons'
 import { logger } from '../../logger'
@@ -11,7 +11,7 @@ export class StartWitchTurn implements IStep {
   readonly __is_step = true
 
   async handle() {
-    const witch = gameState.players.find((p) => p.role.is(RoleIds.Witch))
+    const witch = gameState.players.find((p) => p.role.is(Role.Witch))
     logger.info(`Start Witch turn.`)
     if (!witch) {
       logger.warn(`Game does not has Witch role. Skip...`)
@@ -28,9 +28,7 @@ export class StartWitchTurn implements IStep {
       return new WakeUp().handle()
     }
 
-    const channel = gameState.findTextChannelByRole(
-      RoleIds.Witch
-    ) as TextChannel
+    const channel = gameState.findTextChannelByRole(Role.Witch) as TextChannel
 
     const lastRoundDeathPlayers = gameState.players.filter((p) =>
       gameState.lastRoundDeath.has(p.raw.id)

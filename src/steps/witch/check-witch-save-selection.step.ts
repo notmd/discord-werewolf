@@ -1,4 +1,4 @@
-import { RoleIds } from '../../game-settings'
+import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { getVotesFromMessages, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
@@ -11,7 +11,7 @@ export class CheckWitchSaveSelection implements IStep {
 
   async handle() {
     logger.info('Checking Witch save selection.')
-    const votingMessages = gameState.witchSaveSelectMessages
+    const votingMessages = gameState.witchSaveSelectionMessages
     const votes = await getVotesFromMessages(votingMessages)
 
     const playerId = selectRandomPlayerFromVotes(votes)
@@ -24,7 +24,7 @@ export class CheckWitchSaveSelection implements IStep {
     gameState.witchUseSaved = true
 
     await gameState
-      .findTextChannelByRole(RoleIds.Witch)
+      .findTextChannelByRole(Role.Witch)
       ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
 
     return new WakeUp().handle()

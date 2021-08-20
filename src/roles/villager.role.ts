@@ -1,14 +1,14 @@
-import { RoleIds } from '../game-settings'
+import { Role } from '../game-settings'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class Villager implements IRole {
-  readonly id = RoleIds.Villager
+  readonly id = Role.Villager
   readonly name = 'Dân làng'
   readonly roleAssignedNotification = false
   readonly roomName = undefined
   readonly faction = 'village'
-  is(role: RoleIds) {
+  is(role: Role) {
     return this.id === role
   }
 

@@ -13,6 +13,8 @@ import { gameState } from '../game-state'
 import { IStep } from './step'
 import { logger } from '../logger'
 import { StartSleep } from './start-sleep.step'
+import { StartHunterTurn } from './hunter/start-hunter-turn.step'
+import { Role } from '../game-settings'
 
 export class CheckDiscussionVotingResult implements IStep {
   readonly __is_step = true
@@ -29,17 +31,19 @@ export class CheckDiscussionVotingResult implements IStep {
     logger.info('Checking discussion voting result.')
     const votingMessages = gameState.discussionVotingMessages
 
-    const votes = await getVotesFromMessages(votingMessages)
+    const votes = (await getVotesFromMessages(votingMessages)).filter(
+      (voteCount) => voteCount > 0
+    )
     if (votes.size === 0) {
       await this.sendNoOneVotedNotification()
-    } else {
-      const votedPlayerId = selectRandomPlayerFromVotes(votes)
-      gameState.markPlayerAsDeath(votedPlayerId, {
-        ignoreLastRoundActualDeath: true,
-      })
-      await muteAllDeathPlayer()
-      await this.sendVotedUserNotification(votedPlayerId)
+      return new StartSleep().handle()
     }
+    const votedPlayerId = selectRandomPlayerFromVotes(votes)
+    gameState.markPlayerAsDeath(votedPlayerId, {
+      ignoreLastRoundActualDeath: true,
+    })
+    await this.sendVotedUserNotification(votedPlayerId)
+
     if (checkWereWolfWin()) {
       await sendWereWolfWinMessage()
       await unmuteEveryone()
@@ -49,6 +53,12 @@ export class CheckDiscussionVotingResult implements IStep {
       await sendVillagerWinMessage()
       return null
     }
+
+    if (votedPlayerId === gameState.findPlayerByRole(Role.Hunter)?.raw.id) {
+      return new StartHunterTurn(false).handle()
+    }
+
+    await muteAllDeathPlayer()
 
     return new StartSleep().handle()
   }

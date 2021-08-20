@@ -1,15 +1,15 @@
-import { RoleIds } from '../game-settings'
+import { Role } from '../game-settings'
 import { gameState } from '../game-state'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class Witch implements IRole {
-  readonly id = RoleIds.Witch
+  readonly id = Role.Witch
   readonly name = 'Phù thủy'
   readonly faction = 'village'
-  readonly roomName = RoleIds.Witch
+  readonly roomName = Role.Witch
   readonly roleAssignedNotification = true
-  is(role: RoleIds) {
+  is(role: Role) {
     return this.id === role
   }
   kill(player: Player | string) {
@@ -22,7 +22,7 @@ export class Witch implements IRole {
 
   cleanUpState() {
     gameState.witchKillSelectionMessages = []
-    gameState.witchSaveSelectMessages = []
+    gameState.witchSaveSelectionMessages = []
     gameState.witchSelectionMessages.clear()
   }
 }

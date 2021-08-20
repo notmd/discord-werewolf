@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js'
-import { RoleIds } from '../../game-settings'
+import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { getVotesFromMessages, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
@@ -18,11 +18,11 @@ export class CheckSeerSelectionStep implements IStep {
       return new StartWereWolfTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
-    const channel = gameState.findTextChannelByRole(RoleIds.Seer) as TextChannel
+    const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
     const player = gameState.findPlayer(playerId)
     await channel.send(
       `${player?.raw.displayName} ${
-        player?.role.id === RoleIds.WereWolf ? 'là sói.' : 'hem phải là sói.'
+        player?.role.id === Role.WereWolf ? 'là sói.' : 'hem phải là sói.'
       }`
     )
     return new StartWereWolfTurn().handle()

@@ -1,6 +1,6 @@
 import { Collection, Message, TextChannel, VoiceChannel } from 'discord.js'
 import { isString } from 'lodash'
-import { CHANNEL_NAME_PREFIX, RoleIds } from './game-settings'
+import { CHANNEL_NAME_PREFIX, Role } from './game-settings'
 import { Player } from './player'
 import { IRole } from './roles/role.interface'
 
@@ -10,7 +10,7 @@ export class GameState {
     main?: VoiceChannel
     death?: VoiceChannel
   }
-  roleTextChannels: Map<RoleIds, TextChannel> = new Map()
+  roleTextChannels: Map<Role, TextChannel> = new Map()
   otherTextChannels: Map<'main', TextChannel> = new Map()
 
   players: Player[] = []
@@ -34,7 +34,9 @@ export class GameState {
   witchSelectionMessages: Collection<'skip' | 'kill' | 'save', Message> =
     new Collection()
   witchKillSelectionMessages: Message[] = []
-  witchSaveSelectMessages: Message[] = []
+  witchSaveSelectionMessages: Message[] = []
+
+  hunterSelectionMessages: Message[] = []
   constructor() {
     this.voiceChannels = {
       main: undefined,
@@ -61,13 +63,13 @@ export class GameState {
   setTextChannels(channels: Collection<string, TextChannel>) {
     channels.forEach((channel) => {
       this.roleTextChannels.set(
-        channel.name.slice(CHANNEL_NAME_PREFIX.length) as RoleIds,
+        channel.name.slice(CHANNEL_NAME_PREFIX.length) as Role,
         channel
       )
     })
   }
 
-  findTextChannelByRole(role: IRole | RoleIds): TextChannel | undefined {
+  findTextChannelByRole(role: IRole | Role): TextChannel | undefined {
     if (isString(role)) {
       return this.roleTextChannels.get(role)
     }
@@ -77,12 +79,13 @@ export class GameState {
     return undefined
   }
 
-  findAllPlayersByRole(role: RoleIds): Player[] {
+  findAllPlayersByRole(role: Role): Player[] {
     return this.players.filter((p) => p.role.id === role)
   }
 
-  findPlayByRole(role: RoleIds) {
-    return this.players.find((p) => p.role.id === role)
+  findPlayerByRole(role: Role | IRole) {
+    const resolved = isString(role) ? role : role.id
+    return this.players.find((p) => p.role.id === resolved)
   }
 
   /**
