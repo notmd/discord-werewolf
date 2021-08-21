@@ -1,8 +1,8 @@
-import { TextChannel } from 'discord.js'
+import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import {
   checkVillagerWin,
   checkWereWolfWin,
-  getVotesFromMessages,
+  collectVotes,
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
   sendVillagerWinMessage,
@@ -19,7 +19,10 @@ import { Role } from '../game-settings'
 export class CheckDiscussionVotingResult implements IStep {
   readonly __is_step = true
   private mainTextChannel: TextChannel
-  constructor() {
+  constructor(
+    private VotingMessage: Message,
+    private votingMap: Collection<string, Snowflake>
+  ) {
     const mainTextChannel = gameState.otherTextChannels.get('main')
     if (!mainTextChannel) {
       throw new Error('cannot find main text channel.')
@@ -29,11 +32,10 @@ export class CheckDiscussionVotingResult implements IStep {
 
   async handle() {
     logger.info('Checking discussion voting result.')
-    const votingMessages = gameState.discussionVotingMessages
 
-    const votes = (await getVotesFromMessages(votingMessages)).filter(
-      (voteCount) => voteCount > 0
-    )
+    const votes = await collectVotes(this.VotingMessage, this.votingMap, {
+      onlyPositive: true,
+    })
     if (votes.size === 0) {
       await this.sendNoOneVotedNotification()
       return new StartSleep().handle()
@@ -41,6 +43,7 @@ export class CheckDiscussionVotingResult implements IStep {
     const votedPlayerId = selectRandomPlayerFromVotes(votes)
     gameState.markPlayerAsDeath(votedPlayerId, {
       ignoreLastRoundActualDeath: true,
+      ignoreLastRounDeath: true,
     })
     await this.sendVotedUserNotification(votedPlayerId)
 

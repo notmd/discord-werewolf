@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { Thumbsup } from '../../icons'
+import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
@@ -9,6 +9,7 @@ import { CheckSeerSelectionStep } from './check-seer-selection.step'
 
 export class StartSeerTurn implements IStep {
   readonly __is_step = true
+
   async handle() {
     logger.info('Start seer turn.')
     if (gameState.findAllPlayersByRole(Role.Seer).length === 0) {
@@ -22,18 +23,14 @@ export class StartSeerTurn implements IStep {
     }
 
     const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
-    await channel.send(
-      `Dậy đi nào Tiên tri ei.\nBạn mún tiên tri ai? Chọn ${Thumbsup}.`
-    )
     const alivePlayers = gameState.alivePlayers.filter(
       (p) => p.role.id !== Role.Seer
     )
-    for (const player of alivePlayers) {
-      const message = await channel.send(`${player.raw}`)
-      gameState.seerSelectionMessages.push(message)
-    }
+    const { embed, map } = createVotingMessage(alivePlayers)
+    embed.setTitle('Dậy đi nào Tiên tri ei. Bạn mún tiên tri ai?')
+    const message = await sendVotingMessage(channel, embed, map)
 
     logger.info('Waiting Seer selection.')
-    return new CheckSeerSelectionStep()
+    return new CheckSeerSelectionStep(message, map)
   }
 }

@@ -26,8 +26,4 @@ export class Hunter implements IRole {
       })
     }
   }
-
-  cleanUpState() {
-    gameState.hunterSelectionMessages = []
-  }
 }

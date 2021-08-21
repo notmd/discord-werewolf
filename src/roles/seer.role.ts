@@ -1,5 +1,4 @@
 import { Role } from '../game-settings'
-import { gameState } from '../game-state'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
@@ -14,9 +13,5 @@ export class Seer implements IRole {
   }
   kill(_player: Player | string) {
     throw new Error(`${this.name} can not kill anyone.`)
-  }
-
-  cleanUpState() {
-    gameState.seerSelectionMessages = []
   }
 }

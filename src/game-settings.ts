@@ -1,4 +1,5 @@
 import { BodyGuard } from './roles/body-guard.role'
+import { Hunter } from './roles/hunter.role'
 import { IRole } from './roles/role.interface'
 import { Seer } from './roles/seer.role'
 import { Villager } from './roles/villager.role'
@@ -40,6 +41,7 @@ export const gameSettings: GameSettings = {
     [Role.Seer, new Seer()],
     [Role.BodyGuard, new BodyGuard()],
     [Role.Witch, new Witch()],
+    [Role.Hunter, new Hunter()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
@@ -49,5 +51,6 @@ export const gameSettings: GameSettings = {
     [Role.Seer, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Witch, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Hunter, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

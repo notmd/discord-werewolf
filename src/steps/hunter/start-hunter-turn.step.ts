@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { Thumbsup } from '../../icons'
+import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { logger } from '../../logger'
 import { StartDisscusion } from '../start-discussion.step'
 import { StartSleep } from '../start-sleep.step'
@@ -25,19 +25,16 @@ export class StartHunterTurn implements IStep {
       return new StartSleep().handle()
     }
     const mainChannel = gameState.otherTextChannels.get('main') as TextChannel
-    await mainChannel.send(`${hunter} là ${hunter.role.name}`)
+    await mainChannel.send(`${hunter.raw} là ${hunter.role.name}`)
 
     const hunterChannel = gameState.findTextChannelByRole(
       Role.Hunter
     ) as TextChannel
-    hunterChannel.send(
-      `Thợ săn, bạn đã chết. Giờ bạn mún bắn ai? Chọn ${Thumbsup}.`
-    )
-    for (const player of gameState.alivePlayers) {
-      const message = await hunterChannel.send(player.raw.toString())
-      gameState.hunterSelectionMessages.push(message)
-    }
 
-    return new CheckHunterSelection(this.shouldStartDisscusion)
+    const { embed, map } = createVotingMessage(gameState.alivePlayers)
+    embed.setTitle('Thợ săn, bạn đã chết. Giờ bạn mún bắn ai?')
+    const message = await sendVotingMessage(hunterChannel, embed, map)
+
+    return new CheckHunterSelection(this.shouldStartDisscusion, message, map)
   }
 }

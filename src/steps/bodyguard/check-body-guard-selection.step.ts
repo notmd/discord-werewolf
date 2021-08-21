@@ -1,24 +1,31 @@
-import { TextChannel } from 'discord.js'
+import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { getVotesFromMessages, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
 import { StartSeerTurn } from '../seer/start-seer-turn.step'
 import { IStep } from '../step'
 
 export class CheckBodyGuardSelection implements IStep {
   readonly __is_step = true
+  constructor(
+    private VotingMessage: Message,
+    private votingMap: Collection<string, Snowflake>
+  ) {}
 
   async handle() {
-    logger.info('Checking Seer selection')
-    const messages = gameState.bodyGuardSelectionMessages
-    const votes = (await getVotesFromMessages(messages)).filter((v) => v > 0)
+    logger.info('Checking Body guard selection')
+    const votes = await collectVotes(this.VotingMessage, this.votingMap, {
+      onlyPositive: true,
+    })
     if (votes.size === 0) {
       logger.warn('Votes is empty. Skip...')
       return new StartSeerTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
-    const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
+    const channel = gameState.findTextChannelByRole(
+      Role.BodyGuard
+    ) as TextChannel
     gameState.bodyGuardSelection = playerId
 
     const player = gameState.findPlayer(playerId)

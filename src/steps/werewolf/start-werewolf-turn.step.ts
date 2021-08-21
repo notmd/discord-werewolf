@@ -1,7 +1,10 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { Thumbsup } from '../../icons'
+import {
+  createVotingMessage as createVoting,
+  sendVotingMessage,
+} from '../../hepler'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { CheckWereWolfVotingResult } from './check-werewolf-voting-result.step'
@@ -16,15 +19,11 @@ export class StartWereWolfTurn implements IStep {
     const wereWoflChannel = gameState.findTextChannelByRole(
       Role.WereWolf
     ) as TextChannel
-    await wereWoflChannel.send(
-      `Dậy đi nào mấy con sói già.\nChọn ${Thumbsup} để vote.`
-    )
 
-    for (const p of gameState.alivePlayers) {
-      const message = await wereWoflChannel.send(`${p.raw}`)
-      gameState.wereWoflVotingMessages.push(message)
-    }
+    const { embed, map } = createVoting(gameState.alivePlayers)
+    embed.setTitle('Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?')
+    const message = await sendVotingMessage(wereWoflChannel, embed, map)
     logger.info('Wating for werewolf voting result.')
-    return new CheckWereWolfVotingResult()
+    return new CheckWereWolfVotingResult(message, map)
   }
 }

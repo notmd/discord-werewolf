@@ -1,6 +1,13 @@
-import { Collection, Message } from 'discord.js'
+import {
+  Collection,
+  Message,
+  MessageEmbed,
+  Snowflake,
+  TextChannel,
+} from 'discord.js'
 import { gameState } from './game-state'
-import { Thumbsup } from './icons'
+import { Letters, Thumbsup } from './icons'
+import { Player } from './player'
 
 export const muteAllDeathPlayer = async () => {
   const deathPlayers = gameState.deathPlayers
@@ -11,7 +18,9 @@ export const muteAllDeathPlayer = async () => {
     }
   }
 }
-
+/**
+ * @deprecated
+ */
 export const getVotesFromMessages = async (
   messages: Message[]
 ): Promise<Collection<string, number>> => {
@@ -20,6 +29,7 @@ export const getVotesFromMessages = async (
     const fetched = await message.fetch(true)
     const player = fetched.mentions.users.first()
     if (player) {
+      fetched.reactions.cache.forEach((r) => console.log(r))
       const thumbsupReaction = fetched.reactions.cache
         .filter((r) => r.emoji.name === Thumbsup)
         .first()
@@ -72,7 +82,7 @@ export const sendVillagerWinMessage = async (): Promise<void> => {
   }
   await mainTextChannel.send(
     `Phe dân làng đã win.\n${gameState.players
-      .map((p) => `${p.raw} là \`${p.role.name}`)
+      .map((p) => `${p.raw} là \`${p.role.name}\``)
       .join('\n')}`
   )
 }
@@ -83,7 +93,64 @@ export const sendWereWolfWinMessage = async (): Promise<void> => {
   }
   await mainTextChannel.send(
     `Phe sói đã win.\n${gameState.players
-      .map((p) => `${p.raw} là \`${p.role.name}`)
+      .map((p) => `${p.raw} là \`${p.role.name}\``)
       .join('\n')}}`
   )
+}
+
+export const createVotingMessage = (
+  players: Player[]
+): { embed: MessageEmbed; map: Collection<string, Snowflake> } => {
+  const embed = new MessageEmbed()
+  const map = new Collection<string, Snowflake>()
+  const letters = [...Letters.values()]
+  embed.setDescription(
+    players
+      .map((player, index) => {
+        const letter = letters[index] as string
+        map.set(letter, player.raw.id)
+        return `${letter} ${player.raw.displayName}`
+      })
+      .join('\n\n')
+  )
+
+  return { embed, map }
+}
+
+export const sendVotingMessage = async (
+  channel: TextChannel,
+  embed: MessageEmbed,
+  map: Collection<string, Snowflake>
+) => {
+  const message = await channel.send({ embeds: [embed] })
+  Promise.all(
+    [...map.keys()].map((letter) => {
+      message.react(letter)
+    })
+  )
+
+  return message
+}
+
+export const collectVotes = async (
+  message: Message,
+  map: Collection<string, Snowflake>,
+  { onlyPositive: filterPositive }: { onlyPositive?: boolean } = {}
+) => {
+  const fetched = await message.fetch(true)
+  const votes: Collection<Snowflake, number> = new Collection()
+
+  map.forEach((playerId, reaction) => {
+    const count = fetched.reactions.cache
+      .filter((r) => {
+        console.log(r.emoji.name, reaction, r.emoji.name === reaction)
+        return r.emoji.name === reaction
+      })
+      .first()?.count as number
+    votes.set(playerId, count - 1)
+  })
+  if (filterPositive) {
+    return votes.filter((v) => v > 0)
+  }
+  return votes
 }

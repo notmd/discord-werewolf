@@ -19,23 +19,27 @@ export class GameState {
   lastRoundDeath: Set<string> = new Set()
   lastRoundActualDeath: Set<string> = new Set()
 
-  discussionVotingMessages: Message[] = []
-
-  wereWoflVotingMessages: Message[] = []
-
-  seerSelectionMessages: Message[] = []
-
-  bodyGuardSelectionMessages: Message[] = []
   bodyGuardLastSelection: null | string = null // userid
   bodyGuardSelection: null | string = null //userId
 
   witchUseKilled: boolean = false
   witchUseSaved: boolean = false
+  /**
+   * @deprecated
+   */
   witchSelectionMessages: Collection<'skip' | 'kill' | 'save', Message> =
     new Collection()
+  /**
+   * @deprecated
+   */
   witchKillSelectionMessages: Message[] = []
+  /**
+   * @deprecated
+   */
   witchSaveSelectionMessages: Message[] = []
-
+  /**
+   * @deprecated
+   */
   hunterSelectionMessages: Message[] = []
   constructor() {
     this.voiceChannels = {
@@ -108,13 +112,6 @@ export class GameState {
     }
   }
 
-  /**
-   * @deprecated
-   */
-  clearLastRoundAcctualDeath() {
-    this.lastRoundActualDeath.clear()
-  }
-
   findPlayer(playerId: string) {
     return this.players.find((p) => p.raw.id === playerId)
   }
@@ -122,12 +119,12 @@ export class GameState {
   toJSON() {
     return {
       isRunning: this.isRunning,
-      channels: this.voiceChannels,
-      textChannels: Array.from(this.roleTextChannels.entries()).map((e) => {
-        return {
-          [e[0]]: e[1].name,
-        }
-      }),
+      // channels: this.voiceChannels,
+      // textChannels: Array.from(this.roleTextChannels.entries()).map((e) => {
+      // return {
+      // [e[0]]: e[1].name,
+      // }
+      // }),
       players: this.players,
       deathPlayers: Array.from(this.deathPlayers.values()).map((p) => {
         this.findPlayer(p)?.raw.nickname

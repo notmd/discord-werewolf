@@ -74,6 +74,7 @@ export class StartGameCommandHandler {
     gameState.setTextChannels(
       this.fetchTextChannels() as Collection<string, TextChannel>
     )
+    logger.info('Generating roles.')
     await this.assignPermisstionToPlayers(roleAssignedPlayers)
     this.sendRoleAssignedNotificationMessage(roleAssignedPlayers)
     this.message.reply('Game started. Please checkout your roles.')
@@ -117,20 +118,10 @@ export class StartGameCommandHandler {
           player.role
         ) as TextChannel
         await channel.fetch(true)
-        await channel.edit({
-          permissionOverwrites: [
-            {
-              allow:
-                Permissions.FLAGS.VIEW_CHANNEL |
-                Permissions.FLAGS.SEND_MESSAGES |
-                Permissions.FLAGS.ADD_REACTIONS,
-              id: player.raw.id,
-            },
-            {
-              deny: Permissions.FLAGS.VIEW_CHANNEL,
-              id: this.message.guild!.roles.everyone,
-            },
-          ],
+        await channel.permissionOverwrites.create(player.raw.id, {
+          VIEW_CHANNEL: true,
+          SEND_MESSAGES: true,
+          ADD_REACTIONS: true,
         })
       }
     }
@@ -253,7 +244,7 @@ export class StartGameCommandHandler {
 
   private parseIgnore() {
     const res: Set<string> = new Set()
-    if (!this.argv.ignore || this.argv.ignore.trim()) return res
+    if (!this.argv.ignore || !this.argv.ignore.trim()) return res
     const ignores = this.argv.ignore.trim().split(',')
     ignores.forEach((ignore) => {
       const trimed = ignore.trim()

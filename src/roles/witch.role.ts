@@ -20,7 +20,7 @@ export class Witch implements IRole {
     gameState.markPlayerAsDeath(player)
   }
 
-  cleanUpState() {
+  onSleep() {
     gameState.witchKillSelectionMessages = []
     gameState.witchSaveSelectionMessages = []
     gameState.witchSelectionMessages.clear()

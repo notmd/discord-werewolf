@@ -16,7 +16,7 @@ export class Villager implements IRole {
     throw new Error('Villger can not kill anyone.')
   }
 
-  cleanUpState() {
+  onSleep() {
     // skip
   }
 }

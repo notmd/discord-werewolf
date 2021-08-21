@@ -1,8 +1,7 @@
-import { TextChannel } from 'discord.js'
 import {
   checkVillagerWin,
   checkWereWolfWin,
-  getVotesFromMessages,
+  collectVotes,
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
   sendVillagerWinMessage,
@@ -15,18 +14,22 @@ import { logger } from '../../logger'
 import { StartSleep } from '../start-sleep.step'
 import { Role } from '../../game-settings'
 import { StartDisscusion } from '../start-discussion.step'
+import { Collection, Message, Snowflake } from 'discord.js'
 
 export class CheckHunterSelection implements IStep {
   readonly __is_step = true
-  constructor(private shouldStartDiscussion: boolean) {}
+  constructor(
+    private shouldStartDiscussion: boolean,
+    private VotingMessage: Message,
+    private votingMap: Collection<string, Snowflake>
+  ) {}
 
   async handle() {
     logger.info('Checking hunter selection.')
-    const votingMessages = gameState.hunterSelectionMessages
 
     const hunter = gameState.findPlayerByRole(Role.Hunter)
 
-    const votes = await getVotesFromMessages(votingMessages)
+    const votes = await collectVotes(this.VotingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)
     hunter?.role.kill(playerId)

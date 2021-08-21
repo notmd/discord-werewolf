@@ -2,13 +2,14 @@ import { TextChannel } from 'discord.js'
 import {
   checkVillagerWin,
   checkWereWolfWin,
+  createVotingMessage,
   muteAllDeathPlayer,
   sendVillagerWinMessage,
+  sendVotingMessage,
   sendWereWolfWinMessage,
   unmuteEveryone,
 } from '../hepler'
 import { gameState } from '../game-state'
-import { Thumbsup } from '../icons'
 import { IStep } from './step'
 import { CheckDiscussionVotingResult } from './check-discussion-voting-result.step'
 
@@ -35,17 +36,9 @@ export class StartDisscusion implements IStep {
       return null
     }
     await muteAllDeathPlayer()
-    await this.sendVotingMessages()
-    return new CheckDiscussionVotingResult()
-  }
-
-  async sendVotingMessages() {
-    await this.mainTextChannel.send(`Chọn ${Thumbsup} để vote.`)
-
-    const alivePlayers = gameState.alivePlayers
-    for (const alivePlayer of alivePlayers) {
-      const message = await this.mainTextChannel.send(`${alivePlayer.raw}`)
-      gameState.discussionVotingMessages.push(message)
-    }
+    const { embed, map } = createVotingMessage(gameState.alivePlayers)
+    // embed.setTitle('Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?')
+    const message = await sendVotingMessage(this.mainTextChannel, embed, map)
+    return new CheckDiscussionVotingResult(message, map)
   }
 }

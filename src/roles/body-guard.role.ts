@@ -16,7 +16,7 @@ export class BodyGuard implements IRole {
     throw new Error(`${this.name} can not kill anyone.`)
   }
 
-  cleanUpState() {
+  onSleep() {
     gameState.bodyGuardLastSelection = gameState.bodyGuardSelection
     gameState.bodyGuardSelection = null
   }

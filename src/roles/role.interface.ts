@@ -12,5 +12,5 @@ export interface IRole {
 
   kill(player: Player | string): void
 
-  cleanUpState(): void
+  onSleep?: () => void
 }
