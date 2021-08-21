@@ -1,7 +1,8 @@
-import { TextChannel } from 'discord.js'
+import { Collection, MessageEmbed, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { Thumbsup } from '../../icons'
+import { sendVotingMessage } from '../../hepler'
+import { Letters } from '../../icons'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
@@ -34,25 +35,38 @@ export class StartWitchTurn implements IStep {
       gameState.lastRoundDeath.has(p.raw.id)
     )
 
-    await channel.send(
+    const { embed, map } = this.createVotingMessage()
+    embed.setTitle(
       `Dậy đi nào phù thủy ei.\nĐêm nay ${lastRoundDeathPlayers
         .map((p) => p.raw.displayName)
-        .join(', ')} sẽ chết.\nBạn mún làm gì? Chọn ${Thumbsup}`
+        .join(', ')}`
     )
+    const message = await sendVotingMessage(channel, embed, map)
 
-    const skipMessage = await channel.send('Hem làm gì cả')
-    gameState.witchSelectionMessages.set('skip', skipMessage)
+    return new CheckWitchSelection(message, map)
+  }
 
+  private createVotingMessage() {
+    const letters = [...Letters.values()]
+    const embed = new MessageEmbed()
+    const map = new Collection<string, 'kill' | 'save' | 'skip'>([
+      [letters[0] as string, 'skip'],
+    ])
+    const descriptions: string[] = ['Hem làm gì cả']
+    let index: number = 1
     if (!gameState.witchUseKilled) {
-      const killMessage = await channel.send('Giết')
-      gameState.witchSelectionMessages.set('kill', killMessage)
+      map.set(letters[index] as string, 'kill')
+      descriptions.push('Giết')
+      index++
     }
 
     if (!gameState.witchUseSaved) {
-      const saveMessage = await channel.send('Cíu')
-      gameState.witchSelectionMessages.set('save', saveMessage)
+      map.set(letters[index] as string, 'skip')
+      descriptions.push('Cứu')
+      index++
     }
+    embed.setDescription(descriptions.join('\n\n'))
 
-    return new CheckWitchSelection()
+    return { embed, map }
   }
 }

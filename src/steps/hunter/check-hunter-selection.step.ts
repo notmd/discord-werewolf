@@ -20,7 +20,7 @@ export class CheckHunterSelection implements IStep {
   readonly __is_step = true
   constructor(
     private shouldStartDiscussion: boolean,
-    private VotingMessage: Message,
+    private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>
   ) {}
 
@@ -29,7 +29,7 @@ export class CheckHunterSelection implements IStep {
 
     const hunter = gameState.findPlayerByRole(Role.Hunter)
 
-    const votes = await collectVotes(this.VotingMessage, this.votingMap)
+    const votes = await collectVotes(this.votingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)
     hunter?.role.kill(playerId)

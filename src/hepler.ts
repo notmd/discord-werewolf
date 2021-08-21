@@ -46,9 +46,9 @@ export const getVotesFromMessages = async (
   return votes
 }
 
-export const selectRandomPlayerFromVotes = (
-  votes: Collection<string, number>
-): string => {
+export const selectRandomPlayerFromVotes = <T extends string = string>(
+  votes: Collection<T, number>
+): T => {
   const max = Math.max.apply(null, Array.from(votes.values()))
   return votes.filter((v) => v === max).randomKey()
 }
@@ -132,13 +132,13 @@ export const sendVotingMessage = async (
   return message
 }
 
-export const collectVotes = async (
+export const collectVotes = async <T extends string = Snowflake>(
   message: Message,
-  map: Collection<string, Snowflake>,
-  { onlyPositive: filterPositive }: { onlyPositive?: boolean } = {}
+  map: Collection<string, T>,
+  { onlyPositive }: { onlyPositive?: boolean } = {}
 ) => {
   const fetched = await message.fetch(true)
-  const votes: Collection<Snowflake, number> = new Collection()
+  const votes: Collection<T, number> = new Collection()
 
   map.forEach((playerId, reaction) => {
     const count = fetched.reactions.cache
@@ -149,7 +149,7 @@ export const collectVotes = async (
       .first()?.count as number
     votes.set(playerId, count - 1)
   })
-  if (filterPositive) {
+  if (onlyPositive) {
     return votes.filter((v) => v > 0)
   }
   return votes

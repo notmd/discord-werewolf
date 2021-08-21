@@ -1,4 +1,4 @@
-import { Collection, Message, TextChannel, VoiceChannel } from 'discord.js'
+import { Collection, TextChannel, VoiceChannel } from 'discord.js'
 import { isString } from 'lodash'
 import { CHANNEL_NAME_PREFIX, Role } from './game-settings'
 import { Player } from './player'
@@ -24,11 +24,6 @@ export class GameState {
 
   witchUseKilled: boolean = false
   witchUseSaved: boolean = false
-  /**
-   * @deprecated
-   */
-  witchSelectionMessages: Collection<'skip' | 'kill' | 'save', Message> =
-    new Collection()
   constructor() {
     this.voiceChannels = {
       main: undefined,

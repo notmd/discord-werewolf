@@ -9,13 +9,13 @@ import { IStep } from '../step'
 export class CheckBodyGuardSelection implements IStep {
   readonly __is_step = true
   constructor(
-    private VotingMessage: Message,
+    private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>
   ) {}
 
   async handle() {
     logger.info('Checking Body guard selection')
-    const votes = await collectVotes(this.VotingMessage, this.votingMap, {
+    const votes = await collectVotes(this.votingMessage, this.votingMap, {
       onlyPositive: true,
     })
     if (votes.size === 0) {

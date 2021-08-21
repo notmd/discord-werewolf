@@ -9,13 +9,13 @@ import { WakeUp } from '../wake-up.step'
 export class CheckWitchSaveSelection implements IStep {
   readonly __is_step = true
   constructor(
-    private VotingMessage: Message,
+    private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>
   ) {}
   async handle() {
     logger.info('Checking Witch save selection.')
 
-    const votes = await collectVotes(this.VotingMessage, this.votingMap)
+    const votes = await collectVotes(this.votingMessage, this.votingMap)
 
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)

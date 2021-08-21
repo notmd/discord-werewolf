@@ -9,13 +9,13 @@ import { Collection, Message, Snowflake } from 'discord.js'
 export class CheckWereWolfVotingResult implements IStep {
   readonly __is_step = true
   constructor(
-    private VotingMessage: Message,
+    private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>
   ) {}
 
   async handle() {
     logger.info('Checking werewolf voting results')
-    const votes = await collectVotes(this.VotingMessage, this.votingMap)
+    const votes = await collectVotes(this.votingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
     const wolfs = gameState.findAllPlayersByRole(Role.WereWolf)
     wolfs.forEach((w) => {
