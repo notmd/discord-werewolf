@@ -1,6 +1,7 @@
+import { Collection, Message, Snowflake } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { getVotesFromMessages, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
 import { Player } from '../../player'
 import { IStep } from '../step'
@@ -8,11 +9,19 @@ import { WakeUp } from '../wake-up.step'
 
 export class CheckWitchKillSelection implements IStep {
   readonly __is_step = true
-
+  constructor(
+    private VotingMessage: Message,
+    private votingMap: Collection<string, Snowflake>
+  ) {}
   async handle() {
     logger.info('Checking Witch kill selection.')
-    const votingMessages = gameState.witchKillSelectionMessages
-    const votes = await getVotesFromMessages(votingMessages)
+    const votes = await collectVotes(this.VotingMessage, this.votingMap, {
+      onlyPositive: true,
+    })
+    if (votes.size === 0) {
+      logger.warn('Witch kill vote is empty. Skip...')
+      return new WakeUp().handle()
+    }
 
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.players.find(

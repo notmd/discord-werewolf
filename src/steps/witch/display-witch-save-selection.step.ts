@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { Thumbsup } from '../../icons'
+import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { IStep } from '../step'
 import { CheckWitchSaveSelection } from './check-witch-save-selection.step'
 
@@ -15,12 +15,10 @@ export class DisplayWitchSaveSelection implements IStep {
       gameState.lastRoundDeath.has(p.raw.id)
     )
 
-    await channel.send(`Chọn ${Thumbsup} để cứu.`)
-    for (const player of saveablePlayers) {
-      const m = await channel.send(player.raw.toString())
-      gameState.witchSaveSelectionMessages.push(m)
-    }
+    const { embed, map } = createVotingMessage(saveablePlayers)
+    embed.setTitle('Phù thủy mún cứu ai?')
+    const message = await sendVotingMessage(channel, embed, map)
 
-    return new CheckWitchSaveSelection()
+    return new CheckWitchSaveSelection(message, map)
   }
 }

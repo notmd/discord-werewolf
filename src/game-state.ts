@@ -29,18 +29,6 @@ export class GameState {
    */
   witchSelectionMessages: Collection<'skip' | 'kill' | 'save', Message> =
     new Collection()
-  /**
-   * @deprecated
-   */
-  witchKillSelectionMessages: Message[] = []
-  /**
-   * @deprecated
-   */
-  witchSaveSelectionMessages: Message[] = []
-  /**
-   * @deprecated
-   */
-  hunterSelectionMessages: Message[] = []
   constructor() {
     this.voiceChannels = {
       main: undefined,

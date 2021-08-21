@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { Thumbsup } from '../../icons'
+import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { IStep } from '../step'
 import { CheckWitchKillSelection } from './check-witch-kill-selection.step'
 
@@ -15,12 +15,10 @@ export class DisplayWitchKillSelection implements IStep {
       (p) => !gameState.lastRoundDeath.has(p.raw.id) && p.role.id !== Role.Witch
     )
 
-    await channel.send(`Chọn ${Thumbsup} để giết.`)
-    for (const player of killablePlayers) {
-      const m = await channel.send(player.raw.toString())
-      gameState.witchKillSelectionMessages.push(m)
-    }
+    const { embed, map } = createVotingMessage(killablePlayers)
+    embed.setTitle('Phù thủy mún giết ai?')
+    const message = await sendVotingMessage(channel, embed, map)
 
-    return new CheckWitchKillSelection()
+    return new CheckWitchKillSelection(message, map)
   }
 }
