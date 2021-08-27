@@ -8,6 +8,7 @@ export class Villager implements IRole {
   readonly roleAssignedNotification = false
   readonly roomName = undefined
   readonly faction = 'village'
+  readonly icon = '🤡'
   is(role: Role) {
     return this.id === role
   }

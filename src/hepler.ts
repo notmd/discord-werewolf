@@ -6,8 +6,9 @@ import {
   TextChannel,
 } from 'discord.js'
 import { gameState } from './game-state'
-import { Letters, Thumbsup } from './icons'
+import { Letters } from './icons'
 import { Player } from './player'
+import { Letter } from './types'
 
 export const muteAllDeathPlayer = async () => {
   const deathPlayers = gameState.deathPlayers
@@ -17,33 +18,6 @@ export const muteAllDeathPlayer = async () => {
       await p.raw.voice.setMute(true)
     }
   }
-}
-/**
- * @deprecated
- */
-export const getVotesFromMessages = async (
-  messages: Message[]
-): Promise<Collection<string, number>> => {
-  const votes: Collection<string, number> = new Collection()
-  for (const message of messages) {
-    const fetched = await message.fetch(true)
-    const player = fetched.mentions.users.first()
-    if (player) {
-      fetched.reactions.cache.forEach((r) => console.log(r))
-      const thumbsupReaction = fetched.reactions.cache
-        .filter((r) => r.emoji.name === Thumbsup)
-        .first()
-      if (thumbsupReaction) {
-        const alivePlayers = gameState.alivePlayers
-        const invalidReactionCount = thumbsupReaction.users.cache.filter(
-          (u) => !alivePlayers.some((p) => p.raw.id === u.id)
-        ).size
-        votes.set(player.id, thumbsupReaction.count - invalidReactionCount)
-      }
-    }
-  }
-
-  return votes
 }
 
 export const selectRandomPlayerFromVotes = <T extends string = string>(
@@ -55,7 +29,8 @@ export const selectRandomPlayerFromVotes = <T extends string = string>(
 
 export const checkWereWolfWin = (): boolean => {
   const alivePlayers = gameState.alivePlayers
-  return alivePlayers.every((p) => p.role.faction === 'wolf')
+  const wolfs = alivePlayers.filter((p) => p.role.faction === 'wolf').length
+  return wolfs * 2 >= alivePlayers.length
 }
 
 export const checkVillagerWin = (): boolean => {
@@ -74,40 +49,46 @@ export const unmuteEveryone = async (): Promise<void> => {
     }
   }
 }
+const createRolesEmbedMessage = () => {
+  return new MessageEmbed().setDescription(
+    `\n${gameState.players
+      .map(
+        (p) => `\`${p.raw.displayName}\` là \`${p.role.name}\` ${p.role.icon}`
+      )
+      .join('\n\n')}`
+  )
+}
 
 export const sendVillagerWinMessage = async (): Promise<void> => {
   const mainTextChannel = gameState.otherTextChannels.get('main')
   if (!mainTextChannel) {
     throw new Error('cannot find main text channel.')
   }
-  await mainTextChannel.send(
-    `Phe dân làng đã win.\n${gameState.players
-      .map((p) => `${p.raw} là \`${p.role.name}\``)
-      .join('\n')}`
-  )
+  await mainTextChannel.send({
+    embeds: [createRolesEmbedMessage().setTitle('Phe dân làng đã win')],
+  })
 }
 export const sendWereWolfWinMessage = async (): Promise<void> => {
   const mainTextChannel = gameState.otherTextChannels.get('main')
   if (!mainTextChannel) {
     throw new Error('cannot find main text channel.')
   }
-  await mainTextChannel.send(
-    `Phe sói đã win.\n${gameState.players
-      .map((p) => `${p.raw} là \`${p.role.name}\``)
-      .join('\n')}}`
-  )
+
+  await mainTextChannel.send({
+    embeds: [createRolesEmbedMessage().setTitle('Phe sói đã win')],
+  })
 }
 
 export const createVotingMessage = (
-  players: Player[]
-): { embed: MessageEmbed; map: Collection<string, Snowflake> } => {
+  players: Array<Player>
+): { embed: MessageEmbed; map: Collection<Letter, Snowflake> } => {
   const embed = new MessageEmbed()
-  const map = new Collection<string, Snowflake>()
+  const map = new Collection<Letter, Snowflake>()
   const letters = [...Letters.values()]
   embed.setDescription(
     players
       .map((player, index) => {
-        const letter = letters[index] as string
+        const letter = letters[index] as Letter
         map.set(letter, player.raw.id)
         return `${letter} ${player.raw.displayName}`
       })
@@ -143,7 +124,6 @@ export const collectVotes = async <T extends string = Snowflake>(
   map.forEach((playerId, reaction) => {
     const count = fetched.reactions.cache
       .filter((r) => {
-        console.log(r.emoji.name, reaction, r.emoji.name === reaction)
         return r.emoji.name === reaction
       })
       .first()?.count as number

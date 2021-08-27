@@ -8,6 +8,7 @@ export class Seer implements IRole {
   readonly roleAssignedNotification = true
   readonly roomName = Role.Seer
   readonly faction = 'village'
+  readonly icon = '👀'
   is(role: Role) {
     return this.id === role
   }

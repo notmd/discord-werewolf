@@ -72,7 +72,7 @@ export class GameState {
 
   findPlayerByRole(role: Role | IRole) {
     const resolved = isString(role) ? role : role.id
-    return this.players.find((p) => p.role.id === resolved)
+    return this.players.find((p) => p.role.is(resolved))
   }
 
   /**
@@ -94,6 +94,12 @@ export class GameState {
       this.lastRoundDeath.add(playerId)
     }
   }
+
+  // moveLastRoundActualDeathToDeath() {
+  //   this.lastRoundActualDeath.forEach((playerId) =>
+  //     this.deathPlayers.add(playerId)
+  //   )
+  // }
 
   findPlayer(playerId: string) {
     return this.players.find((p) => p.raw.id === playerId)

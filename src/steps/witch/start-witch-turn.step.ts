@@ -4,6 +4,8 @@ import { gameState } from '../../game-state'
 import { sendVotingMessage } from '../../hepler'
 import { Letters } from '../../icons'
 import { logger } from '../../logger'
+import { Letter } from '../../types'
+import { rand, sleep } from '../../utils'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 import { CheckWitchSelection } from './check-witch-selection.step'
@@ -19,13 +21,19 @@ export class StartWitchTurn implements IStep {
       return new WakeUp().handle()
     }
 
-    if (witch.isDeath) {
-      logger.warn(`Witch was death. Skip...`)
+    if (witch.isDeath && !gameState.lastRoundDeath.has(witch.raw.id)) {
+      const seconds = rand(20, 30)
+      logger.warn(`Witch was death. Skip in ${seconds} seconds.`)
+      await sleep(seconds * 1000)
       return new WakeUp().handle()
     }
 
     if (gameState.witchUseKilled && gameState.witchUseSaved) {
-      logger.info('Witch has already used both ability. Skip...')
+      const seconds = rand(20, 30)
+      logger.warn(
+        `Witch has already used both ability. Skip in ${seconds} seconds.`
+      )
+      await sleep(seconds * 1000)
       return new WakeUp().handle()
     }
 
@@ -37,9 +45,9 @@ export class StartWitchTurn implements IStep {
 
     const { embed, map } = this.createVotingMessage()
     embed.setTitle(
-      `Dậy đi nào phù thủy ei.\nĐêm nay ${lastRoundDeathPlayers
+      `Dậy đi nào phù thủy ei. Đêm nay ${lastRoundDeathPlayers
         .map((p) => p.raw.displayName)
-        .join(', ')}`
+        .join(', ')} sẽ chết.`
     )
     const message = await sendVotingMessage(channel, embed, map)
 
@@ -49,20 +57,20 @@ export class StartWitchTurn implements IStep {
   private createVotingMessage() {
     const letters = [...Letters.values()]
     const embed = new MessageEmbed()
-    const map = new Collection<string, 'kill' | 'save' | 'skip'>([
-      [letters[0] as string, 'skip'],
+    const map = new Collection<Letter, 'kill' | 'save' | 'skip'>([
+      [letters[0] as Letter, 'skip'],
     ])
-    const descriptions: string[] = ['Hem làm gì cả']
+    const descriptions: string[] = [`${letters[0]} Hem làm gì cả`]
     let index: number = 1
     if (!gameState.witchUseKilled) {
-      map.set(letters[index] as string, 'kill')
-      descriptions.push('Giết')
+      map.set(letters[index] as Letter, 'kill')
+      descriptions.push(`${letters[index]} Giết`)
       index++
     }
 
     if (!gameState.witchUseSaved) {
-      map.set(letters[index] as string, 'skip')
-      descriptions.push('Cứu')
+      map.set(letters[index] as Letter, 'save')
+      descriptions.push(`${letters[index]} Cứu`)
       index++
     }
     embed.setDescription(descriptions.join('\n\n'))

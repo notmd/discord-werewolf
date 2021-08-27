@@ -9,6 +9,7 @@ export class Witch implements IRole {
   readonly faction = 'village'
   readonly roomName = Role.Witch
   readonly roleAssignedNotification = true
+  readonly icon = '🧙‍♀️'
   is(role: Role) {
     return this.id === role
   }
@@ -20,9 +21,5 @@ export class Witch implements IRole {
     gameState.markPlayerAsDeath(player)
   }
 
-  onSleep() {
-    gameState.witchKillSelectionMessages = []
-    gameState.witchSaveSelectionMessages = []
-    gameState.witchSelectionMessages.clear()
-  }
+  onSleep() {}
 }

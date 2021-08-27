@@ -244,7 +244,7 @@ export class StartGameCommandHandler {
 
   private parseIgnore() {
     const res: Set<string> = new Set()
-    if (!this.argv.ignore || !this.argv.ignore.trim()) return res
+    if (!this.argv.ignore) return res
     const ignores = this.argv.ignore.trim().split(',')
     ignores.forEach((ignore) => {
       const trimed = ignore.trim()

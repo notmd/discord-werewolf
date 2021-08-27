@@ -9,6 +9,7 @@ export class BodyGuard implements IRole {
   readonly faction = 'village'
   readonly roomName = Role.BodyGuard
   readonly roleAssignedNotification = true
+  readonly icon = '🛡️'
   is(role: Role) {
     return this.id === role
   }

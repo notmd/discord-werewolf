@@ -9,15 +9,13 @@ export class Hunter implements IRole {
   readonly roleAssignedNotification = true
   readonly roomName = Role.Hunter
   readonly faction = 'village'
+  readonly icon = '🔫'
   is(role: Role) {
     return this.id === role
   }
 
   kill(player: Player | string) {
-    gameState.markPlayerAsDeath(player, {
-      ignoreLastRounDeath: true,
-      ignoreLastRoundActualDeath: true,
-    })
+    gameState.markPlayerAsDeath(player)
     const hunter = gameState.findPlayerByRole(this)
     if (hunter) {
       gameState.markPlayerAsDeath(hunter, {

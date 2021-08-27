@@ -3,6 +3,7 @@ import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { logger } from '../../logger'
+import { rand, sleep } from '../../utils'
 import { IStep } from '../step'
 import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 import { CheckSeerSelectionStep } from './check-seer-selection.step'
@@ -18,7 +19,9 @@ export class StartSeerTurn implements IStep {
     }
 
     if (!gameState.alivePlayers.find((p) => p.role.is(Role.Seer))) {
-      logger.warn('Seer was death. Skip...')
+      const seconds = rand(20, 30)
+      logger.warn(`Seer was death. Skip in ${seconds} seconds.`)
+      await sleep(seconds * 1000)
       return new StartWereWolfTurn().handle()
     }
 

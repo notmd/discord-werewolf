@@ -26,7 +26,7 @@ export class CheckWitchSaveSelection implements IStep {
 
     await gameState
       .findTextChannelByRole(Role.Witch)
-      ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
+      ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
 
     return new WakeUp().handle()
   }

@@ -10,6 +10,7 @@ export class WereWolf implements IRole {
   readonly roleAssignedNotification = true
   readonly roomName = Role.WereWolf
   readonly faction = 'wolf'
+  readonly icon = '🐺'
   is(role: Role) {
     return this.id === role
   }

@@ -28,15 +28,14 @@ export class CheckHunterSelection implements IStep {
     logger.info('Checking hunter selection.')
 
     const hunter = gameState.findPlayerByRole(Role.Hunter)
-
     const votes = await collectVotes(this.votingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)
     hunter?.role.kill(playerId)
-    gameState.otherTextChannels
+    await gameState.otherTextChannels
       .get('main')
       ?.send(`${player?.raw} đã bị ${hunter?.role.name} bắn chết.`)
-
+    // gameState.moveLastRoundActualDeathToDeath()
     await muteAllDeathPlayer()
 
     if (checkWereWolfWin()) {

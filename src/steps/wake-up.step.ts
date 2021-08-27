@@ -7,6 +7,7 @@ import { IStep } from './step'
 export class WakeUp implements IStep {
   readonly __is_step = true
   async handle() {
+    // gameState.moveLastRoundActualDeathToDeath()
     const deathPlayerMeation = Array.from(
       gameState.lastRoundActualDeath.values()
     )

@@ -4,6 +4,7 @@ import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { Thumbsup } from '../../icons'
 import { logger } from '../../logger'
+import { rand, sleep } from '../../utils'
 import { StartSeerTurn } from '../seer/start-seer-turn.step'
 import { IStep } from '../step'
 import { CheckBodyGuardSelection } from './check-body-guard-selection.step'
@@ -20,7 +21,9 @@ export class StartBodyGuardTurn implements IStep {
     }
 
     if (bodyGuard.isDeath) {
-      logger.warn(`${Role.BodyGuard} was death. Skip...`)
+      const seconds = rand(20, 30)
+      logger.warn(`${Role.BodyGuard} was death. Skip in ${seconds} seconds.`)
+      await sleep(seconds * 1000)
       return new StartSeerTurn().handle()
     }
 
