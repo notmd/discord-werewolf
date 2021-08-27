@@ -2,19 +2,19 @@ import { Role } from '../game-settings'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
-export class Villager implements IRole {
-  readonly id = Role.Villager
-  readonly name = 'Dân làng'
-  readonly roleAssignedNotification = false
-  readonly roomName = undefined
+export class Lycan implements IRole {
+  readonly id = Role.Lycan
+  readonly name = 'Lycan'
+  readonly roleAssignedNotification = true
+  readonly roomName = Role.Lycan
   readonly faction = 'village'
-  readonly icon = '👷'
+  readonly icon = '🐺👷'
   is(role: Role) {
     return this.id === role
   }
 
   kill(_player: Player | string) {
-    throw new Error('Villger can not kill anyone.')
+    throw new Error('Lycan can not kill anyone.')
   }
 
   onSleep() {

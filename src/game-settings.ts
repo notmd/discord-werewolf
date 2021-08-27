@@ -1,5 +1,6 @@
 import { BodyGuard } from './roles/body-guard.role'
 import { Hunter } from './roles/hunter.role'
+import { Lycan } from './roles/lycan.role'
 import { IRole } from './roles/role.interface'
 import { Seer } from './roles/seer.role'
 import { Villager } from './roles/villager.role'
@@ -17,14 +18,12 @@ export enum Role {
   BodyGuard = 'bodyguard',
   Witch = 'witch',
   Hunter = 'hunter',
+  Lycan = 'lycan',
 }
 
 type GameSettings = {
-  readonly roles: Map<Role | typeof Role, IRole>
+  readonly roles: Map<Role, IRole>
   readonly channels: Map<
-    // | typeof MAIN_VOICE_CHANNLE
-    // | typeof MAIN_TEXT_CHANNEL
-    // | typeof DEATH_VOICE_CHANNLE
     string | Role,
     {
       visibility: 'public' | 'private'
@@ -42,6 +41,7 @@ export const gameSettings: GameSettings = {
     [Role.BodyGuard, new BodyGuard()],
     [Role.Witch, new Witch()],
     [Role.Hunter, new Hunter()],
+    [Role.Lycan, new Lycan()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
@@ -52,5 +52,6 @@ export const gameSettings: GameSettings = {
     [Role.BodyGuard, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Witch, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Hunter, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Lycan, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

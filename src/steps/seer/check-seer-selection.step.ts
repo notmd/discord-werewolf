@@ -28,7 +28,9 @@ export class CheckSeerSelectionStep implements IStep {
     const player = gameState.findPlayer(playerId)
     await channel.send(
       `${player?.raw.displayName} ${
-        player?.role.id === Role.WereWolf ? 'là sói.' : 'hem phải là sói.'
+        player?.role.id === Role.WereWolf || player?.role.id === Role.Lycan
+          ? 'là sói.'
+          : 'hem phải là sói.'
       }`
     )
     return new StartWereWolfTurn().handle()
