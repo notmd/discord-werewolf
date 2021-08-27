@@ -21,7 +21,7 @@ export class CheckDiscussionVotingResult implements IStep {
   private mainTextChannel: TextChannel
   constructor(
     private VotingMessage: Message,
-    private votingMap: Collection<string, Snowflake>
+    private votingMap: Collection<string, 'skip' | Snowflake>
   ) {
     const mainTextChannel = gameState.otherTextChannels.get('main')
     if (!mainTextChannel) {
@@ -36,11 +36,19 @@ export class CheckDiscussionVotingResult implements IStep {
     const votes = await collectVotes(this.VotingMessage, this.votingMap, {
       onlyPositive: true,
     })
+
     if (votes.size === 0) {
       await this.sendNoOneVotedNotification()
       return new StartSleep().handle()
     }
+
     const votedPlayerId = selectRandomPlayerFromVotes(votes)
+
+    if (votedPlayerId === 'skip') {
+      await this.sendNoOneVotedNotification()
+      return new StartSleep().handle()
+    }
+
     gameState.markPlayerAsDeath(votedPlayerId, {
       ignoreLastRoundActualDeath: true,
       ignoreLastRounDeath: true,

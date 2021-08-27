@@ -1,7 +1,7 @@
 import { Collection, MessageEmbed, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { sendVotingMessage } from '../../hepler'
+import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { Letters } from '../../icons'
 import { logger } from '../../logger'
 import { Letter } from '../../types'
@@ -55,26 +55,17 @@ export class StartWitchTurn implements IStep {
   }
 
   private createVotingMessage() {
-    const letters = [...Letters.values()]
-    const embed = new MessageEmbed()
-    const map = new Collection<Letter, 'kill' | 'save' | 'skip'>([
-      [letters[0] as Letter, 'skip'],
-    ])
-    const descriptions: string[] = [`${letters[0]} Hem làm gì cả`]
-    let index: number = 1
+    const options: Array<{ id: 'skip' | 'kill' | 'save'; text: string }> = [
+      { id: 'skip', text: ' Hem làm gì cả`' },
+    ]
     if (!gameState.witchUseKilled) {
-      map.set(letters[index] as Letter, 'kill')
-      descriptions.push(`${letters[index]} Giết`)
-      index++
+      options.push({ id: 'kill', text: 'Giết' })
     }
 
     if (!gameState.witchUseSaved) {
-      map.set(letters[index] as Letter, 'save')
-      descriptions.push(`${letters[index]} Cứu`)
-      index++
+      options.push({ id: 'save', text: 'Cứu' })
     }
-    embed.setDescription(descriptions.join('\n\n'))
 
-    return { embed, map }
+    return createVotingMessage<'skip' | 'kill' | 'save'>(options)
   }
 }

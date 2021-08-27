@@ -79,18 +79,18 @@ export const sendWereWolfWinMessage = async (): Promise<void> => {
   })
 }
 
-export const createVotingMessage = (
-  players: Array<Player | { id: string; text: string }>
-): { embed: MessageEmbed; map: Collection<Letter, Snowflake> } => {
+export const createVotingMessage = <T extends string = Snowflake>(
+  players: Array<Player | { id: T; text: string }>
+): { embed: MessageEmbed; map: Collection<Letter, T> } => {
   const embed = new MessageEmbed()
-  const map = new Collection<Letter, Snowflake>()
+  const map = new Collection<Letter, T>()
   const letters = [...Letters.values()]
   embed.setDescription(
     players
       .map((player, index) => {
         const letter = letters[index] as Letter
         if (player instanceof Player) {
-          map.set(letter, player.raw.id)
+          map.set(letter, player.raw.id as T)
           return `${letter} ${player.raw.displayName}`
         }
         map.set(letter, player.id)
