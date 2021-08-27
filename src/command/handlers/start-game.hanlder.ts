@@ -21,13 +21,18 @@ import { gameState } from '../../game-state'
 import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
 import { logger } from '../../logger'
+import { pasreMention } from '../../hepler'
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>
   private readonly totalRolesCount: number
   private ignoreUserIds: Set<string>
   constructor(
     private message: Message,
-    private argv: Arguments<{ roles?: string; ignore?: string }>
+    private argv: Arguments<{
+      roles?: string
+      ignore?: string
+      controller?: string
+    }>
   ) {
     const rolesArg = this.argv.roles as string
     const splittedRole = rolesArg
@@ -40,6 +45,13 @@ export class StartGameCommandHandler {
       .map((role) => parseInt(role[1] as string))
       .sum()
     this.ignoreUserIds = this.parseIgnore()
+    if (argv.controller) {
+      const controller = pasreMention(argv.controller)
+      if (controller) {
+        this.ignoreUserIds.add(controller)
+        gameState.controller = controller
+      }
+    }
   }
 
   async handle() {
@@ -93,15 +105,17 @@ export class StartGameCommandHandler {
     return true
   }
 
-  private sendRoleAssignedNotificationMessage(players: Player[]) {
-    players.forEach((player) => {
+  private async sendRoleAssignedNotificationMessage(players: Player[]) {
+    for (const player of players) {
       if (player.role.roleAssignedNotification) {
         const channel = gameState.findTextChannelByRole(player.role)
         if (channel) {
-          channel.send(`${player.raw} là ${player.role.name}.`)
+          await channel.send(
+            `${player.raw} là ${player.role.name} ${player.role.icon}.`
+          )
         }
       }
-    })
+    }
   }
 
   private assignRoleToPlayers(players: Collection<string, GuildMember>) {
@@ -247,15 +261,8 @@ export class StartGameCommandHandler {
     if (!this.argv.ignore) return res
     const ignores = this.argv.ignore.trim().split(',')
     ignores.forEach((ignore) => {
-      const trimed = ignore.trim()
-      if (trimed.startsWith('<@') && trimed.endsWith('>')) {
-        let mention = trimed.slice(2, -1)
-
-        if (mention.startsWith('!')) {
-          mention = mention.slice(1)
-        }
-        res.add(mention)
-      }
+      const mention = pasreMention(ignore)
+      mention && res.add(mention)
     })
     return res
   }

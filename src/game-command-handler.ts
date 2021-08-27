@@ -13,6 +13,7 @@ const validIds = new Set([ADMIN_ID])
 
 export class CommandHandler {
   async handle(e: Message) {
+    gameState.controller && validIds.add(gameState.controller)
     if (!validIds.has(e.author.id) || !e.content.startsWith(COMMAND_PREFIX))
       return
     yargs()
@@ -28,7 +29,13 @@ export class CommandHandler {
             type: 'string',
           })
         },
-        (argv: Arguments<{ roles?: string; ignore?: string }>) => {
+        (
+          argv: Arguments<{
+            roles?: string
+            ignore?: string
+            controller?: string
+          }>
+        ) => {
           new StartGameCommandHandler(e, argv).handle()
         }
       )

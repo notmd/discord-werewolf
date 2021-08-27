@@ -5,6 +5,7 @@ import { Player } from './player'
 import { IRole } from './roles/role.interface'
 
 export class GameState {
+  controller?: string
   isRunning: boolean = false
   voiceChannels: {
     main?: VoiceChannel

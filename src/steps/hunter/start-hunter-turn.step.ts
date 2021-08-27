@@ -12,7 +12,6 @@ export class StartHunterTurn implements IStep {
   readonly __is_step = true
   constructor(private shouldStartDisscusion: boolean) {}
 
-  // @ts-ignore
   async handle() {
     logger.info('Stating hunter step.')
 
@@ -25,7 +24,9 @@ export class StartHunterTurn implements IStep {
       return new StartSleep().handle()
     }
     const mainChannel = gameState.otherTextChannels.get('main') as TextChannel
-    await mainChannel.send(`${hunter.raw} là ${hunter.role.name}`)
+    await mainChannel.send(
+      `${hunter.raw} là ${hunter.role.name} ${hunter.role.icon}`
+    )
 
     const hunterChannel = gameState.findTextChannelByRole(
       Role.Hunter

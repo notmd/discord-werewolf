@@ -80,7 +80,7 @@ export const sendWereWolfWinMessage = async (): Promise<void> => {
 }
 
 export const createVotingMessage = (
-  players: Array<Player>
+  players: Array<Player | { id: string; text: string }>
 ): { embed: MessageEmbed; map: Collection<Letter, Snowflake> } => {
   const embed = new MessageEmbed()
   const map = new Collection<Letter, Snowflake>()
@@ -89,8 +89,12 @@ export const createVotingMessage = (
     players
       .map((player, index) => {
         const letter = letters[index] as Letter
-        map.set(letter, player.raw.id)
-        return `${letter} ${player.raw.displayName}`
+        if (player instanceof Player) {
+          map.set(letter, player.raw.id)
+          return `${letter} ${player.raw.displayName}`
+        }
+        map.set(letter, player.id)
+        return `${letter} ${player.text}`
       })
       .join('\n\n')
   )
@@ -133,4 +137,18 @@ export const collectVotes = async <T extends string = Snowflake>(
     return votes.filter((v) => v > 0)
   }
   return votes
+}
+
+export const pasreMention = (text: string): Snowflake | undefined => {
+  text = text.trim()
+  if (text.startsWith('<@') && text.endsWith('>')) {
+    let mention = text.slice(2, -1)
+
+    if (mention.startsWith('!')) {
+      mention = mention.slice(1)
+    }
+    return mention
+  }
+
+  return undefined
 }
