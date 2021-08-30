@@ -108,7 +108,7 @@ export const sendVotingMessage = async (
   map: Collection<string, Snowflake>
 ) => {
   const message = await channel.send({ embeds: [embed] })
-  Promise.all(
+  await Promise.all(
     [...map.keys()].map((letter) => {
       message.react(letter)
     })
@@ -120,26 +120,38 @@ export const sendVotingMessage = async (
 export const collectVotes = async <T extends string = Snowflake>(
   message: Message,
   map: Collection<string, T>,
-  { onlyPositive }: { onlyPositive?: boolean } = {}
+  {
+    onlyPositive,
+    withMayorVote,
+  }: { onlyPositive?: boolean; withMayorVote?: boolean } = {}
 ) => {
   const fetched = await message.fetch(true)
   const votes: Collection<T, number> = new Collection()
-
-  map.forEach((playerId, reaction) => {
-    const count = fetched.reactions.cache
-      .filter((r) => {
-        return r.emoji.name === reaction
-      })
-      .first()?.count as number
-    votes.set(playerId, count - 1)
-  })
+  for (const [reaction, playerId] of map.entries()) {
+    const vote = fetched.reactions.cache.find((r) => {
+      return r.emoji.name === reaction
+    })
+    if (vote) {
+      let count = vote.count
+      if (withMayorVote) {
+        const fetchedUsers = await vote.users.fetch()
+        const hasMayor = fetchedUsers.some(
+          (user) => user.id === gameState.mayorId
+        )
+        if (hasMayor) {
+          count++
+        }
+      }
+      votes.set(playerId, count - 1)
+    }
+  }
   if (onlyPositive) {
     return votes.filter((v) => v > 0)
   }
   return votes
 }
 
-export const pasreMention = (text: string): Snowflake | undefined => {
+export const parseMention = (text: string): Snowflake | undefined => {
   text = text.trim()
   if (text.startsWith('<@') && text.endsWith('>')) {
     let mention = text.slice(2, -1)

@@ -1,4 +1,4 @@
-import { Collection, TextChannel, VoiceChannel } from 'discord.js'
+import { Collection, Snowflake, TextChannel, VoiceChannel } from 'discord.js'
 import { isString } from 'lodash'
 import { CHANNEL_NAME_PREFIX, Role } from './game-settings'
 import { Player } from './player'
@@ -25,6 +25,8 @@ export class GameState {
 
   witchUseKilled: boolean = false
   witchUseSaved: boolean = false
+
+  mayorId?: Snowflake
   constructor() {
     this.voiceChannels = {
       main: undefined,

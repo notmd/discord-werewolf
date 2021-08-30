@@ -18,10 +18,7 @@ export class Hunter implements IRole {
     gameState.markPlayerAsDeath(player)
     const hunter = gameState.findPlayerByRole(this)
     if (hunter) {
-      gameState.markPlayerAsDeath(hunter, {
-        ignoreLastRounDeath: true,
-        ignoreLastRoundActualDeath: true,
-      })
+      gameState.markPlayerAsDeath(hunter)
     }
   }
 }

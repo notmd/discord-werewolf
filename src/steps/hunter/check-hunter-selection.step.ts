@@ -15,6 +15,7 @@ import { StartSleep } from '../start-sleep.step'
 import { Role } from '../../game-settings'
 import { StartDisscusion } from '../start-discussion.step'
 import { Collection, Message, Snowflake } from 'discord.js'
+import { StartMayorVote } from '../mayor/start-vote-mayor.step'
 
 export class CheckHunterSelection implements IStep {
   readonly __is_step = true
@@ -46,6 +47,13 @@ export class CheckHunterSelection implements IStep {
     if (checkVillagerWin()) {
       await sendVillagerWinMessage()
       return null
+    }
+
+    if (
+      !gameState.mayorId ||
+      gameState.lastRoundActualDeath.has(gameState.mayorId)
+    ) {
+      return new StartMayorVote(this.shouldStartDiscussion).handle()
     }
 
     if (this.shouldStartDiscussion) {

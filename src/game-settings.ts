@@ -19,6 +19,7 @@ export enum Role {
   Witch = 'witch',
   Hunter = 'hunter',
   Lycan = 'lycan',
+  Mayor = 'mayor',
 }
 
 type GameSettings = {
@@ -53,5 +54,6 @@ export const gameSettings: GameSettings = {
     [Role.Witch, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Hunter, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Lycan, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Mayor, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

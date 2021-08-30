@@ -15,6 +15,7 @@ import { logger } from '../logger'
 import { StartSleep } from './start-sleep.step'
 import { StartHunterTurn } from './hunter/start-hunter-turn.step'
 import { Role } from '../game-settings'
+import { StartMayorVote } from './mayor/start-vote-mayor.step'
 
 export class CheckDiscussionVotingResult implements IStep {
   readonly __is_step = true
@@ -45,6 +46,7 @@ export class CheckDiscussionVotingResult implements IStep {
     const votedPlayerId = selectRandomPlayerFromVotes(votes)
 
     if (votedPlayerId === 'skip') {
+      logger.info(`Skip with ${votes.get('skip')} vote`)
       await this.sendNoOneVotedNotification()
       return new StartSleep().handle()
     }
@@ -70,6 +72,13 @@ export class CheckDiscussionVotingResult implements IStep {
     }
 
     await muteAllDeathPlayer()
+
+    if (
+      !gameState.mayorId ||
+      gameState.lastRoundActualDeath.has(gameState.mayorId)
+    ) {
+      return new StartMayorVote(false).handle()
+    }
 
     return new StartSleep().handle()
   }

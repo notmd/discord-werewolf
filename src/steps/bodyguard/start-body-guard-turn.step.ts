@@ -2,7 +2,6 @@ import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../hepler'
-import { Thumbsup } from '../../icons'
 import { logger } from '../../logger'
 import { rand, sleep } from '../../utils'
 import { StartSeerTurn } from '../seer/start-seer-turn.step'
@@ -34,7 +33,6 @@ export class StartBodyGuardTurn implements IStep {
     const channel = gameState.findTextChannelByRole(
       Role.BodyGuard
     ) as TextChannel
-    channel.send(`Dậy đi nào bảo vệ ei.\nBạn mún bảo vệ ai? Chọn ${Thumbsup}`)
 
     const { embed, map } = createVotingMessage(protectablePlayers)
     embed.setTitle('Dậy đi nào bảo vệ ei. Bạn mún bảo vệ ai?')

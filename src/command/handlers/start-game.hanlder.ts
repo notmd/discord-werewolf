@@ -21,7 +21,7 @@ import { gameState } from '../../game-state'
 import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
 import { logger } from '../../logger'
-import { pasreMention } from '../../hepler'
+import { parseMention } from '../../hepler'
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>
   private readonly totalRolesCount: number
@@ -46,7 +46,7 @@ export class StartGameCommandHandler {
       .sum()
     this.ignoreUserIds = this.parseIgnore()
     if (argv.controller) {
-      const controller = pasreMention(argv.controller)
+      const controller = parseMention(argv.controller)
       if (controller) {
         this.ignoreUserIds.add(controller)
         gameState.controller = controller
@@ -261,7 +261,7 @@ export class StartGameCommandHandler {
     if (!this.argv.ignore) return res
     const ignores = this.argv.ignore.trim().split(',')
     ignores.forEach((ignore) => {
-      const mention = pasreMention(ignore)
+      const mention = parseMention(ignore)
       mention && res.add(mention)
     })
     return res

@@ -37,7 +37,7 @@ export class StartDisscusion implements IStep {
     }
     await muteAllDeathPlayer()
     const { embed, map } = createVotingMessage<'skip' | string>([
-      { id: 'skip', text: 'Skip' },
+      { id: 'skip', text: 'Skip ⏩' },
       ...gameState.alivePlayers,
     ])
     const message = await sendVotingMessage(this.mainTextChannel, embed, map)
