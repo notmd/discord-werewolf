@@ -1,4 +1,6 @@
 import { Collection, Message } from 'discord.js'
+import { Role } from '../../game-settings'
+import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
 import { IStep } from '../step'
@@ -22,6 +24,19 @@ export class CheckWitchSelection implements IStep {
     } else if (action === 'kill') {
       return new DisplayWitchKillSelection().handle()
     } else if (action === 'save') {
+      if (gameState.lastRoundActualDeath.size === 1) {
+        const playerId = gameState.lastRoundActualDeath.values().next()
+          .value as string
+        gameState.lastRoundActualDeath.delete(playerId)
+        gameState.deathPlayers.delete(playerId)
+        gameState.witchUseSaved = true
+
+        const player = gameState.findPlayer(playerId)
+        await gameState
+          .findTextChannelByRole(Role.Witch)
+          ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
+        return new WakeUp()
+      }
       return new DisplayWitchSaveSelection().handle()
     }
 

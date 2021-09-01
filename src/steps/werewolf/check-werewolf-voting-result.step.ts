@@ -6,6 +6,7 @@ import { Role } from '../../game-settings'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
 import { Collection, Message, Snowflake } from 'discord.js'
 import { Player } from '../../player'
+import { StartBlackWolfTurn } from '../blackwolf/start-blackwolf-turn.step'
 
 export class CheckWereWolfVotingResult implements IStep {
   readonly __is_step = true
@@ -26,6 +27,6 @@ export class CheckWereWolfVotingResult implements IStep {
       })
     })
     logger.info(`Were wolf kill ${player.raw.displayName}.`)
-    return new StartWitchTurn().handle()
+    return new StartBlackWolfTurn().handle()
   }
 }
