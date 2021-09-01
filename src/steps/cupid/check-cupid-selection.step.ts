@@ -21,13 +21,18 @@ export class CheckCupidSelection implements IStep {
     })
 
     if (votes.size !== 2) {
-      await channel.send(`Chọn 2 người cơ mà? Mày chọn ${votes.size}.`)
+      await channel.send(
+        `Chọn 2 người cơ mà? Mày chọn ${votes.size} người đmm.`
+      )
       return this
     }
 
     const couple = gameState.alivePlayers.filter((p) =>
       votes.has(p.raw.id)
     ) as [Player, Player]
+
+    gameState.couple = [couple[0].raw.id, couple[1].raw.id]
+
     const coupleChannel = gameState.findTextChannelByRole(
       Role.Couple
     ) as TextChannel

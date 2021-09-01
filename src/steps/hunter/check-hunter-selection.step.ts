@@ -4,6 +4,7 @@ import {
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
   sendVictoryAnnoucement,
+  shouldStartMayorVoting,
   unmuteEveryone,
 } from '../../hepler'
 import { gameState } from '../../game-state'
@@ -12,7 +13,7 @@ import { logger } from '../../logger'
 import { StartSleep } from '../start-sleep.step'
 import { Role } from '../../game-settings'
 import { StartDisscusion } from '../start-discussion.step'
-import { Collection, Message, Snowflake } from 'discord.js'
+import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { StartMayorVote } from '../mayor/start-vote-mayor.step'
 import { Player } from '../../player'
 
@@ -31,10 +32,31 @@ export class CheckHunterSelection implements IStep {
     const votes = await collectVotes(this.votingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)
+
     player?.onKill({ by: hunter })
-    await gameState.otherTextChannels
-      .get('main')
-      ?.send(`${player?.raw} đã bị ${hunter?.role.name} bắn chết.`)
+    if (playerId !== hunter.raw.id) {
+      hunter.onKill({ by: hunter })
+    }
+
+    const mainTextChannel = gameState.otherTextChannels.get(
+      'main'
+    ) as TextChannel
+    await mainTextChannel.send(
+      `${player?.raw} đã bị ${hunter?.role.name} bắn chết.`
+    )
+
+    const otherDeathUsers = gameState.players.filter(
+      (p) =>
+        gameState.lastRoundActualDeath.has(p.raw.id) &&
+        p.raw.id !== playerId &&
+        p.raw.id !== hunter.raw.id
+    )
+    if (otherDeathUsers.length > 0) {
+      await mainTextChannel.send(
+        `${otherDeathUsers.map((p) => p.raw).join(', ')} đã chết.`
+      )
+    }
+
     await muteAllDeathPlayer()
 
     if (checkWin()) {
@@ -43,10 +65,7 @@ export class CheckHunterSelection implements IStep {
       return null
     }
 
-    if (
-      !gameState.mayorId ||
-      gameState.lastRoundActualDeath.has(gameState.mayorId)
-    ) {
+    if (shouldStartMayorVoting()) {
       return new StartMayorVote(this.shouldStartDiscussion).handle()
     }
 

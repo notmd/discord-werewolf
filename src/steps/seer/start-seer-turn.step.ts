@@ -13,14 +13,17 @@ export class StartSeerTurn implements IStep {
 
   async handle() {
     logger.info('Start seer turn.')
-    if (gameState.findAllPlayersByRole(Role.Seer).length === 0) {
+    const seer = gameState.findPlayerByRole(Role.Seer, {
+      includeOriginal: true,
+    })
+    if (!seer) {
       logger.warn('Game does not has Seer role. Skip...')
       return new StartCupidTurn().handle()
     }
 
-    if (!gameState.alivePlayers.find((p) => p.role.is(Role.Seer))) {
+    if (!seer.canUseAbility) {
       const seconds = rand(20, 30)
-      logger.warn(`Seer was death. Skip in ${seconds} seconds.`)
+      logger.warn(`Seer cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
       return new StartCupidTurn().handle()
     }

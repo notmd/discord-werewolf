@@ -1,7 +1,13 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../hepler'
+import {
+  checkWin,
+  createVotingMessage,
+  sendVictoryAnnoucement,
+  sendVotingMessage,
+  unmuteEveryone,
+} from '../../hepler'
 import { IStep } from '../step'
 import { CheckMayorVote } from './check-mayor-vote.step'
 
@@ -11,6 +17,11 @@ export class StartMayorVote implements IStep {
   constructor(private shouldStartDiscussion: boolean) {}
 
   async handle() {
+    if (checkWin()) {
+      await sendVictoryAnnoucement()
+      await unmuteEveryone()
+      return null
+    }
     const { embed, map } = createVotingMessage(
       gameState.mayorId
         ? gameState.alivePlayers.filter(

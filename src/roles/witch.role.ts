@@ -1,24 +1,13 @@
 import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
-import { gameState } from '../game-state'
-import { Player } from '../player'
+import { BaseRole } from './base-role.abstract'
 import { IRole } from './role.interface'
 
-export class Witch implements IRole {
+export class Witch extends BaseRole implements IRole {
   readonly id = Role.Witch
   readonly name = 'Phù thủy'
   readonly faction = new VillageFaction()
   readonly roomName = Role.Witch
   readonly roleAssignedNotification = true
   readonly icon = '🧙‍♀️'
-  is(role: Role) {
-    return this.id === role
-  }
-  kill(player: Player | string) {
-    if (gameState.witchUseKilled) {
-      throw new Error(`${this.id} has used posion.`)
-    }
-
-    gameState.markPlayerAsDeath(player)
-  }
 }

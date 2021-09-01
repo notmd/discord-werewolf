@@ -14,6 +14,7 @@ import { StartSleep } from './start-sleep.step'
 import { StartHunterTurn } from './hunter/start-hunter-turn.step'
 import { Role } from '../game-settings'
 import { StartMayorVote } from './mayor/start-vote-mayor.step'
+import { Player } from '../player'
 
 export class CheckDiscussionVotingResult implements IStep {
   readonly __is_step = true
@@ -50,11 +51,15 @@ export class CheckDiscussionVotingResult implements IStep {
       return new StartSleep().handle()
     }
 
-    gameState.markPlayerAsDeath(votedPlayerId, {
-      ignoreLastRoundActualDeath: true,
-      ignoreLastRounDeath: true,
-    })
-    await this.sendVotedUserNotification(votedPlayerId)
+    const votedPlayer = gameState.findPlayer(votedPlayerId) as Player
+    votedPlayer.onKill({ by: 'everyone' })
+
+    await this.mainTextChannel.send(
+      `${gameState.players
+        .filter((p) => gameState.lastRoundActualDeath.has(p.raw.id))
+        .map((p) => p.raw)
+        .join(', ')} đã bị chết như 1 con cho rach.`
+    )
 
     if (checkWin()) {
       await sendVictoryAnnoucement()
@@ -62,7 +67,7 @@ export class CheckDiscussionVotingResult implements IStep {
       return null
     }
 
-    if (votedPlayerId === gameState.findPlayerByRole(Role.Hunter)?.raw.id) {
+    if (votedPlayer.role.is(Role.Hunter)) {
       return new StartHunterTurn(false).handle()
     }
 
@@ -80,13 +85,5 @@ export class CheckDiscussionVotingResult implements IStep {
 
   async sendNoOneVotedNotification() {
     await this.mainTextChannel.send(`Hum nay khum ai chết cả.\n`)
-  }
-
-  async sendVotedUserNotification(deathPlayerId: string) {
-    await this.mainTextChannel.send(
-      `${
-        gameState.findPlayer(deathPlayerId)?.raw
-      } đã bị chết như 1 con cho rach.`
-    )
   }
 }

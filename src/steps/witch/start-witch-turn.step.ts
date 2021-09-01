@@ -12,16 +12,16 @@ export class StartWitchTurn implements IStep {
   readonly __is_step = true
 
   async handle() {
-    const witch = gameState.players.find((p) => p.role.is(Role.Witch))
+    const witch = gameState.findPlayerByRole(Role.Witch)
     logger.info(`Start Witch turn.`)
     if (!witch) {
       logger.warn(`Game does not has Witch role. Skip...`)
       return new WakeUp().handle()
     }
 
-    if (witch.isDeath && !gameState.lastRoundDeath.has(witch.raw.id)) {
+    if (!witch.canUseAbility && !gameState.lastRoundDeath.has(witch.raw.id)) {
       const seconds = rand(20, 30)
-      logger.warn(`Witch was death. Skip in ${seconds} seconds.`)
+      logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
       return new WakeUp().handle()
     }

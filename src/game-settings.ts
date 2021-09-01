@@ -1,3 +1,4 @@
+import { BlackWolf } from './roles/blackwolf.role'
 import { BodyGuard } from './roles/body-guard.role'
 import { Cupid } from './roles/cupid.role'
 import { Hunter } from './roles/hunter.role'
@@ -23,7 +24,9 @@ export enum Role {
   Mayor = 'mayor',
   Cupid = 'cupid',
   Couple = 'couple',
+  BlackWolf = 'blackwolf',
 }
+export const WOLFS = [Role.WereWolf, Role.BlackWolf] as const
 
 type GameSettings = {
   readonly roles: Map<Role, IRole>
@@ -47,6 +50,7 @@ export const gameSettings: GameSettings = {
     [Role.Hunter, new Hunter()],
     [Role.Lycan, new Lycan()],
     [Role.Cupid, new Cupid()],
+    [Role.BlackWolf, new BlackWolf()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
@@ -61,5 +65,6 @@ export const gameSettings: GameSettings = {
     [Role.Mayor, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Cupid, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Couple, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.BlackWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

@@ -12,16 +12,19 @@ export class StartBodyGuardTurn implements IStep {
   readonly __is_step = true
 
   async handle(): Promise<any> {
-    const bodyGuard = gameState.players.find((p) => p.role.is(Role.BodyGuard))
     logger.info(`Start ${Role.BodyGuard} turn.`)
+
+    const bodyGuard = gameState.findPlayerByRole(Role.BodyGuard, {
+      includeOriginal: true,
+    })
     if (!bodyGuard) {
       logger.warn(`Game does not has ${Role.BodyGuard} role. Skip...`)
       return new StartSeerTurn().handle()
     }
 
-    if (bodyGuard.isDeath) {
+    if (!bodyGuard.canUseAbility) {
       const seconds = rand(20, 30)
-      logger.warn(`${Role.BodyGuard} was death. Skip in ${seconds} seconds.`)
+      logger.warn(`Bodyguard cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
       return new StartSeerTurn().handle()
     }

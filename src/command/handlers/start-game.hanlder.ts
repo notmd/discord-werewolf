@@ -15,6 +15,7 @@ import {
   MAIN_TEXT_CHANNEL,
   MAIN_VOICE_CHANNLE,
   Role,
+  WOLFS,
 } from '../../game-settings'
 import _ from 'lodash'
 import { gameState } from '../../game-state'
@@ -111,8 +112,9 @@ export class StartGameCommandHandler {
       if (player.role.roleAssignedNotification) {
         const channel = gameState.findTextChannelByRole(player.role)
         if (channel) {
+          const roleName = player.role.in(WOLFS) ? 'Sói' : player.role.name
           await channel.send(
-            `${player.raw} là ${player.role.name} ${player.role.icon}.`
+            `${player.raw} là ${roleName} ${player.role.icon}.`
           )
         }
       }
@@ -129,12 +131,15 @@ export class StartGameCommandHandler {
   private async assignPermisstionToPlayers(players: Player[]) {
     for (const player of players) {
       if (player.role.roomName !== undefined) {
-        const channel = gameState.findTextChannelByRole(
-          player.role
-        ) as TextChannel
-        // const fetchedChannel = (await channel.fetch(true)) as TextChannel
-        await sleep(200)
-        await givePermissionFor(channel, player)
+        const romeNames = Array.isArray(player.role.roomName)
+          ? player.role.roomName
+          : [player.role.roomName]
+        for (const room of romeNames) {
+          const channel = gameState.findTextChannelByRole(room) as TextChannel
+          // const fetchedChannel = (await channel.fetch(true)) as TextChannel
+          await sleep(200)
+          await givePermissionFor(channel, player)
+        }
       }
     }
   }

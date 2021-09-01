@@ -4,9 +4,14 @@ import { CHANNEL_NAME_PREFIX, Role } from './game-settings'
 import { Player } from './player'
 import { IRole } from './roles/role.interface'
 
+export type FindPlayerByRoleOptions = {
+  includeOriginal?: boolean
+}
+
 export class GameState {
   controller?: string
   isRunning: boolean = false
+  round: number = 0
   voiceChannels: {
     main?: VoiceChannel
     death?: VoiceChannel
@@ -29,7 +34,11 @@ export class GameState {
   mayorId?: Snowflake
 
   roleAssignedPlayers: Map<string, Role> = new Map() // debug only
-  couple: [string, string] | undefined = undefined
+  couple?: [string, string] = undefined
+
+  blackwolfCurseAt?: number = undefined
+  blackwolfCurse?: string
+
   constructor() {
     this.voiceChannels = {
       main: undefined,
@@ -66,46 +75,37 @@ export class GameState {
     if (isString(role)) {
       return this.roleTextChannels.get(role)
     }
-    if (role.roomName) {
-      return this.roleTextChannels.get(role.roomName)
-    }
-    return undefined
+    return this.roleTextChannels.get(role.id)
   }
 
   findAllPlayersByRole(role: Role): Player[] {
     return this.players.filter((p) => p.role.id === role)
   }
 
-  findPlayerByRole(role: Role | IRole) {
-    const resolved = isString(role) ? role : role.id
-    return this.players.find((p) => p.role.is(resolved))
-  }
-
-  /**
-   * @deprecated move logic to Player class
-   */
-  markPlayerAsDeath(
-    player: string | Player,
-    options: {
-      ignoreLastRoundActualDeath?: boolean
-      ignoreLastRounDeath?: boolean
-    } = {}
+  findPlayerByRole(
+    role: Role | IRole,
+    { includeOriginal = false }: FindPlayerByRoleOptions = {}
   ) {
-    const playerId = isString(player) ? player : player.raw.id
-    this.deathPlayers.add(playerId)
-    if (!options.ignoreLastRoundActualDeath) {
-      this.lastRoundActualDeath.add(playerId)
-    }
-    if (!options.ignoreLastRounDeath) {
-      this.lastRoundDeath.add(playerId)
-    }
+    const resolved = isString(role) ? role : role.id
+    return this.players.find(
+      (p) =>
+        p.role.is(resolved) || (includeOriginal && p.originalRole.is(resolved))
+    )
   }
 
-  // moveLastRoundActualDeathToDeath() {
-  //   this.lastRoundActualDeath.forEach((playerId) =>
-  //     this.deathPlayers.add(playerId)
-  //   )
-  // }
+  onBeforeWakeUp() {
+    this.lastRoundActualDeath.clear()
+    this.lastRoundDeath.clear()
+  }
+
+  onSleep() {
+    this.lastRoundActualDeath.clear()
+    this.lastRoundDeath.clear()
+    this.players.forEach((p) => {
+      p.role.onSleep && p.role.onSleep()
+    })
+    this.round++
+  }
 
   findPlayer(playerId: string) {
     return this.players.find((p) => p.raw.id === playerId)

@@ -10,9 +10,11 @@ import { KillContext } from './types'
 export class Player {
   readonly raw: GuildMember
   private _role: IRole
+  private _originalRole: IRole
   constructor(disCordMember: GuildMember, role: IRole) {
     this.raw = disCordMember
     this._role = role
+    this._originalRole = role
   }
 
   static fromDiscord(guildMember: GuildMember, role: IRole) {
@@ -21,6 +23,10 @@ export class Player {
 
   get role() {
     return this._role
+  }
+
+  get originalRole() {
+    return this._originalRole
   }
 
   get isDeath() {
@@ -52,17 +58,18 @@ export class Player {
     return !!gameState.couple?.includes(this.raw.id)
   }
 
+  get canUseAbility() {
+    return !this.isDeath && this.raw.id !== gameState.blackwolfCurse
+  }
+
   onKill({ by }: KillContext) {
+    gameState.lastRoundDeath.add(this.raw.id)
+
     let shouldDeath: boolean = true
     if (this.isGuarded && by !== 'everyone' && by.role.is(Role.WereWolf)) {
       shouldDeath = false
     }
 
-    // if (by === 'everyone' || by.role.is(Role.Witch)) {
-    //   shouldDeath = true
-    // }
-
-    gameState.lastRoundDeath.add(this.raw.id)
     if (shouldDeath) {
       gameState.deathPlayers.add(this.raw.id)
       gameState.lastRoundActualDeath.add(this.raw.id)
@@ -77,6 +84,11 @@ export class Player {
         }
       }
     }
+  }
+
+  setRole(role: IRole) {
+    this._originalRole = this._role
+    this._role = role
   }
 
   toJSON() {

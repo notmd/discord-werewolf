@@ -39,8 +39,9 @@ export const checkVillagerWin = (): boolean => {
   return alivePlayers.every((p) => p.faction instanceof VillageFaction)
 }
 export const checkWin = (): boolean => {
-  return gameState.players.some(
-    (player) => !player.isDeath && player.faction.win
+  return (
+    gameState.players.some((player) => !player.isDeath && player.faction.win) ||
+    gameState.alivePlayers.length === 0
   )
 }
 
@@ -54,6 +55,12 @@ export const unmuteEveryone = async (): Promise<void> => {
 }
 
 export const sendVictoryAnnoucement = async () => {
+  if (gameState.alivePlayers.length === 0) {
+    gameState.otherTextChannels.get('main')?.send({
+      embeds: [createRolesEmbedMessage().setTitle('Hoà ròi.')],
+    })
+    return
+  }
   const winnedFaction = (
     gameState.alivePlayers.filter((p) => p.faction.win)[0] as Player
   ).faction
@@ -68,7 +75,10 @@ export const sendVictoryAnnoucement = async () => {
 export const createRolesEmbedMessage = () => {
   return new MessageEmbed().setDescription(
     `${gameState.players
-      .map((p) => `${p.raw.displayName} là ${p.role.name} ${p.role.icon}`)
+      .map(
+        (p) =>
+          `${p.raw.displayName} là ${p.originalRole.name} ${p.originalRole.icon}`
+      )
       .join('\n\n')}`
   )
 }
@@ -174,4 +184,8 @@ export const givePermissionFor = async (
       type: 1,
     }
   )
+}
+
+export const shouldStartMayorVoting = () => {
+  return !gameState.mayorId || gameState.deathPlayers.has(gameState.mayorId)
 }

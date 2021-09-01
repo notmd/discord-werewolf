@@ -1,19 +1,13 @@
 import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
-import { Player } from '../player'
+import { BaseRole } from './base-role.abstract'
 import { IRole } from './role.interface'
 
-export class Seer implements IRole {
+export class Seer extends BaseRole implements IRole {
   readonly id = Role.Seer
   readonly name = 'Tiên tri'
   readonly roleAssignedNotification = true
   readonly roomName = Role.Seer
   readonly faction = new VillageFaction()
   readonly icon = '👀'
-  is(role: Role) {
-    return this.id === role
-  }
-  kill(_player: Player | string) {
-    throw new Error(`${this.name} can not kill anyone.`)
-  }
 }
