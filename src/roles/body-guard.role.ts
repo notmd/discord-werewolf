@@ -1,7 +1,6 @@
 import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
 import { gameState } from '../game-state'
-import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class BodyGuard implements IRole {
@@ -13,9 +12,6 @@ export class BodyGuard implements IRole {
   readonly icon = '🛡️'
   is(role: Role) {
     return this.id === role
-  }
-  kill(_player: Player | string) {
-    throw new Error(`${this.name} can not kill anyone.`)
   }
 
   onBeforeWakeup() {

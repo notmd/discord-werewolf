@@ -1,6 +1,5 @@
 import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
-import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class Cupid implements IRole {
@@ -12,10 +11,6 @@ export class Cupid implements IRole {
   readonly icon = '💘'
   is(role: Role) {
     return this.id === role
-  }
-
-  kill(_player: Player | string) {
-    throw new Error('Cupid can not kill anyone.')
   }
 
   onSleep() {

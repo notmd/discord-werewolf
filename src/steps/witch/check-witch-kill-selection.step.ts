@@ -27,9 +27,13 @@ export class CheckWitchKillSelection implements IStep {
     const player = gameState.players.find(
       (p) => p.raw.id === playerId
     ) as Player
-    const witch = gameState.players.find((p) => p.role.id === Role.Witch)
+    const witch = gameState.players.find(
+      (p) => p.role.id === Role.Witch
+    ) as Player
     try {
-      witch?.role.kill(player)
+      player.onKill({
+        by: witch,
+      })
       gameState.lastRoundActualDeath.add(playerId)
       gameState.lastRoundDeath.add(playerId)
       gameState.witchUseKilled = true

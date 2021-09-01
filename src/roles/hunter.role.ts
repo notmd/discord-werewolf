@@ -1,7 +1,5 @@
 import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
-import { gameState } from '../game-state'
-import { Player } from '../player'
 import { IRole } from './role.interface'
 
 export class Hunter implements IRole {
@@ -13,13 +11,5 @@ export class Hunter implements IRole {
   readonly icon = '🔫'
   is(role: Role) {
     return this.id === role
-  }
-
-  kill(player: Player | string) {
-    gameState.markPlayerAsDeath(player)
-    const hunter = gameState.findPlayerByRole(this)
-    if (hunter) {
-      gameState.markPlayerAsDeath(hunter)
-    }
   }
 }

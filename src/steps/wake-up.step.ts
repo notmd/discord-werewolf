@@ -10,6 +10,7 @@ export class WakeUp implements IStep {
   readonly __is_step = true
   async handle() {
     logger.info('Wake up.')
+    this.runHooks()
     const deathPlayerMeation = Array.from(
       gameState.lastRoundActualDeath.values()
     )
@@ -17,6 +18,7 @@ export class WakeUp implements IStep {
         return gameState.findPlayer(playerId)?.raw
       })
       .join(', ')
+
     const mainTextChannel = gameState.otherTextChannels.get('main')
     await mainTextChannel?.send(
       `Dậy đi nào các pạn nhỏ êi. Đêm qua ${
@@ -39,5 +41,11 @@ export class WakeUp implements IStep {
     }
 
     return new StartDisscusion().handle()
+  }
+
+  private async runHooks() {
+    gameState.alivePlayers.forEach((p) => {
+      p.role.onBeforeWakeup && p.role.onBeforeWakeup()
+    })
   }
 }

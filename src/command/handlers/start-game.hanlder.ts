@@ -21,7 +21,7 @@ import { gameState } from '../../game-state'
 import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
 import { logger } from '../../logger'
-import { parseMention } from '../../hepler'
+import { givePermissionFor, parseMention } from '../../hepler'
 import { sleep } from '../../utils'
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>
@@ -120,7 +120,7 @@ export class StartGameCommandHandler {
   }
 
   private assignRoleToPlayers(players: Collection<string, GuildMember>) {
-    const generatedRoles = _(this.generateRole()).shuffle().value()
+    const generatedRoles = _(this.generateRole()).shuffle().shuffle().value()
     return Array.from(players.values()).map((p, i) => {
       return Player.fromDiscord(p, generatedRoles[i] as IRole)
     })
@@ -132,19 +132,9 @@ export class StartGameCommandHandler {
         const channel = gameState.findTextChannelByRole(
           player.role
         ) as TextChannel
-        const fetchedChannel = (await channel.fetch(true)) as TextChannel
+        // const fetchedChannel = (await channel.fetch(true)) as TextChannel
         await sleep(200)
-        await fetchedChannel.permissionOverwrites.edit(
-          player.raw,
-          {
-            VIEW_CHANNEL: true,
-            SEND_MESSAGES: true,
-            ADD_REACTIONS: true,
-          },
-          {
-            type: 1,
-          }
-        )
+        await givePermissionFor(channel, player)
       }
     }
   }

@@ -11,8 +11,6 @@ export interface IRole {
   readonly icon: string
   is(role: Role): boolean
 
-  kill(player: Player | string): void
-
   onSleep?: () => void
 
   onBeforeWakeup?: () => void
