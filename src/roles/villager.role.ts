@@ -1,3 +1,4 @@
+import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
 import { Player } from '../player'
 import { IRole } from './role.interface'
@@ -7,7 +8,7 @@ export class Villager implements IRole {
   readonly name = 'Dân làng'
   readonly roleAssignedNotification = false
   readonly roomName = undefined
-  readonly faction = 'village'
+  readonly faction = new VillageFaction()
   readonly icon = '👷'
   is(role: Role) {
     return this.id === role
@@ -15,9 +16,5 @@ export class Villager implements IRole {
 
   kill(_player: Player | string) {
     throw new Error('Villger can not kill anyone.')
-  }
-
-  onSleep() {
-    // skip
   }
 }

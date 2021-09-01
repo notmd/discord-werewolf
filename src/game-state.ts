@@ -27,6 +27,9 @@ export class GameState {
   witchUseSaved: boolean = false
 
   mayorId?: Snowflake
+
+  roleAssignedPlayers: Map<string, Role> = new Map() // debug only
+  couple: [string, string] | undefined = undefined
   constructor() {
     this.voiceChannels = {
       main: undefined,
@@ -121,6 +124,11 @@ export class GameState {
       deathPlayers: Array.from(this.deathPlayers.values()).map((p) => {
         this.findPlayer(p)?.raw.nickname
       }),
+      roleAssignedPlayers: [...this.roleAssignedPlayers.entries()].map(
+        ([name, role]) => {
+          return `${name}: ${role}`
+        }
+      ),
       // lastRoundActualDeath:
     }
   }

@@ -1,5 +1,6 @@
 import { Role } from '../game-settings'
 import { gameState } from '../game-state'
+import { logger } from '../logger'
 import { StartHunterTurn } from './hunter/start-hunter-turn.step'
 import { StartMayorVote } from './mayor/start-vote-mayor.step'
 import { StartDisscusion } from './start-discussion.step'
@@ -8,6 +9,7 @@ import { IStep } from './step'
 export class WakeUp implements IStep {
   readonly __is_step = true
   async handle() {
+    logger.info('Wake up.')
     const deathPlayerMeation = Array.from(
       gameState.lastRoundActualDeath.values()
     )

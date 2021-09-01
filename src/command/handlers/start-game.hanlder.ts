@@ -22,6 +22,7 @@ import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
 import { logger } from '../../logger'
 import { parseMention } from '../../hepler'
+import { sleep } from '../../utils'
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>
   private readonly totalRolesCount: number
@@ -88,7 +89,7 @@ export class StartGameCommandHandler {
     )
     logger.info('Generating roles.')
     await this.assignPermisstionToPlayers(roleAssignedPlayers)
-    this.sendRoleAssignedNotificationMessage(roleAssignedPlayers)
+    await this.sendRoleAssignedNotificationMessage(roleAssignedPlayers)
     this.message.reply('Game started. Please checkout your roles.')
     logger.info('Game started.')
   }
@@ -131,12 +132,19 @@ export class StartGameCommandHandler {
         const channel = gameState.findTextChannelByRole(
           player.role
         ) as TextChannel
-        await channel.fetch(true)
-        await channel.permissionOverwrites.create(player.raw.id, {
-          VIEW_CHANNEL: true,
-          SEND_MESSAGES: true,
-          ADD_REACTIONS: true,
-        })
+        const fetchedChannel = (await channel.fetch(true)) as TextChannel
+        await sleep(200)
+        await fetchedChannel.permissionOverwrites.edit(
+          player.raw,
+          {
+            VIEW_CHANNEL: true,
+            SEND_MESSAGES: true,
+            ADD_REACTIONS: true,
+          },
+          {
+            type: 1,
+          }
+        )
       }
     }
   }

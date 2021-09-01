@@ -3,17 +3,22 @@ import { Role } from '../game-settings'
 import { Player } from '../player'
 import { IRole } from './role.interface'
 
-export class Seer implements IRole {
-  readonly id = Role.Seer
-  readonly name = 'Tiên tri'
+export class Cupid implements IRole {
+  readonly id = Role.Cupid
+  readonly name = 'Cupid'
   readonly roleAssignedNotification = true
-  readonly roomName = Role.Seer
+  readonly roomName = Role.Cupid
   readonly faction = new VillageFaction()
-  readonly icon = '👀'
+  readonly icon = '💘'
   is(role: Role) {
     return this.id === role
   }
+
   kill(_player: Player | string) {
-    throw new Error(`${this.name} can not kill anyone.`)
+    throw new Error('Cupid can not kill anyone.')
+  }
+
+  onSleep() {
+    // skip
   }
 }

@@ -1,3 +1,4 @@
+import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
 import { gameState } from '../game-state'
 import { Player } from '../player'
@@ -8,7 +9,7 @@ export class Hunter implements IRole {
   readonly name = 'Thợ săn'
   readonly roleAssignedNotification = true
   readonly roomName = Role.Hunter
-  readonly faction = 'village'
+  readonly faction = new VillageFaction()
   readonly icon = '🔫'
   is(role: Role) {
     return this.id === role

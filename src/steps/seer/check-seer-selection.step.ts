@@ -3,8 +3,8 @@ import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
 import { logger } from '../../logger'
+import { StartCupidTurn } from '../cupid/start-cupid-turn.step'
 import { IStep } from '../step'
-import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 
 export class CheckSeerSelectionStep implements IStep {
   readonly __is_step = true
@@ -21,7 +21,7 @@ export class CheckSeerSelectionStep implements IStep {
     })
     if (votes.size === 0) {
       logger.warn('Votes is empty. Skip...')
-      return new StartWereWolfTurn().handle()
+      return new StartCupidTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
     const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
@@ -33,6 +33,6 @@ export class CheckSeerSelectionStep implements IStep {
           : 'hem phải là sói.'
       }`
     )
-    return new StartWereWolfTurn().handle()
+    return new StartCupidTurn().handle()
   }
 }

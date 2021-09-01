@@ -1,12 +1,10 @@
 import { TextChannel } from 'discord.js'
 import {
-  checkVillagerWin,
-  checkWereWolfWin,
+  checkWin,
   createVotingMessage,
   muteAllDeathPlayer,
-  sendVillagerWinMessage,
+  sendVictoryAnnoucement,
   sendVotingMessage,
-  sendWereWolfWinMessage,
   unmuteEveryone,
 } from '../hepler'
 import { gameState } from '../game-state'
@@ -25,13 +23,8 @@ export class StartDisscusion implements IStep {
   }
 
   async handle() {
-    if (checkWereWolfWin()) {
-      await sendWereWolfWinMessage()
-      await unmuteEveryone()
-      return null
-    }
-    if (checkVillagerWin()) {
-      await sendVillagerWinMessage()
+    if (checkWin()) {
+      await sendVictoryAnnoucement()
       await unmuteEveryone()
       return null
     }
@@ -40,6 +33,7 @@ export class StartDisscusion implements IStep {
       { id: 'skip', text: 'Skip ⏩' },
       ...gameState.alivePlayers,
     ])
+    embed.setTitle('Vote giet nguoi đi các bạn ei')
     const message = await sendVotingMessage(this.mainTextChannel, embed, map)
     return new CheckDiscussionVotingResult(message, map)
   }

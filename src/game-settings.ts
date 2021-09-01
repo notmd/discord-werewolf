@@ -1,4 +1,5 @@
 import { BodyGuard } from './roles/body-guard.role'
+import { Cupid } from './roles/cupid.role'
 import { Hunter } from './roles/hunter.role'
 import { Lycan } from './roles/lycan.role'
 import { IRole } from './roles/role.interface'
@@ -20,6 +21,8 @@ export enum Role {
   Hunter = 'hunter',
   Lycan = 'lycan',
   Mayor = 'mayor',
+  Cupid = 'cupid',
+  Couple = 'couple',
 }
 
 type GameSettings = {
@@ -43,6 +46,7 @@ export const gameSettings: GameSettings = {
     [Role.Witch, new Witch()],
     [Role.Hunter, new Hunter()],
     [Role.Lycan, new Lycan()],
+    [Role.Cupid, new Cupid()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
@@ -55,5 +59,7 @@ export const gameSettings: GameSettings = {
     [Role.Hunter, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Lycan, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Mayor, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Cupid, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Couple, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

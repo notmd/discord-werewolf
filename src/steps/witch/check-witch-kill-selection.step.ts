@@ -27,10 +27,11 @@ export class CheckWitchKillSelection implements IStep {
     const player = gameState.players.find(
       (p) => p.raw.id === playerId
     ) as Player
-    const witch = gameState.alivePlayers.find((p) => p.role.id === Role.Witch)
+    const witch = gameState.players.find((p) => p.role.id === Role.Witch)
     try {
       witch?.role.kill(player)
       gameState.lastRoundActualDeath.add(playerId)
+      gameState.lastRoundDeath.add(playerId)
       gameState.witchUseKilled = true
       await gameState
         .findTextChannelByRole(Role.Witch)

@@ -1,3 +1,4 @@
+import { VillageFaction } from '../faction/village.faction'
 import { Role } from '../game-settings'
 import { gameState } from '../game-state'
 import { Player } from '../player'
@@ -6,7 +7,7 @@ import { IRole } from './role.interface'
 export class Witch implements IRole {
   readonly id = Role.Witch
   readonly name = 'Phù thủy'
-  readonly faction = 'village'
+  readonly faction = new VillageFaction()
   readonly roomName = Role.Witch
   readonly roleAssignedNotification = true
   readonly icon = '🧙‍♀️'
@@ -20,6 +21,4 @@ export class Witch implements IRole {
 
     gameState.markPlayerAsDeath(player)
   }
-
-  onSleep() {}
 }

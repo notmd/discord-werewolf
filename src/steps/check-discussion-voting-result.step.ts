@@ -1,12 +1,10 @@
 import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import {
-  checkVillagerWin,
-  checkWereWolfWin,
+  checkWin,
   collectVotes,
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
-  sendVillagerWinMessage,
-  sendWereWolfWinMessage,
+  sendVictoryAnnoucement,
   unmuteEveryone,
 } from '../hepler'
 import { gameState } from '../game-state'
@@ -36,6 +34,7 @@ export class CheckDiscussionVotingResult implements IStep {
 
     const votes = await collectVotes(this.VotingMessage, this.votingMap, {
       onlyPositive: true,
+      withMayorVote: true,
     })
 
     if (votes.size === 0) {
@@ -57,13 +56,9 @@ export class CheckDiscussionVotingResult implements IStep {
     })
     await this.sendVotedUserNotification(votedPlayerId)
 
-    if (checkWereWolfWin()) {
-      await sendWereWolfWinMessage()
+    if (checkWin()) {
+      await sendVictoryAnnoucement()
       await unmuteEveryone()
-      return null
-    }
-    if (checkVillagerWin()) {
-      await sendVillagerWinMessage()
       return null
     }
 

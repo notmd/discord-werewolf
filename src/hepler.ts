@@ -5,6 +5,8 @@ import {
   Snowflake,
   TextChannel,
 } from 'discord.js'
+import { VillageFaction } from './faction/village.faction'
+import { WolfFaction } from './faction/wolf.faction'
 import { gameState } from './game-state'
 import { Letters } from './icons'
 import { Player } from './player'
@@ -29,16 +31,17 @@ export const selectRandomPlayerFromVotes = <T extends string = string>(
 
 export const checkWereWolfWin = (): boolean => {
   const alivePlayers = gameState.alivePlayers
-  const wolfs = alivePlayers.filter((p) => p.role.faction === 'wolf').length
-  return wolfs * 2 >= alivePlayers.length
+  return alivePlayers.every((p) => p.faction instanceof WolfFaction)
 }
 
 export const checkVillagerWin = (): boolean => {
   const alivePlayers = gameState.alivePlayers
-  return alivePlayers.every((p) => p.role.faction === 'village')
+  return alivePlayers.every((p) => p.faction instanceof VillageFaction)
 }
 export const checkWin = (): boolean => {
-  return checkVillagerWin() || checkWereWolfWin()
+  return gameState.players.some(
+    (player) => !player.isDeath && player.faction.win
+  )
 }
 
 export const unmuteEveryone = async (): Promise<void> => {
@@ -49,34 +52,25 @@ export const unmuteEveryone = async (): Promise<void> => {
     }
   }
 }
-const createRolesEmbedMessage = () => {
+
+export const sendVictoryAnnoucement = async () => {
+  const winnedFaction = (
+    gameState.alivePlayers.filter((p) => p.faction.win)[0] as Player
+  ).faction
+
+  gameState.otherTextChannels.get('main')?.send({
+    embeds: [
+      createRolesEmbedMessage().setTitle(winnedFaction.victoryAnnouncement),
+    ],
+  })
+}
+
+export const createRolesEmbedMessage = () => {
   return new MessageEmbed().setDescription(
-    `\n${gameState.players
-      .map(
-        (p) => `\`${p.raw.displayName}\` là \`${p.role.name}\` ${p.role.icon}`
-      )
+    `${gameState.players
+      .map((p) => `${p.raw.displayName} là ${p.role.name} ${p.role.icon}`)
       .join('\n\n')}`
   )
-}
-
-export const sendVillagerWinMessage = async (): Promise<void> => {
-  const mainTextChannel = gameState.otherTextChannels.get('main')
-  if (!mainTextChannel) {
-    throw new Error('cannot find main text channel.')
-  }
-  await mainTextChannel.send({
-    embeds: [createRolesEmbedMessage().setTitle('Phe dân làng đã win')],
-  })
-}
-export const sendWereWolfWinMessage = async (): Promise<void> => {
-  const mainTextChannel = gameState.otherTextChannels.get('main')
-  if (!mainTextChannel) {
-    throw new Error('cannot find main text channel.')
-  }
-
-  await mainTextChannel.send({
-    embeds: [createRolesEmbedMessage().setTitle('Phe sói đã win')],
-  })
 }
 
 export const createVotingMessage = <T extends string = Snowflake>(
@@ -163,4 +157,21 @@ export const parseMention = (text: string): Snowflake | undefined => {
   }
 
   return undefined
+}
+
+export const givePermissionFor = async (
+  channel: TextChannel,
+  player: Player
+) => {
+  await channel.permissionOverwrites.edit(
+    player.raw,
+    {
+      VIEW_CHANNEL: true,
+      SEND_MESSAGES: true,
+      ADD_REACTIONS: true,
+    },
+    {
+      type: 1,
+    }
+  )
 }

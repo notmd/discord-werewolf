@@ -1,11 +1,9 @@
 import {
-  checkVillagerWin,
-  checkWereWolfWin,
+  checkWin,
   collectVotes,
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
-  sendVillagerWinMessage,
-  sendWereWolfWinMessage,
+  sendVictoryAnnoucement,
   unmuteEveryone,
 } from '../../hepler'
 import { gameState } from '../../game-state'
@@ -36,16 +34,11 @@ export class CheckHunterSelection implements IStep {
     await gameState.otherTextChannels
       .get('main')
       ?.send(`${player?.raw} đã bị ${hunter?.role.name} bắn chết.`)
-    // gameState.moveLastRoundActualDeathToDeath()
     await muteAllDeathPlayer()
 
-    if (checkWereWolfWin()) {
-      await sendWereWolfWinMessage()
+    if (checkWin()) {
+      await sendVictoryAnnoucement()
       await unmuteEveryone()
-      return null
-    }
-    if (checkVillagerWin()) {
-      await sendVillagerWinMessage()
       return null
     }
 

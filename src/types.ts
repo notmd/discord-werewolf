@@ -1,3 +1,5 @@
+import { Player } from './player'
+
 export type Letter =
   | 'A'
   | 'B'
@@ -25,3 +27,7 @@ export type Letter =
   | 'X'
   | 'Z'
   | 'Y'
+
+export type KillContext = {
+  by: Player | 'everyone' // for discussion
+}

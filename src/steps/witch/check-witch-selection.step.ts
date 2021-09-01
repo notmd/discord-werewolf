@@ -1,5 +1,6 @@
 import { Collection, Message } from 'discord.js'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { logger } from '../../logger'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 import { DisplayWitchKillSelection } from './display-witch-kill-selection.step'
@@ -16,6 +17,7 @@ export class CheckWitchSelection implements IStep {
     const action = selectRandomPlayerFromVotes(votes)
 
     if (action === undefined || action === 'skip') {
+      logger.warn('Witch choose skip.')
       return new WakeUp().handle()
     } else if (action === 'kill') {
       return new DisplayWitchKillSelection().handle()

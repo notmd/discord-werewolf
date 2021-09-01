@@ -4,8 +4,8 @@ import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../hepler'
 import { logger } from '../../logger'
 import { rand, sleep } from '../../utils'
+import { StartCupidTurn } from '../cupid/start-cupid-turn.step'
 import { IStep } from '../step'
-import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 import { CheckSeerSelectionStep } from './check-seer-selection.step'
 
 export class StartSeerTurn implements IStep {
@@ -15,14 +15,14 @@ export class StartSeerTurn implements IStep {
     logger.info('Start seer turn.')
     if (gameState.findAllPlayersByRole(Role.Seer).length === 0) {
       logger.warn('Game does not has Seer role. Skip...')
-      return new StartWereWolfTurn().handle()
+      return new StartCupidTurn().handle()
     }
 
     if (!gameState.alivePlayers.find((p) => p.role.is(Role.Seer))) {
       const seconds = rand(20, 30)
       logger.warn(`Seer was death. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
-      return new StartWereWolfTurn().handle()
+      return new StartCupidTurn().handle()
     }
 
     const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
