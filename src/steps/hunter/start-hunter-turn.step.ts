@@ -9,7 +9,6 @@ import { IStep } from '../step'
 import { CheckHunterSelection } from './check-hunter-selection.step'
 
 export class StartHunterTurn implements IStep {
-  readonly __is_step = true
   constructor(private shouldStartDisscusion: boolean) {}
 
   async handle() {

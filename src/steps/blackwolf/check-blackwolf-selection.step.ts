@@ -13,7 +13,6 @@ import { IStep } from '../step'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
 
 export class CheckBlackWolfSelection implements IStep {
-  readonly __is_step = true
   constructor(
     private votingMessage: Message,
     private votingMap: Collection<string | 'skip', Snowflake>

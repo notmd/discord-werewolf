@@ -5,12 +5,9 @@ import {
   Snowflake,
   TextChannel,
 } from 'discord.js'
-import { VillageFaction } from './faction/village.faction'
-import { WolfFaction } from './faction/wolf.faction'
 import { gameState } from './game-state'
-import { Letters } from './icons'
+import { Letters, People } from './icons'
 import { Player } from './player'
-import { Letter } from './types'
 
 export const muteAllDeathPlayer = async () => {
   const deathPlayers = gameState.deathPlayers
@@ -29,15 +26,6 @@ export const selectRandomPlayerFromVotes = <T extends string = string>(
   return votes.filter((v) => v === max).randomKey()
 }
 
-export const checkWereWolfWin = (): boolean => {
-  const alivePlayers = gameState.alivePlayers
-  return alivePlayers.every((p) => p.faction instanceof WolfFaction)
-}
-
-export const checkVillagerWin = (): boolean => {
-  const alivePlayers = gameState.alivePlayers
-  return alivePlayers.every((p) => p.faction instanceof VillageFaction)
-}
 export const checkWin = (): boolean => {
   return (
     gameState.players.some((player) => !player.isDeath && player.faction.win) ||
@@ -85,20 +73,29 @@ export const createRolesEmbedMessage = () => {
 
 export const createVotingMessage = <T extends string = Snowflake>(
   players: Array<Player | { id: T; text: string }>
-): { embed: MessageEmbed; map: Collection<Letter, T> } => {
+): { embed: MessageEmbed; map: Collection<string, T> } => {
   const embed = new MessageEmbed()
-  const map = new Collection<Letter, T>()
+  const map = new Collection<string, T>()
   const letters = [...Letters.values()]
+  let letterIndex = 0
   embed.setDescription(
     players
-      .map((player, index) => {
-        const letter = letters[index] as Letter
+      .map((player) => {
         if (player instanceof Player) {
-          map.set(letter, player.raw.id as T)
-          return `${letter} ${player.raw.displayName}`
+          let icon: string
+          const hasCustomIcon = People.has(player.raw.id)
+          if (hasCustomIcon) {
+            icon = People.get(player.raw.id) as string
+          } else {
+            icon = letters[letterIndex++] as string
+          }
+          map.set(icon, player.raw.id as T)
+          const stringifyIcon = hasCustomIcon ? `<:${icon}>` : icon
+          return `${stringifyIcon} ${player.raw.displayName}`
         }
-        map.set(letter, player.id)
-        return `${letter} ${player.text}`
+        const icon = letters[letterIndex++] as string
+        map.set(icon, player.id)
+        return `${icon} ${player.text}`
       })
       .join('\n\n')
   )
@@ -113,8 +110,8 @@ export const sendVotingMessage = async (
 ) => {
   const message = await channel.send({ embeds: [embed] })
   await Promise.all(
-    [...map.keys()].map((letter) => {
-      message.react(letter)
+    [...map.keys()].map((icon) => {
+      message.react(icon)
     })
   )
 
@@ -125,15 +122,16 @@ export const collectVotes = async <T extends string = Snowflake>(
   message: Message,
   map: Collection<string, T>,
   {
-    onlyPositive,
-    withMayorVote,
+    onlyPositive = false,
+    withMayorVote = false,
   }: { onlyPositive?: boolean; withMayorVote?: boolean } = {}
 ) => {
   const fetched = await message.fetch(true)
   const votes: Collection<T, number> = new Collection()
   for (const [reaction, playerId] of map.entries()) {
+    const isCustomIcon = reaction.includes(':')
     const vote = fetched.reactions.cache.find((r) => {
-      return r.emoji.name === reaction
+      return r.emoji.name === (isCustomIcon ? reaction.split(':')[0] : reaction)
     })
     if (vote) {
       let count = vote.count
@@ -152,6 +150,7 @@ export const collectVotes = async <T extends string = Snowflake>(
   if (onlyPositive) {
     return votes.filter((v) => v > 0)
   }
+
   return votes
 }
 

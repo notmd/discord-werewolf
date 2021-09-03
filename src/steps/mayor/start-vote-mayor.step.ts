@@ -12,15 +12,13 @@ import { IStep } from '../step'
 import { CheckMayorVote } from './check-mayor-vote.step'
 
 export class StartMayorVote implements IStep {
-  readonly __is_step = true
-
   constructor(private shouldStartDiscussion: boolean) {}
 
   async handle() {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
-      return null
+      return
     }
     const { embed, map } = createVotingMessage(
       gameState.mayorId

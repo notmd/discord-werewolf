@@ -18,7 +18,6 @@ import { StartMayorVote } from '../mayor/start-vote-mayor.step'
 import { Player } from '../../player'
 
 export class CheckHunterSelection implements IStep {
-  readonly __is_step = true
   constructor(
     private shouldStartDiscussion: boolean,
     private votingMessage: Message,
@@ -62,7 +61,7 @@ export class CheckHunterSelection implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
-      return null
+      return
     }
 
     if (shouldStartMayorVoting()) {

@@ -17,10 +17,9 @@ import { StartMayorVote } from './mayor/start-vote-mayor.step'
 import { Player } from '../player'
 
 export class CheckDiscussionVotingResult implements IStep {
-  readonly __is_step = true
   private mainTextChannel: TextChannel
   constructor(
-    private VotingMessage: Message,
+    private votingMessage: Message,
     private votingMap: Collection<string, 'skip' | Snowflake>
   ) {
     const mainTextChannel = gameState.otherTextChannels.get('main')
@@ -33,7 +32,7 @@ export class CheckDiscussionVotingResult implements IStep {
   async handle() {
     logger.info('Checking discussion voting result.')
 
-    const votes = await collectVotes(this.VotingMessage, this.votingMap, {
+    const votes = await collectVotes(this.votingMessage, this.votingMap, {
       onlyPositive: true,
       withMayorVote: true,
     })
@@ -64,8 +63,10 @@ export class CheckDiscussionVotingResult implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
-      return null
+      return
     }
+
+    await this.votingMessage.unpin()
 
     if (votedPlayer.role.is(Role.Hunter)) {
       return new StartHunterTurn(false).handle()

@@ -12,7 +12,6 @@ import { IStep } from './step'
 import { CheckDiscussionVotingResult } from './check-discussion-voting-result.step'
 
 export class StartDisscusion implements IStep {
-  readonly __is_step = true
   private mainTextChannel: TextChannel
   constructor() {
     const mainTextChannel = gameState.otherTextChannels.get('main')
@@ -26,7 +25,7 @@ export class StartDisscusion implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
-      return null
+      return
     }
     await muteAllDeathPlayer()
     const { embed, map } = createVotingMessage<'skip' | string>([
@@ -35,6 +34,7 @@ export class StartDisscusion implements IStep {
     ])
     embed.setTitle('Vote giet nguoi đi các bạn ei')
     const message = await sendVotingMessage(this.mainTextChannel, embed, map)
+    await message.pin()
     return new CheckDiscussionVotingResult(message, map)
   }
 }

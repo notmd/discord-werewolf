@@ -7,7 +7,6 @@ import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 
 export class CheckWitchSaveSelection implements IStep {
-  readonly __is_step = true
   constructor(
     private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>

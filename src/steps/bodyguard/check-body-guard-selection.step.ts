@@ -7,7 +7,6 @@ import { StartSeerTurn } from '../seer/start-seer-turn.step'
 import { IStep } from '../step'
 
 export class CheckBodyGuardSelection implements IStep {
-  readonly __is_step = true
   constructor(
     private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>

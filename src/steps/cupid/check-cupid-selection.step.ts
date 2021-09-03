@@ -8,7 +8,6 @@ import { IStep } from '../step'
 import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 
 export class CheckCupidSelection implements IStep {
-  readonly __is_step = true
   constructor(
     private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>

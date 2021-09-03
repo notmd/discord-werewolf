@@ -8,8 +8,6 @@ import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 import { CheckCupidSelection } from './check-cupid-selection.step'
 
 export class StartCupidTurn implements IStep {
-  readonly __is_step = true
-
   async handle() {
     const cupid = gameState.findPlayerByRole(Role.Cupid)
     if (!cupid) {

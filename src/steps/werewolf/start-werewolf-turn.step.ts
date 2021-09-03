@@ -10,7 +10,6 @@ import { IStep } from '../step'
 import { CheckWereWolfVotingResult } from './check-werewolf-voting-result.step'
 
 export class StartWereWolfTurn implements IStep {
-  readonly __is_step = true
   constructor() {}
 
   async handle() {

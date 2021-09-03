@@ -9,8 +9,6 @@ import { IStep } from '../step'
 import { CheckBodyGuardSelection } from './check-body-guard-selection.step'
 
 export class StartBodyGuardTurn implements IStep {
-  readonly __is_step = true
-
   async handle(): Promise<any> {
     logger.info(`Start ${Role.BodyGuard} turn.`)
 

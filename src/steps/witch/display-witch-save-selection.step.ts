@@ -6,8 +6,6 @@ import { IStep } from '../step'
 import { CheckWitchSaveSelection } from './check-witch-save-selection.step'
 
 export class DisplayWitchSaveSelection implements IStep {
-  readonly __is_step = true
-
   async handle() {
     const channel = gameState.findTextChannelByRole(Role.Witch) as TextChannel
 

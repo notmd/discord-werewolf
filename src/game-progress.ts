@@ -2,7 +2,6 @@ import { Message } from 'discord.js'
 import { gameState } from './game-state'
 import { StartSleep } from './steps/start-sleep.step'
 import { IStep } from './steps/step'
-import { isStep } from './utils'
 
 class GameProgress {
   private startStep: IStep = new StartSleep()
@@ -15,7 +14,7 @@ class GameProgress {
     }
     const step = this.nextStep || this.startStep
     const res = await step.handle()
-    if (res && isStep(res)) {
+    if (res) {
       this.nextStep = res
     }
   }

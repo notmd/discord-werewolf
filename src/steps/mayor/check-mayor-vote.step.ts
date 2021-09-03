@@ -3,17 +3,14 @@ import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
 import { Player } from '../../player'
-import { Letter } from '../../types'
 import { StartDisscusion } from '../start-discussion.step'
 import { StartSleep } from '../start-sleep.step'
 import { IStep } from '../step'
 
 export class CheckMayorVote implements IStep {
-  readonly __is_step = true
-
   constructor(
     private message: Message,
-    private votingMap: Collection<Letter, string>,
+    private votingMap: Collection<string, string>,
     private shouldStartDiscussion: boolean
   ) {}
 

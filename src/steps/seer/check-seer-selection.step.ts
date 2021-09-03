@@ -7,8 +7,6 @@ import { StartCupidTurn } from '../cupid/start-cupid-turn.step'
 import { IStep } from '../step'
 
 export class CheckSeerSelectionStep implements IStep {
-  readonly __is_step = true
-
   constructor(
     private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>

@@ -9,8 +9,6 @@ import { WakeUp } from '../wake-up.step'
 import { CheckWitchSelection } from './check-witch-selection.step'
 
 export class StartWitchTurn implements IStep {
-  readonly __is_step = true
-
   async handle() {
     const witch = gameState.findPlayerByRole(Role.Witch)
     logger.info(`Start Witch turn.`)

@@ -9,8 +9,6 @@ import { IStep } from '../step'
 import { CheckSeerSelectionStep } from './check-seer-selection.step'
 
 export class StartSeerTurn implements IStep {
-  readonly __is_step = true
-
   async handle() {
     logger.info('Start seer turn.')
     const seer = gameState.findPlayerByRole(Role.Seer, {

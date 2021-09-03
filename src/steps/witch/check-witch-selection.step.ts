@@ -9,7 +9,6 @@ import { DisplayWitchKillSelection } from './display-witch-kill-selection.step'
 import { DisplayWitchSaveSelection } from './display-witch-save-selection.step'
 
 export class CheckWitchSelection implements IStep {
-  readonly __is_step = true
   constructor(
     private votingMessage: Message,
     private votingMap: Collection<string, 'skip' | 'kill' | 'save'>
@@ -40,6 +39,6 @@ export class CheckWitchSelection implements IStep {
       return new DisplayWitchSaveSelection().handle()
     }
 
-    return null
+    return
   }
 }

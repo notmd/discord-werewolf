@@ -18,7 +18,7 @@ export class WakeUp implements IStep {
       })
       .join(', ')
   }
-  readonly __is_step = true
+
   async handle() {
     logger.info('Wake up.')
     this.runHooks()

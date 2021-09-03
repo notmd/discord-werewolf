@@ -7,8 +7,6 @@ import { IStep } from '../step'
 import { CheckWitchKillSelection } from './check-witch-kill-selection.step'
 
 export class DisplayWitchKillSelection implements IStep {
-  readonly __is_step = true
-
   async handle() {
     logger.info('Start Witch kill selection.')
     const channel = gameState.findTextChannelByRole(Role.Witch) as TextChannel
