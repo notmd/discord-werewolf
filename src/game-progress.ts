@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
 import { gameState } from './game-state'
+import { authorizeMessage } from './hepler'
 import { StartSleep } from './steps/start-sleep.step'
 import { IStep } from './steps/step'
 
@@ -13,9 +14,13 @@ class GameProgress {
       return
     }
     const step = this.nextStep || this.startStep
-    const res = await step.handle()
-    if (res) {
-      this.nextStep = res
+    if (authorizeMessage(message, step.allowedId)) {
+      const res = await step.handle()
+      if (res) {
+        this.nextStep = res
+      }
+    } else {
+      await message.reply('Chưa đến lượt của pạn.')
     }
   }
 }

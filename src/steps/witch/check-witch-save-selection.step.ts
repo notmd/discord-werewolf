@@ -11,6 +11,15 @@ export class CheckWitchSaveSelection implements IStep {
     private votingMessage: Message,
     private votingMap: Collection<string, Snowflake>
   ) {}
+
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.role.is(Role.Witch))
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     logger.info('Checking Witch save selection.')
 

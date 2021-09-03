@@ -12,6 +12,14 @@ export class CheckSeerSelectionStep implements IStep {
     private votingMap: Collection<string, Snowflake>
   ) {}
 
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.role.is(Role.Seer))
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     logger.info('Checking Seer selection')
     const votes = await collectVotes(this.votingMessage, this.votingMap, {

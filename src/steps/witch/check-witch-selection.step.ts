@@ -13,6 +13,15 @@ export class CheckWitchSelection implements IStep {
     private votingMessage: Message,
     private votingMap: Collection<string, 'skip' | 'kill' | 'save'>
   ) {}
+
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.role.is(Role.Witch))
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     const votes = await collectVotes(this.votingMessage, this.votingMap, {})
     const action = selectRandomPlayerFromVotes(votes)

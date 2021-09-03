@@ -12,6 +12,14 @@ export class CheckBodyGuardSelection implements IStep {
     private votingMap: Collection<string, Snowflake>
   ) {}
 
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.role.is(Role.BodyGuard))
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     logger.info('Checking Body guard selection')
     const votes = await collectVotes(this.votingMessage, this.votingMap, {

@@ -13,6 +13,14 @@ export class CheckCupidSelection implements IStep {
     private votingMap: Collection<string, Snowflake>
   ) {}
 
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.role.is(Role.Cupid))
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     const channel = gameState.findTextChannelByRole(Role.Cupid) as TextChannel
     const votes = await collectVotes(this.votingMessage, this.votingMap, {

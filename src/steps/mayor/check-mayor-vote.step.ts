@@ -14,6 +14,14 @@ export class CheckMayorVote implements IStep {
     private shouldStartDiscussion: boolean
   ) {}
 
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.raw.id === gameState.mayorId)
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     const votes = await collectVotes(this.message, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)

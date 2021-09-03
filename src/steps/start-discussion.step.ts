@@ -33,8 +33,12 @@ export class StartDisscusion implements IStep {
       ...gameState.alivePlayers,
     ])
     embed.setTitle('Vote giet nguoi đi các bạn ei')
-    const message = await sendVotingMessage(this.mainTextChannel, embed, map)
-    await message.pin()
-    return new CheckDiscussionVotingResult(message, map)
+    const votingMessage = await sendVotingMessage(
+      this.mainTextChannel,
+      embed,
+      map
+    )
+    await votingMessage.pin()
+    return new CheckDiscussionVotingResult(votingMessage, map)
   }
 }

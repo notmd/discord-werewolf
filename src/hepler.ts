@@ -5,6 +5,7 @@ import {
   Snowflake,
   TextChannel,
 } from 'discord.js'
+import { ADMIN_ID } from './game-settings'
 import { gameState } from './game-state'
 import { Letters, People } from './icons'
 import { Player } from './player'
@@ -187,4 +188,16 @@ export const givePermissionFor = async (
 
 export const shouldStartMayorVoting = () => {
   return !gameState.mayorId || gameState.deathPlayers.has(gameState.mayorId)
+}
+
+export const authorizeMessage = (
+  message: Message,
+  allowedId: Set<string> = new Set()
+) => {
+  const ids = new Set([...allowedId, ADMIN_ID])
+  if (gameState.controller) {
+    ids.add(gameState.controller)
+  }
+
+  return ids.has(message.author.id)
 }

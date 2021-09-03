@@ -24,6 +24,14 @@ export class CheckHunterSelection implements IStep {
     private votingMap: Collection<string, Snowflake>
   ) {}
 
+  get allowedId() {
+    return new Set(
+      gameState.alivePlayers
+        .filter((p) => p.role.is(Role.Hunter))
+        .map((p) => p.raw.id)
+    )
+  }
+
   async handle() {
     logger.info('Checking hunter selection.')
 
