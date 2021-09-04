@@ -9,7 +9,7 @@ import { CheckWitchKillSelection } from './check-witch-kill-selection.step'
 export class DisplayWitchKillSelection implements IStep {
   async handle() {
     logger.info('Start Witch kill selection.')
-    const channel = gameState.findTextChannelByRole(Role.Witch) as TextChannel
+    const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const killablePlayers = gameState.alivePlayers.filter(
       (p) => !gameState.lastRoundDeath.has(p.raw.id) && p.role.id !== Role.Witch

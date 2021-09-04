@@ -10,7 +10,6 @@ import { Arguments } from 'yargs'
 
 import {
   CHANNEL_NAME_PREFIX,
-  DEATH_VOICE_CHANNLE,
   gameSettings,
   MAIN_TEXT_CHANNEL,
   MAIN_VOICE_CHANNLE,
@@ -79,9 +78,6 @@ export class StartGameCommandHandler {
     this.revokeTextChannelsPermissions()
     const roleAssignedPlayers = this.assignRoleToPlayers(players)
     gameState.setMainVoiceChannel(mainVoiceChannel)
-    gameState.setDeathVoiceChannel(
-      (await this.getDeathVoiceChannelFromDiscord()) as VoiceChannel
-    )
     gameState.setPlayers(roleAssignedPlayers)
     gameState.setIsRunning(true)
     gameState.otherTextChannels.set('main', mainTextChannel as TextChannel)
@@ -110,7 +106,7 @@ export class StartGameCommandHandler {
   private async sendRoleAssignedNotificationMessage(players: Player[]) {
     for (const player of players) {
       if (player.role.roleAssignedNotification) {
-        const channel = gameState.findTextChannelByRole(player.role)
+        const channel = gameState.findChannel(player.role)
         if (channel) {
           const roleName = player.role.in(WOLFS) ? 'Sói' : player.role.name
           await channel.send(
@@ -135,7 +131,7 @@ export class StartGameCommandHandler {
           ? player.role.roomName
           : [player.role.roomName]
         for (const room of romeNames) {
-          const channel = gameState.findTextChannelByRole(room) as TextChannel
+          const channel = gameState.findChannel(room) as TextChannel
           // const fetchedChannel = (await channel.fetch(true)) as TextChannel
           await sleep(200)
           await givePermissionFor(channel, player)
@@ -194,20 +190,6 @@ export class StartGameCommandHandler {
       (channel) =>
         channel.isVoice() &&
         channel.name === CHANNEL_NAME_PREFIX + MAIN_VOICE_CHANNLE
-    )
-
-    return channel as VoiceChannel | undefined
-  }
-  private async getDeathVoiceChannelFromDiscord(): Promise<
-    VoiceChannel | undefined
-  > {
-    const channels = await this.message.guild?.channels.fetch(undefined, {
-      force: true,
-    })
-    const channel = channels?.find(
-      (channel) =>
-        channel.isVoice() &&
-        channel.name === CHANNEL_NAME_PREFIX + DEATH_VOICE_CHANNLE
     )
 
     return channel as VoiceChannel | undefined

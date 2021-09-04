@@ -33,7 +33,7 @@ export class StartWitchTurn implements IStep {
       return new WakeUp().handle()
     }
 
-    const channel = gameState.findTextChannelByRole(Role.Witch) as TextChannel
+    const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const lastRoundDeathPlayers = gameState.players.filter((p) =>
       gameState.lastRoundDeath.has(p.raw.id)

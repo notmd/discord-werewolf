@@ -32,6 +32,9 @@ export class CheckWereWolfVotingResult implements IStep {
         by: w,
       })
     })
+    await gameState
+      .findChannel(Role.WereWolf)
+      ?.send(`Đã giết ${player.raw.displayName}.`)
     logger.info(`Were wolf kill ${player.raw.displayName}.`)
     return new StartBlackWolfTurn().handle()
   }

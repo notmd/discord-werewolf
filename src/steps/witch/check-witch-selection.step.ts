@@ -41,7 +41,7 @@ export class CheckWitchSelection implements IStep {
 
         const player = gameState.findPlayer(playerId)
         await gameState
-          .findTextChannelByRole(Role.Witch)
+          .findChannel(Role.Witch)
           ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
         return new WakeUp()
       }

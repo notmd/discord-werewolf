@@ -45,7 +45,7 @@ export class CheckWitchKillSelection implements IStep {
       gameState.lastRoundDeath.add(playerId)
       gameState.witchUseKilled = true
       await gameState
-        .findTextChannelByRole(Role.Witch)
+        .findChannel(Role.Witch)
         ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
     } catch (e) {
       logger.error('Error while perform Witch kill step.')

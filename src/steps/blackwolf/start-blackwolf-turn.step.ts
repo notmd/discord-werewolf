@@ -27,7 +27,7 @@ export class StartBlackWolfTurn implements IStep {
     ])
     embed.setTitle('Bạn mún nguyền ai?')
     const message = await sendVotingMessage(
-      gameState.findTextChannelByRole(Role.BlackWolf) as TextChannel,
+      gameState.findChannel(Role.BlackWolf) as TextChannel,
       embed,
       map
     )

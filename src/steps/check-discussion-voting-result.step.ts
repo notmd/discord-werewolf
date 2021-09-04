@@ -29,6 +29,13 @@ export class CheckDiscussionVotingResult implements IStep {
     this.mainTextChannel = mainTextChannel
   }
 
+  get allowedId() {
+    if (gameState.mayorId) {
+      return new Set([gameState.mayorId])
+    }
+    return
+  }
+
   async handle() {
     logger.info('Checking discussion voting result.')
 

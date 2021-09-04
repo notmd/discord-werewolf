@@ -30,7 +30,7 @@ export class CheckSeerSelectionStep implements IStep {
       return new StartCupidTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
-    const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
+    const channel = gameState.findChannel(Role.Seer) as TextChannel
     const player = gameState.findPlayer(playerId)
     await channel.send(
       `${player?.raw.displayName} ${

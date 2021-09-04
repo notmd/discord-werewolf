@@ -37,7 +37,7 @@ export class StartMayorVote implements IStep {
     }
 
     const channel = gameState.mayorId
-      ? gameState.findTextChannelByRole(Role.Mayor)
+      ? gameState.findChannel(Role.Mayor)
       : gameState.otherTextChannels.get('main')
     const message = await sendVotingMessage(channel as TextChannel, embed, map)
 

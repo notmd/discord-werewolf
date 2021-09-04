@@ -26,7 +26,7 @@ export class StartSeerTurn implements IStep {
       return new StartCupidTurn().handle()
     }
 
-    const channel = gameState.findTextChannelByRole(Role.Seer) as TextChannel
+    const channel = gameState.findChannel(Role.Seer) as TextChannel
     const alivePlayers = gameState.alivePlayers.filter(
       (p) => p.role.id !== Role.Seer
     )

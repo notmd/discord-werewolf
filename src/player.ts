@@ -1,8 +1,7 @@
 import { GuildMember } from 'discord.js'
 import { CoupleFaction } from './faction/couple.faction'
 import { IFaction } from './faction/faction.interface'
-import { WolfFaction } from './faction/wolf.faction'
-import { Role } from './game-settings'
+import { Role, WOLFS } from './game-settings'
 import { gameState } from './game-state'
 import { IRole } from './roles/role.interface'
 import { KillContext } from './types'
@@ -43,11 +42,13 @@ export class Player {
 
   get faction(): IFaction {
     if (this.isCouple) {
-      const coupleHasWolf = gameState.couple!.some(
-        (playerId) =>
-          gameState.findPlayer(playerId)?.defaultFaction instanceof WolfFaction
+      const coupleHasWolf = gameState.couple!.some((playerId) =>
+        gameState.findPlayer(playerId)?.role.in(WOLFS)
       )
-      if (coupleHasWolf) {
+      const coupleAllAreWolf = gameState.couple!.every((playerId) =>
+        gameState.findPlayer(playerId)?.role.in(WOLFS)
+      )
+      if (coupleHasWolf && !coupleAllAreWolf) {
         return new CoupleFaction()
       }
     }

@@ -46,9 +46,7 @@ export class CheckBlackWolfSelection implements IStep {
     gameState.blackwolfCurse = playerId
     gameState.blackwolfCurseAt = gameState.round
     cursedPlayer.setRole(new WereWolf())
-    const wolfChannel = gameState.findTextChannelByRole(
-      Role.WereWolf
-    ) as TextChannel
+    const wolfChannel = gameState.findChannel(Role.WereWolf) as TextChannel
     await givePermissionFor(wolfChannel, cursedPlayer)
     await wolfChannel.send(`${cursedPlayer.raw} bạn đã bị nguyền.`)
 

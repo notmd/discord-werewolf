@@ -9,24 +9,23 @@ export type FindPlayerByRoleOptions = {
 }
 
 export class GameState {
-  controller?: string
+  controller?: Snowflake
   isRunning: boolean = false
   round: number = 0
   voiceChannels: {
     main?: VoiceChannel
-    death?: VoiceChannel
   }
   roleTextChannels: Map<Role, TextChannel> = new Map()
   otherTextChannels: Map<'main', TextChannel> = new Map()
 
   players: Player[] = []
 
-  deathPlayers: Set<string> = new Set()
-  lastRoundDeath: Set<string> = new Set()
-  lastRoundActualDeath: Set<string> = new Set()
+  deathPlayers: Set<Snowflake> = new Set()
+  lastRoundDeath: Set<Snowflake> = new Set()
+  lastRoundActualDeath: Set<Snowflake> = new Set()
 
-  bodyGuardLastSelection: null | string = null // userid
-  bodyGuardSelection: null | string = null //userId
+  bodyGuardLastSelection: null | Snowflake = null
+  bodyGuardSelection: null | Snowflake = null
 
   witchUseKilled: boolean = false
   witchUseSaved: boolean = false
@@ -34,7 +33,7 @@ export class GameState {
   mayorId?: Snowflake
 
   roleAssignedPlayers: Map<string, Role> = new Map() // debug only
-  couple?: [string, string] = undefined
+  couple?: [Snowflake, Snowflake] = undefined
 
   blackwolfCurseAt?: number = undefined
   blackwolfCurse?: string
@@ -42,7 +41,6 @@ export class GameState {
   constructor() {
     this.voiceChannels = {
       main: undefined,
-      death: undefined,
     }
   }
 
@@ -52,9 +50,6 @@ export class GameState {
 
   setMainVoiceChannel(channel: VoiceChannel) {
     this.voiceChannels.main = channel
-  }
-  setDeathVoiceChannel(channel: VoiceChannel) {
-    this.voiceChannels.death = channel
   }
   setPlayers(players: Player[]) {
     this.players = players
@@ -71,7 +66,7 @@ export class GameState {
     })
   }
 
-  findTextChannelByRole(role: IRole | Role): TextChannel | undefined {
+  findChannel(role: IRole | Role): TextChannel | undefined {
     if (isString(role)) {
       return this.roleTextChannels.get(role)
     }

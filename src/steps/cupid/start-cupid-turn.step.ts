@@ -19,7 +19,7 @@ export class StartCupidTurn implements IStep {
       logger.info('Cupid has used ability. Skip...')
       return new StartWereWolfTurn().handle()
     }
-    const channel = gameState.findTextChannelByRole(Role.Cupid) as TextChannel
+    const channel = gameState.findChannel(Role.Cupid) as TextChannel
 
     const { embed, map } = createVotingMessage(gameState.alivePlayers)
     embed.setTitle(`Dậy đi Cupid. Bạn mún ai iu nhau (chọn 2 người)?`)

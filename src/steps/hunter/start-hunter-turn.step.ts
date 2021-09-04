@@ -27,9 +27,7 @@ export class StartHunterTurn implements IStep {
       `${hunter.raw} là ${hunter.role.name} ${hunter.role.icon}`
     )
 
-    const hunterChannel = gameState.findTextChannelByRole(
-      Role.Hunter
-    ) as TextChannel
+    const hunterChannel = gameState.findChannel(Role.Hunter) as TextChannel
 
     const { embed, map } = createVotingMessage(gameState.alivePlayers)
     embed.setTitle('Thợ săn, bạn đã chết. Giờ bạn mún bắn ai?')

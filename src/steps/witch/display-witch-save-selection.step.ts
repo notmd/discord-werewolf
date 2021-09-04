@@ -7,7 +7,7 @@ import { CheckWitchSaveSelection } from './check-witch-save-selection.step'
 
 export class DisplayWitchSaveSelection implements IStep {
   async handle() {
-    const channel = gameState.findTextChannelByRole(Role.Witch) as TextChannel
+    const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const saveablePlayers = gameState.players.filter((p) =>
       gameState.lastRoundDeath.has(p.raw.id)

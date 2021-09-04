@@ -22,7 +22,7 @@ export class CheckCupidSelection implements IStep {
   }
 
   async handle() {
-    const channel = gameState.findTextChannelByRole(Role.Cupid) as TextChannel
+    const channel = gameState.findChannel(Role.Cupid) as TextChannel
     const votes = await collectVotes(this.votingMessage, this.votingMap, {
       onlyPositive: true,
     })
@@ -40,9 +40,7 @@ export class CheckCupidSelection implements IStep {
 
     gameState.couple = [couple[0].raw.id, couple[1].raw.id]
 
-    const coupleChannel = gameState.findTextChannelByRole(
-      Role.Couple
-    ) as TextChannel
+    const coupleChannel = gameState.findChannel(Role.Couple) as TextChannel
     for (const player of couple) {
       await sleep(200)
       await givePermissionFor(coupleChannel, player)

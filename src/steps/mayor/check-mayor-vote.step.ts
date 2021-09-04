@@ -36,7 +36,7 @@ export class CheckMayorVote implements IStep {
     const oldMayor = gameState.mayorId
     gameState.mayorId = playerId
 
-    const channel = gameState.findTextChannelByRole(Role.Mayor) as TextChannel
+    const channel = gameState.findChannel(Role.Mayor) as TextChannel
     if (oldMayor) {
       await channel.permissionOverwrites.delete(oldMayor)
     }

@@ -31,9 +31,7 @@ export class StartBodyGuardTurn implements IStep {
     const protectablePlayers = alivePlayers.filter(
       (p) => p.raw.id !== gameState.bodyGuardLastSelection
     )
-    const channel = gameState.findTextChannelByRole(
-      Role.BodyGuard
-    ) as TextChannel
+    const channel = gameState.findChannel(Role.BodyGuard) as TextChannel
 
     const { embed, map } = createVotingMessage(protectablePlayers)
     embed.setTitle('Dậy đi nào bảo vệ ei. Bạn mún bảo vệ ai?')

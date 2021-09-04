@@ -30,9 +30,7 @@ export class CheckBodyGuardSelection implements IStep {
       return new StartSeerTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
-    const channel = gameState.findTextChannelByRole(
-      Role.BodyGuard
-    ) as TextChannel
+    const channel = gameState.findChannel(Role.BodyGuard) as TextChannel
     gameState.bodyGuardSelection = playerId
 
     const player = gameState.findPlayer(playerId)

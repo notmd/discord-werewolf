@@ -15,9 +15,7 @@ export class StartWereWolfTurn implements IStep {
   async handle() {
     logger.info('Start werewolf turn.')
 
-    const wereWoflChannel = gameState.findTextChannelByRole(
-      Role.WereWolf
-    ) as TextChannel
+    const wereWoflChannel = gameState.findChannel(Role.WereWolf) as TextChannel
 
     const { embed, map } = createVoting(gameState.alivePlayers)
     embed.setTitle('Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?')
