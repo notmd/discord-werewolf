@@ -86,7 +86,6 @@ export class StartGameCommandHandler {
     )
     logger.info('Generating roles.')
     await this.assignPermisstionToPlayers(roleAssignedPlayers)
-    await this.sendRoleAssignedNotificationMessage(roleAssignedPlayers)
     this.message.reply('Game started. Please checkout your roles.')
     logger.info('Game started.')
   }
@@ -103,18 +102,15 @@ export class StartGameCommandHandler {
     return true
   }
 
-  private async sendRoleAssignedNotificationMessage(players: Player[]) {
-    for (const player of players) {
-      if (player.role.roleAssignedNotification) {
-        const channel = gameState.findChannel(player.role)
-        if (channel) {
-          const roleName = player.role.in(WOLFS) ? 'Sói' : player.role.name
-          await channel.send(
-            `${player.raw} là ${roleName} ${player.role.icon}.`
-          )
-        }
-      }
-    }
+  private async sendRoleAssignedNotificationMessage(
+    player: Player,
+    channel: TextChannel
+  ) {
+    const roleName =
+      player.role.in(WOLFS) && channel.name.includes(Role.WereWolf)
+        ? 'Sói'
+        : player.role.name
+    await channel.send(`${player.raw} là ${roleName} ${player.role.icon}.`)
   }
 
   private assignRoleToPlayers(players: Collection<string, GuildMember>) {
@@ -125,6 +121,7 @@ export class StartGameCommandHandler {
   }
 
   private async assignPermisstionToPlayers(players: Player[]) {
+    const villagerIndex = 1
     for (const player of players) {
       if (player.role.roomName !== undefined) {
         const romeNames = Array.isArray(player.role.roomName)
@@ -132,10 +129,30 @@ export class StartGameCommandHandler {
           : [player.role.roomName]
         for (const room of romeNames) {
           const channel = gameState.findChannel(room) as TextChannel
-          // const fetchedChannel = (await channel.fetch(true)) as TextChannel
-          await sleep(200)
+          await sleep(1000)
           await givePermissionFor(channel, player)
+          await this.sendRoleAssignedNotificationMessage(player, channel)
         }
+      } else if (player.role.is(Role.Villager)) {
+        const channelName = `${Role.Villager}_${villagerIndex}`
+        let channel = gameState.findChannel(channelName as Role)
+        if (!channel) {
+          channel = (await this.message.guild?.channels.create(
+            `${CHANNEL_NAME_PREFIX}${channelName}`,
+            {
+              type: 'GUILD_TEXT',
+              permissionOverwrites: [
+                {
+                  deny: Permissions.FLAGS.VIEW_CHANNEL,
+                  id: this.message.guild.roles.everyone,
+                },
+              ],
+            }
+          )) as TextChannel
+        }
+        sleep(1000)
+        await givePermissionFor(channel, player)
+        await this.sendRoleAssignedNotificationMessage(player, channel)
       }
     }
   }

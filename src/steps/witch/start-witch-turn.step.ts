@@ -17,7 +17,10 @@ export class StartWitchTurn implements IStep {
       return new WakeUp().handle()
     }
 
-    if (!witch.canUseAbility && !gameState.recentlyDeath.has(witch.raw.id)) {
+    if (
+      !witch.canUseAbility &&
+      !gameState.deathPlayerReportToWitch.has(witch.raw.id)
+    ) {
       const seconds = rand(20, 30)
       logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
@@ -35,17 +38,24 @@ export class StartWitchTurn implements IStep {
 
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
-    const lastRoundDeathPlayers = gameState.players.filter((p) =>
-      gameState.recentlyDeath.has(p.raw.id)
-    )
+    const lastRoundDeathPlayers = gameState.players
+      .filter((p) => gameState.deathPlayerReportToWitch.has(p.raw.id))
+      .map((p) => p.raw)
 
     const { embed, map } = this.createVotingMessage()
     embed.setTitle(
-      `Dậy đi nào phù thủy ei. Đêm nay ${lastRoundDeathPlayers
-        .map((p) => p.raw.displayName)
-        .join(', ')} sẽ chết.`
+      `Dậy đi nào phù thủy ei. Đêm nay ${
+        lastRoundDeathPlayers.length > 0
+          ? `${lastRoundDeathPlayers.join(', ')} sẽ chết.`
+          : 'hem ai chết cả.'
+      }`
     )
-    const message = await sendVotingMessage(channel, embed, map)
+    const message = await sendVotingMessage(
+      channel,
+      embed,
+      map,
+      witch.raw.toString()
+    )
 
     return new CheckWitchSelection(message, map)
   }

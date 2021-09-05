@@ -41,7 +41,6 @@ export class CheckWitchKillSelection implements IStep {
       player.onKill({
         by: witch,
       })
-      gameState.recentlyActualDeath.add(playerId)
       gameState.recentlyDeath.add(playerId)
       gameState.witchUseKilled = true
       await gameState

@@ -6,7 +6,6 @@ import { IRole } from './role.interface'
 export class Villager extends BaseRole implements IRole {
   readonly id = Role.Villager
   readonly name = 'Dân làng'
-  readonly roleAssignedNotification = false
   readonly roomName = undefined
   readonly faction = new VillageFaction()
   readonly icon = '👷'

@@ -1,5 +1,5 @@
 import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
-import { Role } from '../../game-settings'
+import { Role, WOLFS } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { logger } from '../../logger'
@@ -34,9 +34,7 @@ export class CheckSeerSelectionStep implements IStep {
     const player = gameState.findPlayer(playerId)
     await channel.send(
       `${player?.raw.displayName} ${
-        player?.role.id === Role.WereWolf || player?.role.id === Role.Lycan
-          ? 'là sói.'
-          : 'hem phải là sói.'
+        player?.role.in([...WOLFS, Role.Lycan]) ? 'là sói.' : 'hem phải là sói.'
       }`
     )
     return new StartCupidTurn().handle()

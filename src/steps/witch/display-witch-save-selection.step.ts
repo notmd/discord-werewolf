@@ -10,7 +10,7 @@ export class DisplayWitchSaveSelection implements IStep {
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const saveablePlayers = gameState.players.filter((p) =>
-      gameState.recentlyDeath.has(p.raw.id)
+      gameState.deathPlayerReportToWitch.has(p.raw.id)
     )
 
     const { embed, map } = createVotingMessage(saveablePlayers)

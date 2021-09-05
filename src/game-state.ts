@@ -21,8 +21,8 @@ export class GameState {
   players: Player[] = []
 
   deathPlayers: Set<Snowflake> = new Set()
+  deathPlayerReportToWitch: Set<Snowflake> = new Set()
   recentlyDeath: Set<Snowflake> = new Set()
-  recentlyActualDeath: Set<Snowflake> = new Set()
 
   bodyGuardLastSelection: null | Snowflake = null
   bodyGuardSelection: null | Snowflake = null
@@ -94,17 +94,16 @@ export class GameState {
     )
   }
 
-  onBeforeWakeUp() {
+  onWakeUp() {
     this.alivePlayers.forEach((p) => {
-      p.role.onBeforeWakeUp && p.role.onBeforeWakeUp()
+      p.role.onWakeUp && p.role.onWakeUp()
     })
-    this.recentlyActualDeath.clear()
     this.recentlyDeath.clear()
   }
 
   onSleep() {
-    this.recentlyActualDeath.clear()
     this.recentlyDeath.clear()
+    this.deathPlayerReportToWitch.clear()
     this.players.forEach((p) => {
       p.role.onSleep && p.role.onSleep()
     })

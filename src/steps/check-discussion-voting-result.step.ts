@@ -5,6 +5,7 @@ import {
   muteAllDeathPlayer,
   selectRandomPlayerFromVotes,
   sendVictoryAnnoucement,
+  shouldStartMayorVoting,
   unmuteEveryone,
 } from '../helper'
 import { gameState } from '../game-state'
@@ -58,13 +59,10 @@ export class CheckDiscussionVotingResult implements IStep {
     }
 
     const votedPlayer = gameState.findPlayer(votedPlayerId) as Player
-    votedPlayer.onKill({ by: 'everyone' })
+    const deathPlayers = votedPlayer.onKill({ by: 'everyone' })
 
     await this.mainTextChannel.send(
-      `${gameState.players
-        .filter((p) => gameState.recentlyActualDeath.has(p.raw.id))
-        .map((p) => p.raw)
-        .join(', ')} đã bị chết như 1 con cho rach.`
+      `${deathPlayers.join(', ')} đã bị chết như 1 con cho rach.`
     )
 
     if (checkWin()) {
@@ -81,10 +79,7 @@ export class CheckDiscussionVotingResult implements IStep {
 
     await muteAllDeathPlayer()
 
-    if (
-      !gameState.mayorId ||
-      gameState.recentlyActualDeath.has(gameState.mayorId)
-    ) {
+    if (shouldStartMayorVoting()) {
       return new StartMayorVote(false).handle()
     }
 

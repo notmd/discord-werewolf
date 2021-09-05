@@ -9,6 +9,7 @@ import { CheckCupidSelection } from './check-cupid-selection.step'
 
 export class StartCupidTurn implements IStep {
   async handle() {
+    logger.info('Start cupid turn.')
     const cupid = gameState.findPlayerByRole(Role.Cupid)
     if (!cupid) {
       logger.info('Game does not have Cupid role. Skip...')

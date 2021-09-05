@@ -117,9 +117,10 @@ export const createVotingMessage = <T extends string = Snowflake>(
 export const sendVotingMessage = async (
   channel: TextChannel,
   embed: MessageEmbed,
-  map: Collection<string, Snowflake>
+  map: Collection<string, Snowflake>,
+  content?: string
 ) => {
-  const message = await channel.send({ embeds: [embed] })
+  const message = await channel.send({ embeds: [embed], content })
   await Promise.all(
     [...map.keys()].map((icon) => {
       message.react(icon)

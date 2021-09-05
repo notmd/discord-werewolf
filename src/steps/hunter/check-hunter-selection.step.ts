@@ -40,7 +40,7 @@ export class CheckHunterSelection implements IStep {
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)
 
-    player?.onKill({ by: hunter })
+    const deathPlayers = player!.onKill({ by: hunter })
     if (playerId !== hunter.raw.id) {
       hunter.onKill({ by: hunter })
     }
@@ -52,16 +52,9 @@ export class CheckHunterSelection implements IStep {
       `${player?.raw} đã bị ${hunter?.role.name} bắn chết.`
     )
 
-    const otherDeathUsers = gameState.players.filter(
-      (p) =>
-        gameState.recentlyActualDeath.has(p.raw.id) &&
-        p.raw.id !== playerId &&
-        p.raw.id !== hunter.raw.id
-    )
+    const otherDeathUsers = deathPlayers.filter((p) => p.raw.id !== playerId)
     if (otherDeathUsers.length > 0) {
-      await mainTextChannel.send(
-        `${otherDeathUsers.map((p) => p.raw).join(', ')} đã chết.`
-      )
+      await mainTextChannel.send(`${otherDeathUsers.join(', ')} đã chết.`)
     }
 
     await muteAllDeathPlayer()

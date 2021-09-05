@@ -15,7 +15,6 @@ export class BodyGuard extends BaseRole implements IRole {
   readonly name = 'Bảo vệ'
   readonly faction = new VillageFaction()
   readonly roomName = Role.BodyGuard
-  readonly roleAssignedNotification = true
   readonly icon = '🛡️'
 
   get protecablePlayer() {
@@ -24,7 +23,7 @@ export class BodyGuard extends BaseRole implements IRole {
     )
   }
 
-  onBeforeWakeUp() {
+  onWakeUp() {
     gameState.bodyGuardLastSelection = gameState.bodyGuardSelection
     gameState.bodyGuardSelection = null
   }
@@ -43,7 +42,12 @@ export class BodyGuard extends BaseRole implements IRole {
   async displayProtectablePlayers() {
     const { embed, map } = createVotingMessage(this.protecablePlayer)
     embed.setTitle('Dậy đi nào bảo vệ ei. Bạn mún bảo vệ ai?')
-    const message = await sendVotingMessage(this.channel, embed, map)
+    const message = await sendVotingMessage(
+      this.channel,
+      embed,
+      map,
+      gameState.findPlayerByRole(this.id)?.raw.toString()
+    )
 
     return { message, map }
   }

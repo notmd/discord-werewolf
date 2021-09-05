@@ -31,7 +31,12 @@ export class StartHunterTurn implements IStep {
 
     const { embed, map } = createVotingMessage(gameState.alivePlayers)
     embed.setTitle('Thợ săn, bạn đã chết. Giờ bạn mún bắn ai?')
-    const message = await sendVotingMessage(hunterChannel, embed, map)
+    const message = await sendVotingMessage(
+      hunterChannel,
+      embed,
+      map,
+      hunter.raw.toString()
+    )
 
     return new CheckHunterSelection(this.shouldStartDisscusion, message, map)
   }

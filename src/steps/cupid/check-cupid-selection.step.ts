@@ -45,9 +45,7 @@ export class CheckCupidSelection implements IStep {
       await sleep(200)
       await givePermissionFor(coupleChannel, player)
     }
-    await coupleChannel.send(
-      `${couple.map((p) => p.raw).join(', ')} 2 pạn đã iu nhao.`
-    )
+    await coupleChannel.send(`${couple.join(', ')} 2 pạn đã iu nhao.`)
     return new StartWereWolfTurn().handle()
   }
 }

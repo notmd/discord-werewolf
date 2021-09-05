@@ -12,12 +12,19 @@ export class DisplayWitchKillSelection implements IStep {
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const killablePlayers = gameState.alivePlayers.filter(
-      (p) => !gameState.recentlyDeath.has(p.raw.id) && p.role.id !== Role.Witch
+      (p) =>
+        !gameState.deathPlayerReportToWitch.has(p.raw.id) &&
+        p.role.id !== Role.Witch
     )
 
     const { embed, map } = createVotingMessage(killablePlayers)
     embed.setTitle('Phù thủy mún giết ai?')
-    const message = await sendVotingMessage(channel, embed, map)
+    const message = await sendVotingMessage(
+      channel,
+      embed,
+      map
+      // gameState.findPlayerByRole(Role.Witch)?.raw.toString()
+    )
 
     return new CheckWitchKillSelection(message, map)
   }

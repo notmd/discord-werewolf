@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js'
-import { Role } from '../../game-settings'
+import { Role, WOLFS } from '../../game-settings'
 import { gameState } from '../../game-state'
 import {
   createVotingMessage as createVoting,
@@ -19,7 +19,12 @@ export class StartWereWolfTurn implements IStep {
 
     const { embed, map } = createVoting(gameState.alivePlayers)
     embed.setTitle('Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?')
-    const message = await sendVotingMessage(wereWoflChannel, embed, map)
+    const message = await sendVotingMessage(
+      wereWoflChannel,
+      embed,
+      map,
+      gameState.alivePlayers.filter((p) => p.role.in(WOLFS)).join(', ')
+    )
     logger.info('Wating for werewolf voting result.')
     return new CheckWereWolfVotingResult(message, map)
   }

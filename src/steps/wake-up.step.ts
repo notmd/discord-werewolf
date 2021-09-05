@@ -8,11 +8,9 @@ import { StartDisscusion } from './start-discussion.step'
 import { IStep } from './step'
 
 export class WakeUp implements IStep {
-  private recentlyActualDeath: typeof gameState.recentlyActualDeath
   private recentlyPlayerMeation: string
   constructor() {
-    this.recentlyActualDeath = gameState.recentlyActualDeath
-    this.recentlyPlayerMeation = [...this.recentlyActualDeath.values()]
+    this.recentlyPlayerMeation = [...gameState.recentlyDeath.values()]
       .map((playerId) => {
         return gameState.findPlayer(playerId)?.raw
       })
@@ -26,14 +24,14 @@ export class WakeUp implements IStep {
     const mainTextChannel = gameState.otherTextChannels.get('main')
     await mainTextChannel?.send(
       `Dậy đi nào các pạn nhỏ êi. Đêm qua ${
-        this.recentlyActualDeath.size > 0
+        gameState.recentlyDeath.size > 0
           ? `${this.recentlyPlayerMeation} đã chết.`
           : `hem ai chết cả.`
       } `
     )
 
     const hunter = gameState.findPlayerByRole(Role.Hunter)
-    if (hunter && this.recentlyActualDeath.has(hunter.raw.id)) {
+    if (hunter && gameState.recentlyDeath.has(hunter.raw.id)) {
       return new StartHunterTurn(true).handle()
     }
 
@@ -45,6 +43,6 @@ export class WakeUp implements IStep {
   }
 
   private async runHooks() {
-    gameState.onBeforeWakeUp()
+    gameState.onWakeUp()
   }
 }

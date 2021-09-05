@@ -46,12 +46,11 @@ export class Player<R extends IRole = IRole> {
 
   get faction(): IFaction {
     if (this.isCouple) {
-      const coupleHasWolf = gameState.couple!.some((playerId) =>
+      const callback = (playerId: string) =>
         gameState.findPlayer(playerId)?.role.in(WOLFS)
-      )
-      const coupleAllAreWolf = gameState.couple!.every((playerId) =>
-        gameState.findPlayer(playerId)?.role.in(WOLFS)
-      )
+      const coupleHasWolf = gameState.couple!.some(callback)
+      const coupleAllAreWolf = gameState.couple!.every(callback)
+
       if (coupleHasWolf && !coupleAllAreWolf) {
         return new CoupleFaction()
       }
@@ -68,31 +67,36 @@ export class Player<R extends IRole = IRole> {
   }
 
   get wasDeathRecently() {
-    return gameState.recentlyActualDeath.has(this.raw.id)
+    return gameState.recentlyDeath.has(this.raw.id)
   }
 
   onKill({ by }: KillContext) {
-    gameState.recentlyDeath.add(this.raw.id)
-
+    const res: Player[] = []
     let shouldDeath: boolean = true
-    if (this.isGuarded && by !== 'everyone' && by.role.is(Role.WereWolf)) {
-      shouldDeath = false
+    if (by !== 'everyone' && by.role.is(Role.WereWolf)) {
+      if (this.isGuarded) {
+        shouldDeath = false
+      }
+      gameState.deathPlayerReportToWitch.add(this.raw.id)
     }
 
     if (shouldDeath) {
       gameState.deathPlayers.add(this.raw.id)
-      gameState.recentlyActualDeath.add(this.raw.id)
+      gameState.recentlyDeath.add(this.raw.id)
+      res.push(this)
       if (this.isCouple) {
         const otherId = gameState.couple!.find(
           (playerId) => this.raw.id !== playerId
         )
         if (otherId) {
-          gameState.recentlyActualDeath.add(otherId)
-          gameState.recentlyDeath.add(otherId)
           gameState.deathPlayers.add(otherId)
+          gameState.recentlyDeath.add(otherId)
+          res.push(gameState.findPlayer(otherId) as Player)
         }
       }
     }
+
+    return res
   }
 
   setRole(role: R) {
@@ -108,5 +112,9 @@ export class Player<R extends IRole = IRole> {
       },
       isDeath: this.isDeath,
     }
+  }
+
+  toString() {
+    return this.raw.toString()
   }
 }

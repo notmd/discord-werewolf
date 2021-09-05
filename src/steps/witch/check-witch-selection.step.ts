@@ -32,10 +32,9 @@ export class CheckWitchSelection implements IStep {
     } else if (action === 'kill') {
       return new DisplayWitchKillSelection().handle()
     } else if (action === 'save') {
-      if (gameState.recentlyActualDeath.size === 1) {
-        const playerId = gameState.recentlyActualDeath.values().next()
-          .value as string
-        gameState.recentlyActualDeath.delete(playerId)
+      if (gameState.recentlyDeath.size === 1) {
+        const playerId = gameState.recentlyDeath.values().next().value as string
+        gameState.recentlyDeath.delete(playerId)
         gameState.deathPlayers.delete(playerId)
         gameState.witchUseSaved = true
 
@@ -43,7 +42,7 @@ export class CheckWitchSelection implements IStep {
         await gameState
           .findChannel(Role.Witch)
           ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
-        return new WakeUp()
+        return new WakeUp().handle()
       }
       return new DisplayWitchSaveSelection().handle()
     }

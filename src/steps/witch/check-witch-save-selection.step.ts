@@ -28,7 +28,7 @@ export class CheckWitchSaveSelection implements IStep {
     const playerId = selectRandomPlayerFromVotes(votes)
     const player = gameState.findPlayer(playerId)
 
-    gameState.recentlyActualDeath.delete(playerId)
+    gameState.recentlyDeath.delete(playerId)
     gameState.deathPlayers.delete(playerId)
     gameState.witchUseSaved = true
 
