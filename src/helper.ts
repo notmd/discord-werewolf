@@ -5,6 +5,7 @@ import {
   Snowflake,
   TextChannel,
 } from 'discord.js'
+import _ from 'lodash'
 import { ADMIN_ID } from './game-settings'
 import { gameState } from './game-state'
 import { Letters, People } from './icons'
@@ -73,7 +74,7 @@ export const createRolesEmbedMessage = () => {
 }
 
 export const createVotingMessage = <T extends string = Snowflake>(
-  players: Array<Player | { id: T; text: string }>
+  players: Array<Player | { id: T; text: string; icon?: string }>
 ): { embed: MessageEmbed; map: Collection<string, T> } => {
   const embed = new MessageEmbed()
   const map = new Collection<string, T>()
@@ -82,20 +83,29 @@ export const createVotingMessage = <T extends string = Snowflake>(
   embed.setDescription(
     players
       .map((player) => {
+        let icon: string
         if (player instanceof Player) {
-          let icon: string
           const hasCustomIcon = People.has(player.raw.id)
           if (hasCustomIcon) {
-            icon = People.get(player.raw.id) as string
+            const customIcon = People.get(player.raw.id)
+            icon = (
+              Array.isArray(customIcon) ? _(customIcon).sample() : customIcon
+            ) as string
           } else {
             icon = letters[letterIndex++] as string
           }
           map.set(icon, player.raw.id as T)
           const stringifyIcon = hasCustomIcon ? `<:${icon}>` : icon
+
           return `${stringifyIcon} ${player.raw.displayName}`
         }
-        const icon = letters[letterIndex++] as string
+        if (player.icon) {
+          icon = player.icon
+        } else {
+          icon = letters[letterIndex++] as string
+        }
         map.set(icon, player.id)
+
         return `${icon} ${player.text}`
       })
       .join('\n\n')

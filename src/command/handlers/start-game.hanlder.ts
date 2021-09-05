@@ -21,7 +21,7 @@ import { gameState } from '../../game-state'
 import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
 import { logger } from '../../logger'
-import { givePermissionFor, parseMention } from '../../hepler'
+import { givePermissionFor, parseMention } from '../../helper'
 import { sleep } from '../../utils'
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>

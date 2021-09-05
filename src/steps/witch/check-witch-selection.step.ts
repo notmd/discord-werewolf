@@ -1,7 +1,7 @@
 import { Collection, Message } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
@@ -32,10 +32,10 @@ export class CheckWitchSelection implements IStep {
     } else if (action === 'kill') {
       return new DisplayWitchKillSelection().handle()
     } else if (action === 'save') {
-      if (gameState.lastRoundActualDeath.size === 1) {
-        const playerId = gameState.lastRoundActualDeath.values().next()
+      if (gameState.recentlyActualDeath.size === 1) {
+        const playerId = gameState.recentlyActualDeath.values().next()
           .value as string
-        gameState.lastRoundActualDeath.delete(playerId)
+        gameState.recentlyActualDeath.delete(playerId)
         gameState.deathPlayers.delete(playerId)
         gameState.witchUseSaved = true
 

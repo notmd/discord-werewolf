@@ -1,7 +1,7 @@
 import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { logger } from '../../logger'
 import { StartCupidTurn } from '../cupid/start-cupid-turn.step'
 import { IStep } from '../step'

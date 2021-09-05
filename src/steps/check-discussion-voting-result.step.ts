@@ -6,7 +6,7 @@ import {
   selectRandomPlayerFromVotes,
   sendVictoryAnnoucement,
   unmuteEveryone,
-} from '../hepler'
+} from '../helper'
 import { gameState } from '../game-state'
 import { IStep } from './step'
 import { logger } from '../logger'
@@ -62,7 +62,7 @@ export class CheckDiscussionVotingResult implements IStep {
 
     await this.mainTextChannel.send(
       `${gameState.players
-        .filter((p) => gameState.lastRoundActualDeath.has(p.raw.id))
+        .filter((p) => gameState.recentlyActualDeath.has(p.raw.id))
         .map((p) => p.raw)
         .join(', ')} đã bị chết như 1 con cho rach.`
     )
@@ -83,7 +83,7 @@ export class CheckDiscussionVotingResult implements IStep {
 
     if (
       !gameState.mayorId ||
-      gameState.lastRoundActualDeath.has(gameState.mayorId)
+      gameState.recentlyActualDeath.has(gameState.mayorId)
     ) {
       return new StartMayorVote(false).handle()
     }

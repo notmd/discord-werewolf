@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../hepler'
+import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'

@@ -6,7 +6,7 @@ import {
   sendVictoryAnnoucement,
   shouldStartMayorVoting,
   unmuteEveryone,
-} from '../../hepler'
+} from '../../helper'
 import { gameState } from '../../game-state'
 import { IStep } from '../step'
 import { logger } from '../../logger'
@@ -54,7 +54,7 @@ export class CheckHunterSelection implements IStep {
 
     const otherDeathUsers = gameState.players.filter(
       (p) =>
-        gameState.lastRoundActualDeath.has(p.raw.id) &&
+        gameState.recentlyActualDeath.has(p.raw.id) &&
         p.raw.id !== playerId &&
         p.raw.id !== hunter.raw.id
     )

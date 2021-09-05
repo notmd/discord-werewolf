@@ -1,8 +1,10 @@
-import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
+import { Collection, Message, Snowflake } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes } from '../../helper'
 import { logger } from '../../logger'
+import { Player } from '../../player'
+import { BodyGuard } from '../../roles/body-guard.role'
 import { StartSeerTurn } from '../seer/start-seer-turn.step'
 import { IStep } from '../step'
 
@@ -29,13 +31,12 @@ export class CheckBodyGuardSelection implements IStep {
       logger.warn('Votes is empty. Skip...')
       return new StartSeerTurn().handle()
     }
-    const playerId = selectRandomPlayerFromVotes(votes)
-    const channel = gameState.findChannel(Role.BodyGuard) as TextChannel
-    gameState.bodyGuardSelection = playerId
 
-    const player = gameState.findPlayer(playerId)
-    logger.info(`${Role.BodyGuard} has protect ${player?.raw.displayName}`)
-    await channel.send(`Bạn đã bảo vệ ${player?.raw.displayName}`)
+    const bodyGuard = gameState.findPlayerByRole(
+      Role.BodyGuard
+    ) as Player<BodyGuard>
+
+    await bodyGuard.role.protect(votes)
 
     return new StartSeerTurn().handle()
   }

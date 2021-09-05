@@ -1,4 +1,4 @@
-import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { gameState } from '../../game-state'
 import { IStep } from '../step'
 import { logger } from '../../logger'
@@ -32,6 +32,7 @@ export class CheckWereWolfVotingResult implements IStep {
         by: w,
       })
     })
+
     await gameState
       .findChannel(Role.WereWolf)
       ?.send(`Đã giết ${player.raw.displayName}.`)

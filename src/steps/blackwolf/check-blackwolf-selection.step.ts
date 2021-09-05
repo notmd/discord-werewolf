@@ -5,7 +5,7 @@ import {
   collectVotes,
   givePermissionFor,
   selectRandomPlayerFromVotes,
-} from '../../hepler'
+} from '../../helper'
 import { logger } from '../../logger'
 import { Player } from '../../player'
 import { WereWolf } from '../../roles/werewolf.role'
@@ -45,7 +45,12 @@ export class CheckBlackWolfSelection implements IStep {
     const cursedPlayer = gameState.findPlayer(playerId) as Player
     gameState.blackwolfCurse = playerId
     gameState.blackwolfCurseAt = gameState.round
+    gameState.recentlyDeath.delete(playerId)
+    gameState.recentlyActualDeath.delete(playerId)
+    gameState.deathPlayers.delete(playerId)
+
     cursedPlayer.setRole(new WereWolf())
+
     const wolfChannel = gameState.findChannel(Role.WereWolf) as TextChannel
     await givePermissionFor(wolfChannel, cursedPlayer)
     await wolfChannel.send(`${cursedPlayer.raw} bạn đã bị nguyền.`)

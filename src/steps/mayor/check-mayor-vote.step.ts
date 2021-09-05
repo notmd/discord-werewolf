@@ -1,7 +1,7 @@
 import { Collection, Message, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { Player } from '../../player'
 import { StartDisscusion } from '../start-discussion.step'
 import { StartSleep } from '../start-sleep.step'

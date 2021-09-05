@@ -1,6 +1,6 @@
 import { Message } from 'discord.js'
 import { gameState } from './game-state'
-import { authorizeMessage } from './hepler'
+import { authorizeMessage } from './helper'
 import { StartSleep } from './steps/start-sleep.step'
 import { IStep } from './steps/step'
 

@@ -7,7 +7,7 @@ import { InitCommandHandler } from './command/handlers/init.handler'
 import { COMMAND_PREFIX } from './game-settings'
 import { gameProgress } from './game-progress'
 import { ShowRoleCommandHandler } from './command/handlers/show-role.handle'
-import { authorizeMessage } from './hepler'
+import { authorizeMessage } from './helper'
 
 export class CommandHandler {
   async handle(e: Message) {

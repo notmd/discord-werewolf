@@ -1,6 +1,6 @@
 import { Role } from '../game-settings'
 import { gameState } from '../game-state'
-import { shouldStartMayorVoting } from '../hepler'
+import { shouldStartMayorVoting } from '../helper'
 import { logger } from '../logger'
 import { StartHunterTurn } from './hunter/start-hunter-turn.step'
 import { StartMayorVote } from './mayor/start-vote-mayor.step'
@@ -8,11 +8,11 @@ import { StartDisscusion } from './start-discussion.step'
 import { IStep } from './step'
 
 export class WakeUp implements IStep {
-  private lastRoundActualDeath: typeof gameState.lastRoundActualDeath
-  private deathPlayerMeation: string
+  private recentlyActualDeath: typeof gameState.recentlyActualDeath
+  private recentlyPlayerMeation: string
   constructor() {
-    this.lastRoundActualDeath = gameState.lastRoundActualDeath
-    this.deathPlayerMeation = [...this.lastRoundActualDeath.values()]
+    this.recentlyActualDeath = gameState.recentlyActualDeath
+    this.recentlyPlayerMeation = [...this.recentlyActualDeath.values()]
       .map((playerId) => {
         return gameState.findPlayer(playerId)?.raw
       })
@@ -26,14 +26,14 @@ export class WakeUp implements IStep {
     const mainTextChannel = gameState.otherTextChannels.get('main')
     await mainTextChannel?.send(
       `Dậy đi nào các pạn nhỏ êi. Đêm qua ${
-        this.lastRoundActualDeath.size > 0
-          ? `${this.deathPlayerMeation} đã chết.`
+        this.recentlyActualDeath.size > 0
+          ? `${this.recentlyPlayerMeation} đã chết.`
           : `hem ai chết cả.`
       } `
     )
 
     const hunter = gameState.findPlayerByRole(Role.Hunter)
-    if (hunter && this.lastRoundActualDeath.has(hunter.raw.id)) {
+    if (hunter && this.recentlyActualDeath.has(hunter.raw.id)) {
       return new StartHunterTurn(true).handle()
     }
 
@@ -45,9 +45,6 @@ export class WakeUp implements IStep {
   }
 
   private async runHooks() {
-    gameState.alivePlayers.forEach((p) => {
-      p.role.onBeforeWakeUp && p.role.onBeforeWakeUp()
-    })
     gameState.onBeforeWakeUp()
   }
 }

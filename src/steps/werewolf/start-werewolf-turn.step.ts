@@ -4,7 +4,7 @@ import { gameState } from '../../game-state'
 import {
   createVotingMessage as createVoting,
   sendVotingMessage,
-} from '../../hepler'
+} from '../../helper'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { CheckWereWolfVotingResult } from './check-werewolf-voting-result.step'

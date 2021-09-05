@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../hepler'
+import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
 import { rand, sleep } from '../../utils'
 import { IStep } from '../step'
@@ -17,7 +17,7 @@ export class StartWitchTurn implements IStep {
       return new WakeUp().handle()
     }
 
-    if (!witch.canUseAbility && !gameState.lastRoundDeath.has(witch.raw.id)) {
+    if (!witch.canUseAbility && !gameState.recentlyDeath.has(witch.raw.id)) {
       const seconds = rand(20, 30)
       logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
@@ -36,7 +36,7 @@ export class StartWitchTurn implements IStep {
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const lastRoundDeathPlayers = gameState.players.filter((p) =>
-      gameState.lastRoundDeath.has(p.raw.id)
+      gameState.recentlyDeath.has(p.raw.id)
     )
 
     const { embed, map } = this.createVotingMessage()
@@ -51,15 +51,17 @@ export class StartWitchTurn implements IStep {
   }
 
   private createVotingMessage() {
-    const options: Array<{ id: 'skip' | 'kill' | 'save'; text: string }> = [
-      { id: 'skip', text: ' Hem làm gì cả`' },
-    ]
+    const options: Array<{
+      id: 'skip' | 'kill' | 'save'
+      text: string
+      icon?: string
+    }> = [{ id: 'skip', text: 'Hem làm gì cả', icon: '⏩' }]
     if (!gameState.witchUseKilled) {
-      options.push({ id: 'kill', text: 'Giết' })
+      options.push({ id: 'kill', text: 'Giết', icon: '💀' })
     }
 
     if (!gameState.witchUseSaved) {
-      options.push({ id: 'save', text: 'Cứu' })
+      options.push({ id: 'save', text: 'Cứu', icon: '🚑' })
     }
 
     return createVotingMessage<'skip' | 'kill' | 'save'>(options)

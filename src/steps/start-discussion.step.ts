@@ -6,7 +6,7 @@ import {
   sendVictoryAnnoucement,
   sendVotingMessage,
   unmuteEveryone,
-} from '../hepler'
+} from '../helper'
 import { gameState } from '../game-state'
 import { IStep } from './step'
 import { CheckDiscussionVotingResult } from './check-discussion-voting-result.step'
@@ -29,7 +29,7 @@ export class StartDisscusion implements IStep {
     }
     await muteAllDeathPlayer()
     const { embed, map } = createVotingMessage<'skip' | string>([
-      { id: 'skip', text: 'Skip ⏩' },
+      { id: 'skip', text: 'Skip', icon: '⏩' },
       ...gameState.alivePlayers,
     ])
     embed.setTitle('Vote giet nguoi đi các bạn ei')

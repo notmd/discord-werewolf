@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../hepler'
+import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { CheckWitchKillSelection } from './check-witch-kill-selection.step'
@@ -12,7 +12,7 @@ export class DisplayWitchKillSelection implements IStep {
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const killablePlayers = gameState.alivePlayers.filter(
-      (p) => !gameState.lastRoundDeath.has(p.raw.id) && p.role.id !== Role.Witch
+      (p) => !gameState.recentlyDeath.has(p.raw.id) && p.role.id !== Role.Witch
     )
 
     const { embed, map } = createVotingMessage(killablePlayers)

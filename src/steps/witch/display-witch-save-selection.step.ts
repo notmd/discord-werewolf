@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../hepler'
+import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { IStep } from '../step'
 import { CheckWitchSaveSelection } from './check-witch-save-selection.step'
 
@@ -10,7 +10,7 @@ export class DisplayWitchSaveSelection implements IStep {
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
     const saveablePlayers = gameState.players.filter((p) =>
-      gameState.lastRoundDeath.has(p.raw.id)
+      gameState.recentlyDeath.has(p.raw.id)
     )
 
     const { embed, map } = createVotingMessage(saveablePlayers)

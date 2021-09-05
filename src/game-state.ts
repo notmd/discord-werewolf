@@ -21,8 +21,8 @@ export class GameState {
   players: Player[] = []
 
   deathPlayers: Set<Snowflake> = new Set()
-  lastRoundDeath: Set<Snowflake> = new Set()
-  lastRoundActualDeath: Set<Snowflake> = new Set()
+  recentlyDeath: Set<Snowflake> = new Set()
+  recentlyActualDeath: Set<Snowflake> = new Set()
 
   bodyGuardLastSelection: null | Snowflake = null
   bodyGuardSelection: null | Snowflake = null
@@ -77,7 +77,7 @@ export class GameState {
     return this.players.filter((p) => p.role.id === role)
   }
 
-  findPlayerByRole(
+  findPlayerByRole<R extends IRole = IRole>(
     role: Role | IRole,
     { includeOriginal = false }: FindPlayerByRoleOptions = {}
   ) {
@@ -85,17 +85,26 @@ export class GameState {
     return this.players.find(
       (p) =>
         p.role.is(resolved) || (includeOriginal && p.originalRole.is(resolved))
+    ) as undefined | Player<R>
+  }
+
+  hasRole(role: Exclude<Role, Role.Mayor | Role.Couple>): boolean {
+    return gameState.players.some(
+      (p) => p.role.is(role) || p.originalRole.is(role)
     )
   }
 
   onBeforeWakeUp() {
-    this.lastRoundActualDeath.clear()
-    this.lastRoundDeath.clear()
+    this.alivePlayers.forEach((p) => {
+      p.role.onBeforeWakeUp && p.role.onBeforeWakeUp()
+    })
+    this.recentlyActualDeath.clear()
+    this.recentlyDeath.clear()
   }
 
   onSleep() {
-    this.lastRoundActualDeath.clear()
-    this.lastRoundDeath.clear()
+    this.recentlyActualDeath.clear()
+    this.recentlyDeath.clear()
     this.players.forEach((p) => {
       p.role.onSleep && p.role.onSleep()
     })

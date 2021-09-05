@@ -1,7 +1,7 @@
 import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, givePermissionFor } from '../../hepler'
+import { collectVotes, givePermissionFor } from '../../helper'
 import { Player } from '../../player'
 import { sleep } from '../../utils'
 import { IStep } from '../step'

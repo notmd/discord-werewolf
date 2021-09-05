@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js'
 import { Role, WOLFS } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../hepler'
+import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
 import { IStep } from '../step'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
@@ -21,9 +21,17 @@ export class StartBlackWolfTurn implements IStep {
       return new StartWitchTurn().handle()
     }
 
+    const curseablePlayers = gameState.players.filter(
+      (p) => !p.role.in(WOLFS) && gameState.recentlyDeath.has(p.raw.id)
+    )
+
+    if (curseablePlayers.length === 0) {
+      return new StartWitchTurn().handle()
+    }
+
     const { embed, map } = createVotingMessage<'skip' | string>([
       { id: 'skip', text: 'Hem nguyền ai cả ⏩' },
-      ...gameState.alivePlayers.filter((p) => !p.role.in(WOLFS)),
+      ...curseablePlayers,
     ])
     embed.setTitle('Bạn mún nguyền ai?')
     const message = await sendVotingMessage(

@@ -1,7 +1,7 @@
 import { Collection, Message, Snowflake } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, selectRandomPlayerFromVotes } from '../../hepler'
+import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { logger } from '../../logger'
 import { Player } from '../../player'
 import { IStep } from '../step'
@@ -41,8 +41,8 @@ export class CheckWitchKillSelection implements IStep {
       player.onKill({
         by: witch,
       })
-      gameState.lastRoundActualDeath.add(playerId)
-      gameState.lastRoundDeath.add(playerId)
+      gameState.recentlyActualDeath.add(playerId)
+      gameState.recentlyDeath.add(playerId)
       gameState.witchUseKilled = true
       await gameState
         .findChannel(Role.Witch)

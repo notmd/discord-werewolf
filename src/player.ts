@@ -6,11 +6,11 @@ import { gameState } from './game-state'
 import { IRole } from './roles/role.interface'
 import { KillContext } from './types'
 
-export class Player {
+export class Player<R extends IRole = IRole> {
   readonly raw: GuildMember
-  private _role: IRole
+  private _role: R
   private _originalRole: IRole
-  constructor(disCordMember: GuildMember, role: IRole) {
+  constructor(disCordMember: GuildMember, role: R) {
     this.raw = disCordMember
     this._role = role
     this._originalRole = role
@@ -30,6 +30,10 @@ export class Player {
 
   get isDeath() {
     return gameState.deathPlayers.has(this.raw.id)
+  }
+
+  get isAlive() {
+    return !this.isDeath
   }
 
   get isGuarded() {
@@ -63,8 +67,12 @@ export class Player {
     return !this.isDeath && this.raw.id !== gameState.blackwolfCurse
   }
 
+  get wasDeathRecently() {
+    return gameState.recentlyActualDeath.has(this.raw.id)
+  }
+
   onKill({ by }: KillContext) {
-    gameState.lastRoundDeath.add(this.raw.id)
+    gameState.recentlyDeath.add(this.raw.id)
 
     let shouldDeath: boolean = true
     if (this.isGuarded && by !== 'everyone' && by.role.is(Role.WereWolf)) {
@@ -73,21 +81,21 @@ export class Player {
 
     if (shouldDeath) {
       gameState.deathPlayers.add(this.raw.id)
-      gameState.lastRoundActualDeath.add(this.raw.id)
+      gameState.recentlyActualDeath.add(this.raw.id)
       if (this.isCouple) {
         const otherId = gameState.couple!.find(
           (playerId) => this.raw.id !== playerId
         )
         if (otherId) {
-          gameState.lastRoundActualDeath.add(otherId)
-          gameState.lastRoundDeath.add(otherId)
+          gameState.recentlyActualDeath.add(otherId)
+          gameState.recentlyDeath.add(otherId)
           gameState.deathPlayers.add(otherId)
         }
       }
     }
   }
 
-  setRole(role: IRole) {
+  setRole(role: R) {
     this._originalRole = this._role
     this._role = role
   }

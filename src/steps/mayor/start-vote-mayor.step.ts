@@ -7,7 +7,7 @@ import {
   sendVictoryAnnoucement,
   sendVotingMessage,
   unmuteEveryone,
-} from '../../hepler'
+} from '../../helper'
 import { IStep } from '../step'
 import { CheckMayorVote } from './check-mayor-vote.step'
 
