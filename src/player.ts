@@ -73,7 +73,7 @@ export class Player<R extends IRole = IRole> {
   onKill({ by }: KillContext) {
     const res: Player[] = []
     let shouldDeath: boolean = true
-    if (by !== 'everyone' && by.role.is(Role.WereWolf)) {
+    if (by !== 'everyone' && by.role.in([Role.WereWolf, Role.WhiteWolf])) {
       if (this.isGuarded) {
         shouldDeath = false
       }

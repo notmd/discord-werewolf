@@ -38,6 +38,8 @@ export class GameState {
   blackwolfCurseAt?: number = undefined
   blackwolfCurse?: string
 
+  whitewolfLastKillAt: number = -1 // round
+
   constructor() {
     this.voiceChannels = {
       main: undefined,
@@ -98,7 +100,7 @@ export class GameState {
     this.alivePlayers.forEach((p) => {
       p.role.onWakeUp && p.role.onWakeUp()
     })
-    this.recentlyDeath.clear()
+    // this.recentlyDeath.clear()
   }
 
   onSleep() {
@@ -116,23 +118,10 @@ export class GameState {
 
   toJSON() {
     return {
-      isRunning: this.isRunning,
-      // channels: this.voiceChannels,
-      // textChannels: Array.from(this.roleTextChannels.entries()).map((e) => {
-      // return {
-      // [e[0]]: e[1].name,
-      // }
-      // }),
       players: this.players,
       deathPlayers: Array.from(this.deathPlayers.values()).map((p) => {
         this.findPlayer(p)?.raw.nickname
       }),
-      roleAssignedPlayers: [...this.roleAssignedPlayers.entries()].map(
-        ([name, role]) => {
-          return `${name}: ${role}`
-        }
-      ),
-      // lastRoundActualDeath:
     }
   }
 }

@@ -31,7 +31,7 @@ export class WakeUp implements IStep {
     )
 
     const hunter = gameState.findPlayerByRole(Role.Hunter)
-    if (hunter && gameState.recentlyDeath.has(hunter.raw.id)) {
+    if (hunter && hunter.wasDeathRecently) {
       return new StartHunterTurn(true).handle()
     }
 

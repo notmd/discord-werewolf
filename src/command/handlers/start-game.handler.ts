@@ -121,7 +121,7 @@ export class StartGameCommandHandler {
   }
 
   private async assignPermisstionToPlayers(players: Player[]) {
-    const villagerIndex = 1
+    let villagerIndex = 1
     for (const player of players) {
       if (player.role.roomName !== undefined) {
         const romeNames = Array.isArray(player.role.roomName)
@@ -153,6 +153,7 @@ export class StartGameCommandHandler {
         sleep(1000)
         await givePermissionFor(channel, player)
         await this.sendRoleAssignedNotificationMessage(player, channel)
+        villagerIndex++
       }
     }
   }

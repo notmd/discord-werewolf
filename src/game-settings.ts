@@ -7,6 +7,7 @@ import { IRole } from './roles/role.interface'
 import { Seer } from './roles/seer.role'
 import { Villager } from './roles/villager.role'
 import { WereWolf } from './roles/werewolf.role'
+import { WhiteWolf } from './roles/whitewolf.role'
 import { Witch } from './roles/witch.role'
 export const ADMIN_ID = '621326534803849218'
 export const MAIN_VOICE_CHANNLE = 'main'
@@ -25,8 +26,9 @@ export enum Role {
   Cupid = 'cupid',
   Couple = 'couple',
   BlackWolf = 'blackwolf',
+  WhiteWolf = 'whitewolf',
 }
-export const WOLFS = [Role.WereWolf, Role.BlackWolf] as const
+export const WOLFS = [Role.WereWolf, Role.BlackWolf, Role.WhiteWolf] as const
 
 type GameSettings = {
   readonly roles: Map<Role, IRole>
@@ -51,6 +53,7 @@ export const gameSettings: GameSettings = {
     [Role.Lycan, new Lycan()],
     [Role.Cupid, new Cupid()],
     [Role.BlackWolf, new BlackWolf()],
+    [Role.WhiteWolf, new WhiteWolf()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],

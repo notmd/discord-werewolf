@@ -6,7 +6,7 @@ import { Role, WOLFS } from '../../game-settings'
 import { Collection, Message, Snowflake } from 'discord.js'
 import { Player } from '../../player'
 import { WereWolf } from '../../roles/werewolf.role'
-import { StartWitchTurn } from '../witch/start-witch-turn.step'
+import { StartWhiteWolfTurn } from '../whitewolf/start-white-wolf-turn.step'
 
 export class CheckWereWolfVotingResult implements IStep {
   constructor(
@@ -28,10 +28,13 @@ export class CheckWereWolfVotingResult implements IStep {
     const playerId = selectRandomPlayerFromVotes(votes)
 
     const player = gameState.findPlayer(playerId) as Player
-    const wolfs = gameState.findAllPlayersByRole(Role.WereWolf)
-
-    const hasBlackwolfVote = await this.determineHasBlackwolfVote(playerId)
-
+    const wolfs = gameState.alivePlayers.filter((p) =>
+      p.role.in([Role.WereWolf, Role.WhiteWolf])
+    )
+    let hasBlackwolfVote = false
+    if (!player.role.in(WOLFS)) {
+      hasBlackwolfVote = await this.determineHasBlackwolfVote(playerId)
+    }
     if (hasBlackwolfVote) {
       gameState.blackwolfCurse = playerId
       gameState.blackwolfCurseAt = gameState.round
@@ -40,11 +43,7 @@ export class CheckWereWolfVotingResult implements IStep {
       gameState.deathPlayers.delete(playerId)
       player.setRole(new WereWolf())
     } else {
-      wolfs.forEach((w) => {
-        player.onKill({
-          by: w,
-        })
-      })
+      player.onKill({ by: wolfs[0] as Player })
     }
 
     await gameState
@@ -53,12 +52,12 @@ export class CheckWereWolfVotingResult implements IStep {
         `Đã ${hasBlackwolfVote ? 'nguyền' : 'giết'} ${player.raw.displayName}.`
       )
     logger.info(`Were wolf kill ${player.raw.displayName}.`)
-    return new StartWitchTurn().handle()
+    return new StartWhiteWolfTurn().handle()
   }
 
   private async determineHasBlackwolfVote(playerId: string): Promise<boolean> {
     const blackwolf = gameState.findPlayerByRole(Role.BlackWolf)
-    if (!blackwolf) {
+    if (!blackwolf || blackwolf.isDeath || !gameState.blackwolfCurse) {
       return false
     }
     const message = await this.votingMessage.fetch(true)
@@ -72,12 +71,11 @@ export class CheckWereWolfVotingResult implements IStep {
     const isCustomIcon = votedIcon.includes(':')
     const reaction = message.reactions.cache.find(
       (r) =>
-        r.emoji.name ===
-        ((isCustomIcon ? votedIcon.split(':')[0] : votedIcon) as string)
+        r.emoji.name === (isCustomIcon ? votedIcon.split(':')[0] : votedIcon)
     )
     if (reaction) {
       const fetchedUsers = await reaction.users.fetch()
-      return fetchedUsers.has(blackwolf?.raw.id)
+      return fetchedUsers.has(blackwolf.raw.id)
     }
     return false
   }
