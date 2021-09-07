@@ -5,7 +5,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended"
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": 0,
@@ -15,6 +16,12 @@
     "@typescript-eslint/ban-ts-comment": 0,
     "no-empty": 0,
     "@typescript-eslint/no-unused-vars": 0,
-    "@typescript-eslint/no-explicit-any": 0
+    "@typescript-eslint/no-explicit-any": 0,
+    "padding-line-between-statements": [
+      2,
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
+    "import/newline-after-import": 2,
+    "import/no-unresolved": 0
   }
 }

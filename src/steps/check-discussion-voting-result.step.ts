@@ -34,6 +34,7 @@ export class CheckDiscussionVotingResult implements IStep {
     if (gameState.mayorId) {
       return new Set([gameState.mayorId])
     }
+
     return
   }
 
@@ -47,6 +48,7 @@ export class CheckDiscussionVotingResult implements IStep {
 
     if (votes.size === 0) {
       await this.sendNoOneVotedNotification()
+
       return new StartSleep().handle()
     }
 
@@ -55,6 +57,7 @@ export class CheckDiscussionVotingResult implements IStep {
     if (votedPlayerId === 'skip') {
       logger.info(`Skip with ${votes.get('skip')} vote`)
       await this.sendNoOneVotedNotification()
+
       return new StartSleep().handle()
     }
 
@@ -68,12 +71,13 @@ export class CheckDiscussionVotingResult implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
+
       return
     }
 
     await this.votingMessage.unpin()
 
-    if (votedPlayer.role.is(Role.Hunter)) {
+    if (deathPlayers.some((p) => p.role.is(Role.Hunter))) {
       return new StartHunterTurn(false).handle()
     }
 

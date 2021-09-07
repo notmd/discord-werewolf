@@ -14,6 +14,7 @@ export class StartWitchTurn implements IStep {
     logger.info(`Start Witch turn.`)
     if (!witch) {
       logger.warn(`Game does not has Witch role. Skip...`)
+
       return new WakeUp().handle()
     }
 
@@ -24,6 +25,7 @@ export class StartWitchTurn implements IStep {
       const seconds = rand(20, 30)
       logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
+
       return new WakeUp().handle()
     }
 
@@ -33,6 +35,7 @@ export class StartWitchTurn implements IStep {
         `Witch has already used both ability. Skip in ${seconds} seconds.`
       )
       await sleep(seconds * 1000)
+
       return new WakeUp().handle()
     }
 

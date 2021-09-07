@@ -10,6 +10,7 @@ import {
 import { BaseRole } from './base-role.abstract'
 import { IRole } from './role.interface'
 import { Collection } from 'discord.js'
+
 export class BodyGuard extends BaseRole implements IRole {
   readonly id = Role.BodyGuard
   readonly name = 'Bảo vệ'

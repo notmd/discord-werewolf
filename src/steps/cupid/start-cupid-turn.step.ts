@@ -13,11 +13,13 @@ export class StartCupidTurn implements IStep {
     const cupid = gameState.findPlayerByRole(Role.Cupid)
     if (!cupid) {
       logger.info('Game does not have Cupid role. Skip...')
+
       return new StartWereWolfTurn().handle()
     }
 
     if (gameState.couple !== undefined) {
       logger.info('Cupid has used ability. Skip...')
+
       return new StartWereWolfTurn().handle()
     }
     const channel = gameState.findChannel(Role.Cupid) as TextChannel

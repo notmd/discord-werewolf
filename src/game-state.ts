@@ -3,6 +3,7 @@ import { isString } from 'lodash'
 import { CHANNEL_NAME_PREFIX, Role } from './game-settings'
 import { Player } from './player'
 import { IRole } from './roles/role.interface'
+import { DeathContext } from './types'
 
 export type FindPlayerByRoleOptions = {
   includeOriginal?: boolean
@@ -12,15 +13,13 @@ export class GameState {
   controller?: Snowflake
   isRunning: boolean = false
   round: number = 0
-  voiceChannels: {
-    main?: VoiceChannel
-  }
+  mainVoiceChannels?: VoiceChannel = undefined
   roleTextChannels: Map<Role, TextChannel> = new Map()
   otherTextChannels: Map<'main', TextChannel> = new Map()
 
   players: Player[] = []
 
-  deathPlayers: Set<Snowflake> = new Set()
+  deathPlayers: Collection<Snowflake, DeathContext> = new Collection()
   deathPlayerReportToWitch: Set<Snowflake> = new Set()
   recentlyDeath: Set<Snowflake> = new Set()
 
@@ -40,25 +39,12 @@ export class GameState {
 
   whitewolfLastKillAt: number = -1 // round
 
-  constructor() {
-    this.voiceChannels = {
-      main: undefined,
-    }
-  }
+  constructor() {}
 
   get alivePlayers() {
     return this.players.filter((p) => !p.isDeath)
   }
 
-  setMainVoiceChannel(channel: VoiceChannel) {
-    this.voiceChannels.main = channel
-  }
-  setPlayers(players: Player[]) {
-    this.players = players
-  }
-  setIsRunning(val: boolean) {
-    this.isRunning = val
-  }
   setTextChannels(channels: Collection<string, TextChannel>) {
     channels.forEach((channel) => {
       this.roleTextChannels.set(
@@ -72,6 +58,7 @@ export class GameState {
     if (isString(role)) {
       return this.roleTextChannels.get(role)
     }
+
     return this.roleTextChannels.get(role.id)
   }
 
@@ -84,6 +71,7 @@ export class GameState {
     { includeOriginal = false }: FindPlayerByRoleOptions = {}
   ) {
     const resolved = isString(role) ? role : role.id
+
     return this.players.find(
       (p) =>
         p.role.is(resolved) || (includeOriginal && p.originalRole.is(resolved))
@@ -100,16 +88,15 @@ export class GameState {
     this.alivePlayers.forEach((p) => {
       p.role.onWakeUp && p.role.onWakeUp()
     })
-    // this.recentlyDeath.clear()
   }
 
   onSleep() {
+    this.round++
     this.recentlyDeath.clear()
     this.deathPlayerReportToWitch.clear()
     this.players.forEach((p) => {
       p.role.onSleep && p.role.onSleep()
     })
-    this.round++
   }
 
   findPlayer(playerId: string) {
@@ -119,8 +106,14 @@ export class GameState {
   toJSON() {
     return {
       players: this.players,
-      deathPlayers: Array.from(this.deathPlayers.values()).map((p) => {
-        this.findPlayer(p)?.raw.nickname
+      deathPlayers: this.deathPlayers.map((deathContext, key) => {
+        return {
+          name: this.findPlayer(key)?.raw.displayName,
+          by: isString(deathContext.by)
+            ? deathContext.by
+            : deathContext.by.role.name,
+          round: deathContext.atRound,
+        }
       }),
     }
   }

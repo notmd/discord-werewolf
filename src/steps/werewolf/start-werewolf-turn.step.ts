@@ -26,6 +26,7 @@ export class StartWereWolfTurn implements IStep {
       gameState.alivePlayers.filter((p) => p.role.in(WOLFS)).join(', ')
     )
     logger.info('Wating for werewolf voting result.')
+
     return new CheckWereWolfVotingResult(message, map)
   }
 }

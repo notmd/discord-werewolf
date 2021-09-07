@@ -12,7 +12,7 @@ import { Letters, People } from './icons'
 import { Player } from './player'
 
 export const muteAllDeathPlayer = async () => {
-  const deathPlayers = gameState.deathPlayers
+  const deathPlayers = [...gameState.deathPlayers.keys()]
   for (const deathPlayer of deathPlayers) {
     const p = gameState.findPlayer(deathPlayer)
     if (p && !p.raw.voice.serverMute) {
@@ -25,6 +25,7 @@ export const selectRandomPlayerFromVotes = <T extends string = string>(
   votes: Collection<T, number>
 ): T => {
   const max = Math.max.apply(null, Array.from(votes.values()))
+
   return votes.filter((v) => v === max).randomKey()
 }
 
@@ -49,6 +50,7 @@ export const sendVictoryAnnoucement = async () => {
     gameState.otherTextChannels.get('main')?.send({
       embeds: [createRolesEmbedMessage().setTitle('Hoà ròi.')],
     })
+
     return
   }
   const winnedFaction = (
@@ -140,15 +142,15 @@ export const collectVotes = async <T extends string = Snowflake>(
 ) => {
   const fetched = await message.fetch(true)
   const votes: Collection<T, number> = new Collection()
-  for (const [reaction, playerId] of map.entries()) {
-    const isCustomIcon = reaction.includes(':')
-    const vote = fetched.reactions.cache.find((r) => {
-      return r.emoji.name === (isCustomIcon ? reaction.split(':')[0] : reaction)
+  for (const [emoji, playerId] of map.entries()) {
+    const isCustomEmoji = emoji.includes(':')
+    const reaction = fetched.reactions.cache.find((r) => {
+      return r.emoji.name === (isCustomEmoji ? emoji.split(':')[0] : emoji)
     })
-    if (vote) {
-      let count = vote.count
+    if (reaction) {
+      let count = reaction.count
       if (withMayorVote) {
-        const fetchedUsers = await vote.users.fetch()
+        const fetchedUsers = await reaction.users.fetch()
         const hasMayor = fetchedUsers.some(
           (user) => user.id === gameState.mayorId
         )
@@ -174,16 +176,14 @@ export const parseMention = (text: string): Snowflake | undefined => {
     if (mention.startsWith('!')) {
       mention = mention.slice(1)
     }
+
     return mention
   }
 
   return undefined
 }
 
-export const givePermissionFor = async (
-  channel: TextChannel,
-  player: Player
-) => {
+export const givePermission = async (channel: TextChannel, player: Player) => {
   await channel.permissionOverwrites.edit(
     player.raw,
     {
@@ -211,4 +211,16 @@ export const authorizeMessage = (
   }
 
   return ids.has(message.author.id)
+}
+
+export const fetchReactionUsers = async (message: Message, emoji: string) => {
+  const isCustomEmoji = emoji.includes(':')
+  const reaction = message.reactions.cache.find(
+    (r) => r.emoji.name === (isCustomEmoji ? emoji.split(':')[0] : emoji)
+  )
+  if (reaction) {
+    return reaction.users.fetch()
+  }
+
+  return undefined
 }

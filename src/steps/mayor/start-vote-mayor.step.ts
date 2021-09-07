@@ -18,6 +18,7 @@ export class StartMayorVote implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
+
       return
     }
     const { embed, map } = createVotingMessage(

@@ -27,6 +27,7 @@ export class CheckWitchKillSelection implements IStep {
     })
     if (votes.size === 0) {
       logger.warn('Witch kill vote is empty. Skip...')
+
       return new WakeUp().handle()
     }
 

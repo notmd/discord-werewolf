@@ -27,6 +27,7 @@ export class CheckSeerSelectionStep implements IStep {
     })
     if (votes.size === 0) {
       logger.warn('Votes is empty. Skip...')
+
       return new StartCupidTurn().handle()
     }
     const playerId = selectRandomPlayerFromVotes(votes)
@@ -37,6 +38,7 @@ export class CheckSeerSelectionStep implements IStep {
         player?.role.in([...WOLFS, Role.Lycan]) ? 'là sói.' : 'hem phải là sói.'
       }`
     )
+
     return new StartCupidTurn().handle()
   }
 }

@@ -13,6 +13,7 @@ export class StartBodyGuardTurn implements IStep {
 
     if (!gameState.hasRole(Role.BodyGuard)) {
       logger.warn(`Game does not has ${Role.BodyGuard} role. Skip...`)
+
       return new StartSeerTurn().handle()
     }
 
@@ -22,6 +23,7 @@ export class StartBodyGuardTurn implements IStep {
       const seconds = rand(20, 30)
       logger.warn(`Bodyguard cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
+
       return new StartSeerTurn().handle()
     }
 

@@ -30,6 +30,7 @@ export class InitCommandHandler {
       const parseChannel = channel.toJSON() as {
         name: string
       }
+
       return (
         `${CHANNEL_NAME_PREFIX}${options.name}` === parseChannel.name &&
         ((channel.isText() && options.type === 'GUILD_TEXT') ||
@@ -52,6 +53,7 @@ export class InitCommandHandler {
               : [],
         }
       )
+
       return `Created ${options.name} room.`
     }
 

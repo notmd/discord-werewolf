@@ -13,6 +13,7 @@ export class StartSeerTurn implements IStep {
     logger.info('Start seer turn.')
     if (!gameState.hasRole(Role.Seer)) {
       logger.warn('Game does not has Seer role. Skip...')
+
       return new StartCupidTurn().handle()
     }
     const seer = gameState.findPlayerByRole<Seer>(Role.Seer)
@@ -21,6 +22,7 @@ export class StartSeerTurn implements IStep {
       const seconds = rand(20, 30)
       logger.warn(`Seer cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
+
       return new StartCupidTurn().handle()
     }
 
@@ -37,6 +39,7 @@ export class StartSeerTurn implements IStep {
     )
 
     logger.info('Waiting Seer selection.')
+
     return new CheckSeerSelectionStep(message, map)
   }
 }

@@ -25,6 +25,7 @@ export class StartDisscusion implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
+
       return
     }
     await muteAllDeathPlayer()
@@ -39,6 +40,7 @@ export class StartDisscusion implements IStep {
       map
     )
     await votingMessage.pin()
+
     return new CheckDiscussionVotingResult(votingMessage, map)
   }
 }

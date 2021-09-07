@@ -19,6 +19,7 @@
     "@typescript-eslint/parser": "^4.29.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.2",
     "ts-node-dev": "^1.1.8",
@@ -26,7 +27,7 @@
   },
   "scripts": {
     "dev": "ts-node-dev index.ts",
-    "lint": "eslint '*/**/*.{ts}' --quiet --fix",
+    "lint": "eslint ./ --ext .ts --quiet --fix",
     "prod": "ts-node --transpile-only index.ts"
   }
 }

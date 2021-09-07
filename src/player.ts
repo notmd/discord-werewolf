@@ -1,7 +1,7 @@
 import { GuildMember } from 'discord.js'
 import { CoupleFaction } from './faction/couple.faction'
 import { IFaction } from './faction/faction.interface'
-import { Role, WOLFS } from './game-settings'
+import { WOLFS } from './game-settings'
 import { gameState } from './game-state'
 import { IRole } from './roles/role.interface'
 import { KillContext } from './types'
@@ -55,6 +55,7 @@ export class Player<R extends IRole = IRole> {
         return new CoupleFaction()
       }
     }
+
     return this.defaultFaction
   }
 
@@ -73,7 +74,7 @@ export class Player<R extends IRole = IRole> {
   onKill({ by }: KillContext) {
     const res: Player[] = []
     let shouldDeath: boolean = true
-    if (by !== 'everyone' && by.role.in([Role.WereWolf, Role.WhiteWolf])) {
+    if (by !== 'everyone' && by.role.in(WOLFS)) {
       if (this.isGuarded) {
         shouldDeath = false
       }
@@ -81,7 +82,10 @@ export class Player<R extends IRole = IRole> {
     }
 
     if (shouldDeath) {
-      gameState.deathPlayers.add(this.raw.id)
+      gameState.deathPlayers.set(this.raw.id, {
+        by,
+        atRound: gameState.round,
+      })
       gameState.recentlyDeath.add(this.raw.id)
       res.push(this)
       if (this.isCouple) {
@@ -89,7 +93,10 @@ export class Player<R extends IRole = IRole> {
           (playerId) => this.raw.id !== playerId
         )
         if (otherId) {
-          gameState.deathPlayers.add(otherId)
+          gameState.deathPlayers.set(otherId, {
+            by: 'couple',
+            atRound: gameState.round,
+          })
           gameState.recentlyDeath.add(otherId)
           res.push(gameState.findPlayer(otherId) as Player)
         }

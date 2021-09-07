@@ -20,6 +20,7 @@ export class StartHunterTurn implements IStep {
       if (this.shouldStartDisscusion) {
         return new StartDisscusion().handle()
       }
+
       return new StartSleep().handle()
     }
     const mainChannel = gameState.otherTextChannels.get('main') as TextChannel

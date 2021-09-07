@@ -1,7 +1,7 @@
 import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { collectVotes, givePermissionFor } from '../../helper'
+import { collectVotes, givePermission } from '../../helper'
 import { Player } from '../../player'
 import { sleep } from '../../utils'
 import { IStep } from '../step'
@@ -31,6 +31,7 @@ export class CheckCupidSelection implements IStep {
       await channel.send(
         `Chọn 2 người cơ mà? Mày chọn ${votes.size} người đmm.`
       )
+
       return this
     }
 
@@ -43,9 +44,10 @@ export class CheckCupidSelection implements IStep {
     const coupleChannel = gameState.findChannel(Role.Couple) as TextChannel
     for (const player of couple) {
       await sleep(200)
-      await givePermissionFor(coupleChannel, player)
+      await givePermission(coupleChannel, player)
     }
     await coupleChannel.send(`${couple.join(', ')} 2 pạn đã iu nhao.`)
+
     return new StartWereWolfTurn().handle()
   }
 }

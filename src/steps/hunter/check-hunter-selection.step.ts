@@ -62,6 +62,7 @@ export class CheckHunterSelection implements IStep {
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
+
       return
     }
 

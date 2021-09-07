@@ -21,8 +21,9 @@ import { gameState } from '../../game-state'
 import { Player } from '../../player'
 import { IRole } from '../../roles/role.interface'
 import { logger } from '../../logger'
-import { givePermissionFor, parseMention } from '../../helper'
+import { givePermission, parseMention } from '../../helper'
 import { sleep } from '../../utils'
+
 export class StartGameCommandHandler {
   private readonly roles: Map<string, number>
   private readonly totalRolesCount: number
@@ -58,6 +59,7 @@ export class StartGameCommandHandler {
   async handle() {
     if (gameState.isRunning) {
       this.message.reply(`Game already started.`)
+
       return
     }
     const mainVoiceChannel = await this.getMainVoiceChannelFromDiscord()
@@ -68,6 +70,7 @@ export class StartGameCommandHandler {
           CHANNEL_NAME_PREFIX + MAIN_VOICE_CHANNLE
         } voice channel. Please run \`!ww init\` command first`
       )
+
       return
     }
     if (!(await this.validateMainTextChannel(mainTextChannel))) return
@@ -76,16 +79,16 @@ export class StartGameCommandHandler {
     if (!(await this.validatePlayers(players))) return
 
     this.revokeTextChannelsPermissions()
+    gameState.isRunning = true
+    logger.info('Generating roles.')
     const roleAssignedPlayers = this.assignRoleToPlayers(players)
-    gameState.setMainVoiceChannel(mainVoiceChannel)
-    gameState.setPlayers(roleAssignedPlayers)
-    gameState.setIsRunning(true)
+    gameState.mainVoiceChannels = mainVoiceChannel
+    gameState.players = roleAssignedPlayers
     gameState.otherTextChannels.set('main', mainTextChannel as TextChannel)
     gameState.setTextChannels(
       this.fetchTextChannels() as Collection<string, TextChannel>
     )
-    logger.info('Generating roles.')
-    await this.assignPermisstionToPlayers(roleAssignedPlayers)
+    await this.givePermisstionsToPlayers(roleAssignedPlayers)
     this.message.reply('Game started. Please checkout your roles.')
     logger.info('Game started.')
   }
@@ -97,8 +100,10 @@ export class StartGameCommandHandler {
           CHANNEL_NAME_PREFIX + MAIN_TEXT_CHANNEL
         } text channel. Please run \`!ww init\` command first`
       )
+
       return false
     }
+
     return true
   }
 
@@ -115,12 +120,13 @@ export class StartGameCommandHandler {
 
   private assignRoleToPlayers(players: Collection<string, GuildMember>) {
     const generatedRoles = _(this.generateRole()).shuffle().shuffle().value()
+
     return Array.from(players.values()).map((p, i) => {
       return Player.fromDiscord(p, generatedRoles[i] as IRole)
     })
   }
 
-  private async assignPermisstionToPlayers(players: Player[]) {
+  private async givePermisstionsToPlayers(players: Player[]) {
     let villagerIndex = 1
     for (const player of players) {
       if (player.role.roomName !== undefined) {
@@ -130,7 +136,7 @@ export class StartGameCommandHandler {
         for (const room of romeNames) {
           const channel = gameState.findChannel(room) as TextChannel
           await sleep(1000)
-          await givePermissionFor(channel, player)
+          await givePermission(channel, player)
           await this.sendRoleAssignedNotificationMessage(player, channel)
         }
       } else if (player.role.is(Role.Villager)) {
@@ -151,7 +157,7 @@ export class StartGameCommandHandler {
           )) as TextChannel
         }
         sleep(1000)
-        await givePermissionFor(channel, player)
+        await givePermission(channel, player)
         await this.sendRoleAssignedNotificationMessage(player, channel)
         villagerIndex++
       }
@@ -165,6 +171,7 @@ export class StartGameCommandHandler {
         roles.push(gameSettings.roles.get(role as Role) as IRole)
       }
     })
+
     return roles
   }
 
@@ -173,14 +180,17 @@ export class StartGameCommandHandler {
       await this.message.reply(
         `Please join the \`${CHANNEL_NAME_PREFIX}${MAIN_VOICE_CHANNLE}\` channel first.`
       )
+
       return false
     }
     if (players.size !== this.totalRolesCount) {
       await this.message.reply(
         `Total roles should be equal to ${players.size}. ${this.totalRolesCount} given.`
       )
+
       return false
     }
+
     return true
   }
 
@@ -193,8 +203,10 @@ export class StartGameCommandHandler {
       await this.message.reply(
         `The following roles were invalid: ${invalidRoles.join(', ')}`
       )
+
       return false
     }
+
     return true
   }
 
@@ -229,6 +241,7 @@ export class StartGameCommandHandler {
 
   private async fetchPlayers(channel: VoiceChannel) {
     const fetchChannel = (await channel.fetch(true)) as VoiceChannel
+
     return fetchChannel.members.filter(
       (member) => !member.user.bot && !this.ignoreUserIds.has(member.user.id)
     )
@@ -267,6 +280,7 @@ export class StartGameCommandHandler {
       const mention = parseMention(ignore)
       mention && res.add(mention)
     })
+
     return res
   }
 }

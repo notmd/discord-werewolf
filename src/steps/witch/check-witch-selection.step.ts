@@ -28,6 +28,7 @@ export class CheckWitchSelection implements IStep {
 
     if (action === undefined || action === 'skip') {
       logger.warn('Witch choose skip.')
+
       return new WakeUp().handle()
     } else if (action === 'kill') {
       return new DisplayWitchKillSelection().handle()
@@ -42,8 +43,10 @@ export class CheckWitchSelection implements IStep {
         await gameState
           .findChannel(Role.Witch)
           ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
+
         return new WakeUp().handle()
       }
+
       return new DisplayWitchSaveSelection().handle()
     }
 

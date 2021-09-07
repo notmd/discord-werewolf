@@ -11,6 +11,7 @@ class GameProgress {
   async next(message: Message) {
     if (!gameState.isRunning) {
       await message.reply(`Game not started yet.`)
+
       return
     }
     const step = this.nextStep || this.startStep

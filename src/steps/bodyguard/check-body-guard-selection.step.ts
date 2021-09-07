@@ -29,6 +29,7 @@ export class CheckBodyGuardSelection implements IStep {
     })
     if (votes.size === 0) {
       logger.warn('Votes is empty. Skip...')
+
       return new StartSeerTurn().handle()
     }
 

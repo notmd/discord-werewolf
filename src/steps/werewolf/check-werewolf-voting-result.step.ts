@@ -1,4 +1,8 @@
-import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
+import {
+  collectVotes,
+  fetchReactionUsers,
+  selectRandomPlayerFromVotes,
+} from '../../helper'
 import { gameState } from '../../game-state'
 import { IStep } from '../step'
 import { logger } from '../../logger'
@@ -27,10 +31,8 @@ export class CheckWereWolfVotingResult implements IStep {
     const votes = await collectVotes(this.votingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
 
-    const player = gameState.findPlayer(playerId) as Player
-    const wolfs = gameState.alivePlayers.filter((p) =>
-      p.role.in([Role.WereWolf, Role.WhiteWolf])
-    )
+    const player = gameState.findPlayer(playerId)!
+    const wolfs = gameState.alivePlayers.filter((p) => p.role.in(WOLFS))
     let hasBlackwolfVote = false
     if (!player.role.in(WOLFS)) {
       hasBlackwolfVote = await this.determineHasBlackwolfVote(playerId)
@@ -52,6 +54,7 @@ export class CheckWereWolfVotingResult implements IStep {
         `Đã ${hasBlackwolfVote ? 'nguyền' : 'giết'} ${player.raw.displayName}.`
       )
     logger.info(`Were wolf kill ${player.raw.displayName}.`)
+
     return new StartWhiteWolfTurn().handle()
   }
 
@@ -62,21 +65,18 @@ export class CheckWereWolfVotingResult implements IStep {
     }
     const message = await this.votingMessage.fetch(true)
 
-    const votedIcon = this.votingMap.findKey((value) => value === playerId)
+    const votedEmoji = this.votingMap.findKey((value) => value === playerId)
 
-    if (!votedIcon) {
+    if (!votedEmoji) {
       return false
     }
 
-    const isCustomIcon = votedIcon.includes(':')
-    const reaction = message.reactions.cache.find(
-      (r) =>
-        r.emoji.name === (isCustomIcon ? votedIcon.split(':')[0] : votedIcon)
-    )
-    if (reaction) {
-      const fetchedUsers = await reaction.users.fetch()
-      return fetchedUsers.has(blackwolf.raw.id)
+    const users = await fetchReactionUsers(message, votedEmoji)
+
+    if (users) {
+      return users.has(blackwolf.raw.id)
     }
+
     return false
   }
 }

@@ -29,6 +29,7 @@ export class StartWhiteWolfTurn implements IStep {
     ) {
       logger.info(`Skip in ${seconds} seconds`)
       await sleep(seconds * 1000)
+
       return new StartWitchTurn().handle()
     }
 
