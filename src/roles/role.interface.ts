@@ -14,9 +14,9 @@ export interface IRole {
 
   in(roles: Role[] | Readonly<Role[]>): boolean
 
-  onSleep?: () => void
+  onSleep?: () => Promise<void>
 
-  onWakeUp?: () => void
+  onWakeUp?: () => Promise<void>
 
   // canBeKill(context: KillContext): boolean
 }

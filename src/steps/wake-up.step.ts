@@ -19,7 +19,7 @@ export class WakeUp implements IStep {
 
   async handle() {
     logger.info('Wake up.')
-    this.runHooks()
+    await gameState.onWakeUp()
 
     const mainTextChannel = gameState.otherTextChannels.get('main')
     await mainTextChannel?.send(
@@ -40,9 +40,5 @@ export class WakeUp implements IStep {
     }
 
     return new StartDisscusion().handle()
-  }
-
-  private async runHooks() {
-    gameState.onWakeUp()
   }
 }

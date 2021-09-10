@@ -4,6 +4,7 @@ import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { logger } from '../../logger'
 import { Player } from '../../player'
+import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 
@@ -26,9 +27,9 @@ export class CheckWitchKillSelection implements IStep {
       onlyPositive: true,
     })
     if (votes.size === 0) {
-      logger.warn('Witch kill vote is empty. Skip...')
+      // logger.warn('Witch kill vote is empty. Skip...')
 
-      return new WakeUp().handle()
+      return new StartOldHagTurn().handle()
     }
 
     const playerId = selectRandomPlayerFromVotes(votes)
@@ -38,20 +39,15 @@ export class CheckWitchKillSelection implements IStep {
     const witch = gameState.players.find(
       (p) => p.role.id === Role.Witch
     ) as Player
-    try {
-      player.onKill({
-        by: witch,
-      })
-      gameState.recentlyDeath.add(playerId)
-      gameState.witchUseKilled = true
-      await gameState
-        .findChannel(Role.Witch)
-        ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
-    } catch (e) {
-      logger.error('Error while perform Witch kill step.')
-      logger.error(e)
-    }
+    player.onKill({
+      by: witch,
+    })
+    gameState.recentlyDeath.add(playerId)
+    gameState.witchUseKilled = true
+    await gameState
+      .findChannel(Role.Witch)
+      ?.send(`Bạn đã giết ${player?.raw.displayName}.`)
 
-    return new WakeUp().handle()
+    return new StartOldHagTurn().handle()
   }
 }

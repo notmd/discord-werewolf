@@ -2,8 +2,8 @@ import { Collection, Message } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
+import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
-import { WakeUp } from '../wake-up.step'
 import { DisplayWitchKillSelection } from './display-witch-kill-selection.step'
 import { DisplayWitchSaveSelection } from './display-witch-save-selection.step'
 
@@ -29,7 +29,7 @@ export class CheckWitchSelection implements IStep {
       // logger.warn('Witch choose skip.')
       gameState.findChannel(Role.Witch)?.send(`Ok skip.`)
 
-      return new WakeUp().handle()
+      return new StartOldHagTurn().handle()
     } else if (action === 'kill') {
       return new DisplayWitchKillSelection().handle()
     } else if (action === 'save') {
@@ -44,7 +44,7 @@ export class CheckWitchSelection implements IStep {
           .findChannel(Role.Witch)
           ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
 
-        return new WakeUp().handle()
+        return new StartOldHagTurn().handle()
       }
 
       return new DisplayWitchSaveSelection().handle()

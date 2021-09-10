@@ -3,6 +3,7 @@ import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { logger } from '../../logger'
+import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 
@@ -36,6 +37,6 @@ export class CheckWitchSaveSelection implements IStep {
       .findChannel(Role.Witch)
       ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
 
-    return new WakeUp().handle()
+    return new StartOldHagTurn().handle()
   }
 }

@@ -4,8 +4,8 @@ import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
 import { rand, sleep } from '../../utils'
+import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
-import { WakeUp } from '../wake-up.step'
 import { CheckWitchSelection } from './check-witch-selection.step'
 
 export class StartWitchTurn implements IStep {
@@ -15,7 +15,7 @@ export class StartWitchTurn implements IStep {
     if (!witch) {
       logger.warn(`Game does not has Witch role. Skip...`)
 
-      return new WakeUp().handle()
+      return new StartOldHagTurn().handle()
     }
 
     if (
@@ -23,20 +23,20 @@ export class StartWitchTurn implements IStep {
       !gameState.deathPlayerReportToWitch.has(witch.raw.id)
     ) {
       const seconds = rand(20, 30)
-      logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
+      // logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
 
-      return new WakeUp().handle()
+      return new StartOldHagTurn().handle()
     }
 
     if (gameState.witchUseKilled && gameState.witchUseSaved) {
       const seconds = rand(20, 30)
-      logger.warn(
-        `Witch has already used both ability. Skip in ${seconds} seconds.`
-      )
+      // logger.warn(
+      //   `Witch has already used both ability. Skip in ${seconds} seconds.`
+      // )
       await sleep(seconds * 1000)
 
-      return new WakeUp().handle()
+      return new StartOldHagTurn().handle()
     }
 
     const channel = gameState.findChannel(Role.Witch) as TextChannel

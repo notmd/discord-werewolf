@@ -8,7 +8,7 @@ export class StartSleep implements IStep {
     const mainTextChannel = gameState.otherTextChannels.get('main')
     await mainTextChannel?.send(`Đi ngủ thui nào các pạn nhỏ.`)
     logger.info('Start sleep.')
-    gameState.onSleep()
+    await gameState.onSleep()
 
     return new StartBodyGuardTurn().handle()
   }

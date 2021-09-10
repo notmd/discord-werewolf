@@ -59,11 +59,9 @@ export class CheckWereWolfVotingResult implements IStep {
 
   private async determineHasBlackwolfVote(playerId: string): Promise<boolean> {
     const blackwolf = gameState.findPlayerByRole(Role.BlackWolf)
-    console.log(blackwolf, gameState.blackwolfCurse)
     if (!blackwolf || blackwolf.isDeath || gameState.blackwolfCurse) {
       return false
     }
-    console.log('ok')
     const message = await this.votingMessage.fetch(true)
 
     const votedEmoji = this.votingMap.findKey((value) => value === playerId)

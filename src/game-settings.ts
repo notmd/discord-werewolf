@@ -3,6 +3,7 @@ import { BodyGuard } from './roles/body-guard.role'
 import { Cupid } from './roles/cupid.role'
 import { Hunter } from './roles/hunter.role'
 import { Lycan } from './roles/lycan.role'
+import { OldHag } from './roles/oldhag.role'
 import { IRole } from './roles/role.interface'
 import { Seer } from './roles/seer.role'
 import { Villager } from './roles/villager.role'
@@ -28,6 +29,7 @@ export enum Role {
   Couple = 'couple',
   BlackWolf = 'blackwolf',
   WhiteWolf = 'whitewolf',
+  OldHag = 'oldhag',
 }
 export const WOLFS = [Role.WereWolf, Role.BlackWolf, Role.WhiteWolf] as const
 
@@ -55,6 +57,7 @@ export const gameSettings: GameSettings = {
     [Role.Cupid, new Cupid()],
     [Role.BlackWolf, new BlackWolf()],
     [Role.WhiteWolf, new WhiteWolf()],
+    [Role.OldHag, new OldHag()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],

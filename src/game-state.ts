@@ -39,6 +39,9 @@ export class GameState {
 
   whitewolfLastKillAt: number = -1 // round
 
+  oldHagSelection?: Snowflake
+  lastOlHagSelection?: Snowflake
+
   constructor() {}
 
   get alivePlayers() {
@@ -84,19 +87,23 @@ export class GameState {
     )
   }
 
-  onWakeUp() {
-    this.alivePlayers.forEach((p) => {
-      p.role.onWakeUp && p.role.onWakeUp()
-    })
+  async onWakeUp() {
+    for (const player of this.players) {
+      if (player.role.onWakeUp) {
+        await player.role.onWakeUp()
+      }
+    }
   }
 
-  onSleep() {
+  async onSleep() {
     this.round++
     this.recentlyDeath.clear()
     this.deathPlayerReportToWitch.clear()
-    this.players.forEach((p) => {
-      p.role.onSleep && p.role.onSleep()
-    })
+    for (const player of this.players) {
+      if (player.role.onSleep) {
+        await player.role.onSleep()
+      }
+    }
   }
 
   findPlayer(playerId: string) {

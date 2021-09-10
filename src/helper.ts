@@ -21,6 +21,17 @@ export const muteAllDeathPlayer = async () => {
   }
 }
 
+export const unmute = async (player: Player) => {
+  if (!player.raw.voice.serverMute) {
+    await player.raw.voice.setMute(true)
+  }
+}
+export const mute = async (player: Player) => {
+  if (player.raw.voice.serverMute) {
+    await player.raw.voice.setMute(false)
+  }
+}
+
 export const selectRandomPlayerFromVotes = <T extends string = string>(
   votes: Collection<T, number>
 ): T => {

@@ -135,7 +135,7 @@ export class StartGameCommandHandler {
           : [player.role.roomName]
         for (const room of romeNames) {
           const channel = gameState.findChannel(room) as TextChannel
-          await sleep(1000)
+          await sleep(200)
           await givePermission(channel, player)
           await this.sendRoleAssignedNotificationMessage(player, channel)
         }
@@ -156,7 +156,7 @@ export class StartGameCommandHandler {
             }
           )) as TextChannel
         }
-        sleep(1000)
+        sleep(200)
         await givePermission(channel, player)
         await this.sendRoleAssignedNotificationMessage(player, channel)
         villagerIndex++
