@@ -1,13 +1,14 @@
 import {
   collectVotes,
   fetchReactionUsers,
+  givePermission,
   selectRandomPlayerFromVotes,
 } from '../../helper'
 import { gameState } from '../../game-state'
 import { IStep } from '../step'
 import { logger } from '../../logger'
 import { Role, WOLFS } from '../../game-settings'
-import { Collection, Message, Snowflake } from 'discord.js'
+import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { Player } from '../../player'
 import { WereWolf } from '../../roles/werewolf.role'
 import { StartWhiteWolfTurn } from '../whitewolf/start-white-wolf-turn.step'
@@ -20,9 +21,7 @@ export class CheckWereWolfVotingResult implements IStep {
 
   get allowedId() {
     return new Set(
-      gameState.alivePlayers
-        .filter((p) => p.role.in(WOLFS))
-        .map((p) => p.raw.id)
+      gameState.players.filter((p) => p.role.in(WOLFS)).map((p) => p.raw.id)
     )
   }
 
@@ -33,6 +32,7 @@ export class CheckWereWolfVotingResult implements IStep {
 
     const player = gameState.findPlayer(playerId)!
     const wolfs = gameState.alivePlayers.filter((p) => p.role.in(WOLFS))
+    const channel = gameState.findChannel(Role.WereWolf) as TextChannel
     let hasBlackwolfVote = false
     if (!player.role.in(WOLFS)) {
       hasBlackwolfVote = await this.determineHasBlackwolfVote(playerId)
@@ -44,25 +44,26 @@ export class CheckWereWolfVotingResult implements IStep {
       gameState.recentlyDeath.delete(playerId)
       gameState.deathPlayers.delete(playerId)
       player.setRole(new WereWolf())
+      await givePermission(channel, player)
     } else {
       player.onKill({ by: wolfs[0] as Player })
     }
 
-    await gameState
-      .findChannel(Role.WereWolf)
-      ?.send(
-        `Đã ${hasBlackwolfVote ? 'nguyền' : 'giết'} ${player.raw.displayName}.`
-      )
-    logger.info(`Were wolf kill ${player.raw.displayName}.`)
+    await channel.send(
+      `Đã ${hasBlackwolfVote ? 'nguyền' : 'giết'} ${player.raw.displayName}.`
+    )
+    // logger.info(`Were wolf kill ${player.raw.displayName}.`)
 
     return new StartWhiteWolfTurn().handle()
   }
 
   private async determineHasBlackwolfVote(playerId: string): Promise<boolean> {
     const blackwolf = gameState.findPlayerByRole(Role.BlackWolf)
-    if (!blackwolf || blackwolf.isDeath || !gameState.blackwolfCurse) {
+    console.log(blackwolf, gameState.blackwolfCurse)
+    if (!blackwolf || blackwolf.isDeath || gameState.blackwolfCurse) {
       return false
     }
+    console.log('ok')
     const message = await this.votingMessage.fetch(true)
 
     const votedEmoji = this.votingMap.findKey((value) => value === playerId)

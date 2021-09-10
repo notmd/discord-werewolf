@@ -21,7 +21,7 @@ export class CheckSeerSelectionStep implements IStep {
   }
 
   async handle() {
-    logger.info('Checking Seer selection')
+    // logger.info('Checking Seer selection')
     const votes = await collectVotes(this.votingMessage, this.votingMap, {
       onlyPositive: true,
     })

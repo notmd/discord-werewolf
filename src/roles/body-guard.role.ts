@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord-api-types'
-import { VillageFaction } from '../faction/village.faction'
+import { VillagerFaction } from '../faction/villager.faction'
 import { Role } from '../game-settings'
 import { gameState } from '../game-state'
 import {
@@ -14,7 +14,7 @@ import { Collection } from 'discord.js'
 export class BodyGuard extends BaseRole implements IRole {
   readonly id = Role.BodyGuard
   readonly name = 'Bảo vệ'
-  readonly faction = new VillageFaction()
+  readonly faction = new VillagerFaction()
   readonly roomName = Role.BodyGuard
   readonly icon = '🛡️'
 

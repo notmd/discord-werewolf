@@ -23,7 +23,7 @@ export class CheckBodyGuardSelection implements IStep {
   }
 
   async handle() {
-    logger.info('Checking Body guard selection')
+    // logger.info('Checking Body guard selection')
     const votes = await collectVotes(this.votingMessage, this.votingMap, {
       onlyPositive: true,
     })

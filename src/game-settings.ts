@@ -69,5 +69,6 @@ export const gameSettings: GameSettings = {
     [Role.Cupid, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.Couple, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.BlackWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.WhiteWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

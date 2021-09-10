@@ -2,7 +2,6 @@ import { Collection, Message } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
-import { logger } from '../../logger'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 import { DisplayWitchKillSelection } from './display-witch-kill-selection.step'
@@ -27,7 +26,8 @@ export class CheckWitchSelection implements IStep {
     const action = selectRandomPlayerFromVotes(votes)
 
     if (action === undefined || action === 'skip') {
-      logger.warn('Witch choose skip.')
+      // logger.warn('Witch choose skip.')
+      gameState.findChannel(Role.Witch)?.send(`Ok skip.`)
 
       return new WakeUp().handle()
     } else if (action === 'kill') {

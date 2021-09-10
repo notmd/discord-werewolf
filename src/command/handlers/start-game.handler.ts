@@ -78,7 +78,7 @@ export class StartGameCommandHandler {
     const players = await this.fetchPlayers(mainVoiceChannel)
     if (!(await this.validatePlayers(players))) return
 
-    this.revokeTextChannelsPermissions()
+    await this.revokeTextChannelsPermissions()
     gameState.isRunning = true
     logger.info('Generating roles.')
     const roleAssignedPlayers = this.assignRoleToPlayers(players)
@@ -213,9 +213,7 @@ export class StartGameCommandHandler {
   private async getMainVoiceChannelFromDiscord(): Promise<
     VoiceChannel | undefined
   > {
-    const channels = await this.message.guild?.channels.fetch(undefined, {
-      force: true,
-    })
+    const channels = await this.message.guild?.channels.fetch()
     const channel = channels?.find(
       (channel) =>
         channel.isVoice() &&

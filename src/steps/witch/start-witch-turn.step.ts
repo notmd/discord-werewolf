@@ -41,15 +41,17 @@ export class StartWitchTurn implements IStep {
 
     const channel = gameState.findChannel(Role.Witch) as TextChannel
 
-    const lastRoundDeathPlayers = gameState.players
-      .filter((p) => gameState.deathPlayerReportToWitch.has(p.raw.id))
-      .map((p) => p.raw)
+    const lastRoundDeathPlayers = gameState.players.filter((p) =>
+      gameState.deathPlayerReportToWitch.has(p.raw.id)
+    )
 
     const { embed, map } = this.createVotingMessage()
     embed.setTitle(
       `Dậy đi nào phù thủy ei. Đêm nay ${
         lastRoundDeathPlayers.length > 0
-          ? `${lastRoundDeathPlayers.join(', ')} sẽ chết.`
+          ? `${lastRoundDeathPlayers
+              .map((p) => p.raw.displayName)
+              .join(', ')} sẽ chết.`
           : 'hem ai chết cả.'
       }`
     )

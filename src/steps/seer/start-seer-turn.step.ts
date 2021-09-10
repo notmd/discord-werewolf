@@ -20,7 +20,7 @@ export class StartSeerTurn implements IStep {
 
     if (!seer || !seer.canUseAbility) {
       const seconds = rand(20, 30)
-      logger.warn(`Seer cant use ability. Skip in ${seconds} seconds.`)
+      // logger.warn(`Seer cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
 
       return new StartCupidTurn().handle()

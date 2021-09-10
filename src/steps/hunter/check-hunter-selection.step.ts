@@ -15,7 +15,6 @@ import { Role } from '../../game-settings'
 import { StartDisscusion } from '../start-discussion.step'
 import { Collection, Message, Snowflake, TextChannel } from 'discord.js'
 import { StartMayorVote } from '../mayor/start-vote-mayor.step'
-import { Player } from '../../player'
 
 export class CheckHunterSelection implements IStep {
   constructor(
@@ -35,12 +34,12 @@ export class CheckHunterSelection implements IStep {
   async handle() {
     logger.info('Checking hunter selection.')
 
-    const hunter = gameState.findPlayerByRole(Role.Hunter) as Player
+    const hunter = gameState.findPlayerByRole(Role.Hunter)!
     const votes = await collectVotes(this.votingMessage, this.votingMap)
     const playerId = selectRandomPlayerFromVotes(votes)
-    const player = gameState.findPlayer(playerId)
+    const player = gameState.findPlayer(playerId)!
 
-    const deathPlayers = player!.onKill({ by: hunter })
+    const deathPlayers = player.onKill({ by: hunter })
     if (playerId !== hunter.raw.id) {
       hunter.onKill({ by: hunter })
     }

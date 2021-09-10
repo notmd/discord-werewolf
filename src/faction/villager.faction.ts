@@ -1,10 +1,10 @@
 import { gameState } from '../game-state'
 import { IFaction } from './faction.interface'
 
-export class VillageFaction implements IFaction {
+export class VillagerFaction implements IFaction {
   get win() {
     return gameState.alivePlayers.every(
-      (p) => p.faction instanceof VillageFaction
+      (p) => p.faction instanceof VillagerFaction
     )
   }
 

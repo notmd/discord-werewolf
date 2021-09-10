@@ -18,7 +18,7 @@ export class StartCupidTurn implements IStep {
     }
 
     if (gameState.couple !== undefined) {
-      logger.info('Cupid has used ability. Skip...')
+      // logger.info('Cupid has used ability. Skip...')
 
       return new StartWereWolfTurn().handle()
     }

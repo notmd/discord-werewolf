@@ -37,7 +37,7 @@ export const checkWin = (): boolean => {
 }
 
 export const unmuteEveryone = async (): Promise<void> => {
-  const mainVoiceChannel = gameState.voiceChannels.main
+  const mainVoiceChannel = gameState.mainVoiceChannels
   if (mainVoiceChannel) {
     for (const member of mainVoiceChannel.members.values()) {
       await member.voice.setMute(false)

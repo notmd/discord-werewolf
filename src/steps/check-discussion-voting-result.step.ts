@@ -68,14 +68,14 @@ export class CheckDiscussionVotingResult implements IStep {
       `${deathPlayers.join(', ')} đã bị chết như 1 con cho rach.`
     )
 
+    await this.votingMessage.unpin()
+
     if (checkWin()) {
       await sendVictoryAnnoucement()
       await unmuteEveryone()
 
       return
     }
-
-    await this.votingMessage.unpin()
 
     if (deathPlayers.some((p) => p.role.is(Role.Hunter))) {
       return new StartHunterTurn(false).handle()
