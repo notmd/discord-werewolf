@@ -41,9 +41,8 @@ export class StartCupidTurn implements IStep {
     embed.setTitle(`Dậy đi Cupid. Bạn mún ai iu nhau (chọn 2 người)?`)
     const message = await sendVotingMessage(
       channel,
-      embed,
-      map,
-      `${cupid}. ${nextMessage}`
+      { content: `${cupid}. ${nextMessage}`, embeds: [embed] },
+      map
     )
 
     return new CheckCupidSelection(message, map)

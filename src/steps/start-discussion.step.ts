@@ -38,7 +38,7 @@ export class StartDisscusion implements IStep {
     embed.setTitle('Vote giet nguoi đi các bạn ei')
     const votingMessage = await sendVotingMessage(
       this.mainTextChannel,
-      embed,
+      { embeds: [embed] },
       map
     )
     await votingMessage.pin()

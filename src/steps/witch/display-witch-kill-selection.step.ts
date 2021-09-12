@@ -21,7 +21,7 @@ export class DisplayWitchKillSelection implements IStep {
     embed.setTitle('Phù thủy mún giết ai?')
     const message = await sendVotingMessage(
       channel,
-      embed,
+      { embeds: [embed] },
       map
       // gameState.findPlayerByRole(Role.Witch)?.raw.toString()
     )

@@ -37,9 +37,8 @@ export class StartSeerTurn implements IStep {
     embed.setTitle('Dậy đi nào Tiên tri ei. Bạn mún tiên tri ai?')
     const message = await sendVotingMessage(
       seer.role.channel,
-      embed,
-      map,
-      `${seer.raw}. ${nextMessage}`
+      { content: `${seer.raw}. ${nextMessage}`, embeds: [embed] },
+      map
     )
 
     logger.info('Waiting Seer selection.')

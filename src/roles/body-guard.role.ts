@@ -46,9 +46,13 @@ export class BodyGuard extends BaseRole implements IRole {
     embed.setTitle('Dậy đi nào bảo vệ ei. Bạn mún bảo vệ ai?')
     const message = await sendVotingMessage(
       this.channel,
-      embed,
-      map,
-      `${gameState.findPlayerByRole(this.id)?.raw.toString()}. ${nextMessage}`
+      {
+        content: `${gameState
+          .findPlayerByRole(this.id)
+          ?.raw.toString()}. ${nextMessage}`,
+        embeds: [embed],
+      },
+      map
     )
 
     return { message, map }

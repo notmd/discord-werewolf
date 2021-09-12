@@ -47,9 +47,8 @@ export class StartWitchTurn implements IStep {
     )
     const message = await sendVotingMessage(
       channel,
-      embed,
-      map,
-      `${witch}. ${nextMessage}`
+      { content: `${witch}. ${nextMessage}`, embeds: [embed] },
+      map
     )
 
     return new CheckWitchSelection(message, map)

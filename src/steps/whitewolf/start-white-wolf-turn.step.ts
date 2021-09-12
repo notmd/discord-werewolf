@@ -46,9 +46,8 @@ export class StartWhiteWolfTurn implements IStep {
 
     const message = await sendVotingMessage(
       whiteWolf.role.channel,
-      embed,
-      map,
-      `${whiteWolf}. ${nextMessage}`
+      { embeds: [embed], content: `${whiteWolf}. ${nextMessage}` },
+      map
     )
 
     return new CheckWhiteWolfSelection(message, map)

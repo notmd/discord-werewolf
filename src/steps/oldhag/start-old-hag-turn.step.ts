@@ -33,9 +33,8 @@ export class StartOldHagTurn implements IStep {
     embed.setTitle('Dậy đi phù thủy già. Bạn mún ai bị câm?')
     const message = await sendVotingMessage(
       oldHag.role.channel,
-      embed,
-      map,
-      `${oldHag}. ${nextMessage}`
+      { content: `${oldHag}. ${nextMessage}`, embeds: [embed] },
+      map
     )
 
     return new CheckOldHagSelection(message, map)

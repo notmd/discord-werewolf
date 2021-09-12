@@ -15,7 +15,7 @@ export class DisplayWitchSaveSelection implements IStep {
 
     const { embed, map } = createVotingMessage(saveablePlayers)
     embed.setTitle('Phù thủy mún cứu ai?')
-    const message = await sendVotingMessage(channel, embed, map)
+    const message = await sendVotingMessage(channel, { embeds: [embed] }, map)
 
     return new CheckWitchSaveSelection(message, map)
   }

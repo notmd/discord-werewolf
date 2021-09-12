@@ -33,16 +33,19 @@ export class StartWereWolfTurn implements IStep {
     embed.setTitle('Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?')
     const message = await sendVotingMessage(
       wereWoflChannel,
-      embed,
-      map,
-      `${gameState.alivePlayers
-        .filter((p) => p.role.in(WOLFS))
-        .join(', ')}. ${nextMessage}` +
-        (effectedByCaveWolfs.length > 0)
-        ? `Con sói ${effectedByCaveWolfs
-            .map((w) => w.raw.displayName)
-            .join(', ')} bị yếu ròi.`
-        : ''
+      {
+        content:
+          `${gameState.alivePlayers
+            .filter((p) => p.role.in(WOLFS))
+            .join(', ')}. ${nextMessage}` +
+          (effectedByCaveWolfs.length > 0)
+            ? `Con sói ${effectedByCaveWolfs
+                .map((w) => w.raw.displayName)
+                .join(', ')} bị yếu ròi.`
+            : '',
+        embeds: [embed],
+      },
+      map
     )
 
     logger.info('Wating for werewolf voting result.')

@@ -2,6 +2,7 @@ import {
   Collection,
   Message,
   MessageEmbed,
+  MessageOptions,
   Snowflake,
   TextChannel,
 } from 'discord.js'
@@ -128,11 +129,10 @@ export const createVotingMessage = <T extends string = Snowflake>(
 
 export const sendVotingMessage = async (
   channel: TextChannel,
-  embed: MessageEmbed,
-  map: Collection<string, Snowflake>,
-  content?: string
+  messageOptions: Omit<MessageOptions, 'embeds'> & { embeds: MessageEmbed[] },
+  map: Collection<string, Snowflake>
 ) => {
-  const message = await channel.send({ embeds: [embed], content })
+  const message = await channel.send(messageOptions)
   await Promise.all(
     [...map.keys()].map((icon) => {
       message.react(icon)
