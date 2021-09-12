@@ -10,6 +10,7 @@ import {
 import { BaseRole } from './base-role.abstract'
 import { IRole } from './role.interface'
 import { Collection } from 'discord.js'
+import { nextMessage } from '../utils'
 
 export class BodyGuard extends BaseRole implements IRole {
   readonly id = Role.BodyGuard
@@ -24,7 +25,7 @@ export class BodyGuard extends BaseRole implements IRole {
     )
   }
 
-  onWakeUp() {
+  async onWakeUp() {
     gameState.bodyGuardLastSelection = gameState.bodyGuardSelection
     gameState.bodyGuardSelection = null
   }
@@ -47,7 +48,7 @@ export class BodyGuard extends BaseRole implements IRole {
       this.channel,
       embed,
       map,
-      gameState.findPlayerByRole(this.id)?.raw.toString()
+      `${gameState.findPlayerByRole(this.id)?.raw.toString()}. ${nextMessage}`
     )
 
     return { message, map }

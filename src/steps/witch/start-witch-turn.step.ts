@@ -1,40 +1,30 @@
 import { TextChannel } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../helper'
-import { logger } from '../../logger'
-import { rand, sleep } from '../../utils'
+import {
+  createVotingMessage,
+  fakeDelay,
+  sendCannotUseAbilityReason,
+  sendVotingMessage,
+} from '../../helper'
+import { nextMessage } from '../../utils'
 import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
 import { CheckWitchSelection } from './check-witch-selection.step'
 
 export class StartWitchTurn implements IStep {
   async handle() {
-    const witch = gameState.findPlayerByRole(Role.Witch)
-    logger.info(`Start Witch turn.`)
-    if (!witch) {
-      logger.warn(`Game does not has Witch role. Skip...`)
-
+    if (!gameState.hasRole(Role.Witch)) {
       return new StartOldHagTurn().handle()
     }
+    const witch = gameState.findPlayerByRole(Role.Witch)!
 
     if (
-      !witch.canUseAbility &&
-      !gameState.deathPlayerReportToWitch.has(witch.raw.id)
+      (!witch.canUseAbility && !witch.wasDeathRecently) ||
+      (gameState.witchUseKilled && gameState.witchUseSaved)
     ) {
-      const seconds = rand(20, 30)
-      // logger.warn(`Witch cant use ability. Skip in ${seconds} seconds.`)
-      await sleep(seconds * 1000)
-
-      return new StartOldHagTurn().handle()
-    }
-
-    if (gameState.witchUseKilled && gameState.witchUseSaved) {
-      const seconds = rand(20, 30)
-      // logger.warn(
-      //   `Witch has already used both ability. Skip in ${seconds} seconds.`
-      // )
-      await sleep(seconds * 1000)
+      await sendCannotUseAbilityReason(witch)
+      await fakeDelay()
 
       return new StartOldHagTurn().handle()
     }
@@ -59,7 +49,7 @@ export class StartWitchTurn implements IStep {
       channel,
       embed,
       map,
-      witch.raw.toString()
+      `${witch}. ${nextMessage}`
     )
 
     return new CheckWitchSelection(message, map)

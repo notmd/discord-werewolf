@@ -1,5 +1,6 @@
 import { BlackWolf } from './roles/blackwolf.role'
 import { BodyGuard } from './roles/body-guard.role'
+import { Cave } from './roles/cave.role'
 import { Cupid } from './roles/cupid.role'
 import { Hunter } from './roles/hunter.role'
 import { Lycan } from './roles/lycan.role'
@@ -30,6 +31,7 @@ export enum Role {
   BlackWolf = 'blackwolf',
   WhiteWolf = 'whitewolf',
   OldHag = 'oldhag',
+  Cave = 'cave',
 }
 export const WOLFS = [Role.WereWolf, Role.BlackWolf, Role.WhiteWolf] as const
 
@@ -58,6 +60,7 @@ export const gameSettings: GameSettings = {
     [Role.BlackWolf, new BlackWolf()],
     [Role.WhiteWolf, new WhiteWolf()],
     [Role.OldHag, new OldHag()],
+    [Role.Cave, new Cave()],
   ]),
   channels: new Map([
     [MAIN_VOICE_CHANNLE, { visibility: 'public', type: 'GUILD_VOICE' }],
@@ -73,5 +76,7 @@ export const gameSettings: GameSettings = {
     [Role.Couple, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.BlackWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
     [Role.WhiteWolf, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.OldHag, { visibility: 'private', type: 'GUILD_TEXT' }],
+    [Role.Cave, { visibility: 'private', type: 'GUILD_TEXT' }],
   ]),
 } as const

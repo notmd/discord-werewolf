@@ -6,7 +6,6 @@ import { logger } from '../../logger'
 import { Player } from '../../player'
 import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
-import { WakeUp } from '../wake-up.step'
 
 export class CheckWitchKillSelection implements IStep {
   constructor(

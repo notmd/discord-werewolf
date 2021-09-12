@@ -10,14 +10,13 @@ import { ADMIN_ID } from './game-settings'
 import { gameState } from './game-state'
 import { Letters, People } from './icons'
 import { Player } from './player'
+import { rand, sleep } from './utils'
 
 export const muteAllDeathPlayer = async () => {
   const deathPlayers = [...gameState.deathPlayers.keys()]
   for (const deathPlayer of deathPlayers) {
-    const p = gameState.findPlayer(deathPlayer)
-    if (p && !p.raw.voice.serverMute) {
-      await p.raw.voice.setMute(true)
-    }
+    const p = gameState.findPlayer(deathPlayer)!
+    await mute(p)
   }
 }
 
@@ -234,4 +233,14 @@ export const fetchReactionUsers = async (message: Message, emoji: string) => {
   }
 
   return undefined
+}
+
+export const sendCannotUseAbilityReason = async (player: Player) => {
+  if (player.isEffectedByCave) {
+    await player.role.channel.send(`${player} bạn bị yếu ròi nha.`)
+  }
+}
+
+export const fakeDelay = async () => {
+  await sleep(1000 * rand(20, 30))
 }

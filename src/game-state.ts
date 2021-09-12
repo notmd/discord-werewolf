@@ -20,8 +20,9 @@ export class GameState {
   players: Player[] = []
 
   deathPlayers: Collection<Snowflake, DeathContext> = new Collection()
-  deathPlayerReportToWitch: Set<Snowflake> = new Set()
+  // TODO: rename to pending death
   recentlyDeath: Set<Snowflake> = new Set()
+  deathPlayerReportToWitch: Set<Snowflake> = new Set()
 
   bodyGuardLastSelection: null | Snowflake = null
   bodyGuardSelection: null | Snowflake = null
@@ -41,6 +42,9 @@ export class GameState {
 
   oldHagSelection?: Snowflake
   lastOlHagSelection?: Snowflake
+
+  caveSelection?: Snowflake
+  lastCaveSelectio?: Snowflake
 
   constructor() {}
 

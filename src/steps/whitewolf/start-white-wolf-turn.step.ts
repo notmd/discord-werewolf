@@ -1,9 +1,14 @@
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../helper'
+import {
+  createVotingMessage,
+  fakeDelay,
+  sendCannotUseAbilityReason,
+  sendVotingMessage,
+} from '../../helper'
 import { logger } from '../../logger'
 import { Player } from '../../player'
-import { rand, sleep } from '../../utils'
+import { nextMessage } from '../../utils'
 import { IStep } from '../step'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
 import { CheckWhiteWolfSelection } from './check-whitewolf-selection.step'
@@ -11,7 +16,6 @@ import { CheckWhiteWolfSelection } from './check-whitewolf-selection.step'
 export class StartWhiteWolfTurn implements IStep {
   async handle() {
     logger.info('Start white wolf turn.')
-    const seconds = rand(20, 30)
     if (!gameState.hasRole(Role.WhiteWolf)) {
       return new StartWitchTurn().handle()
     }
@@ -25,10 +29,10 @@ export class StartWhiteWolfTurn implements IStep {
     const whiteWolf = gameState.findPlayerByRole(Role.WhiteWolf) as Player
     if (
       gameState.whitewolfLastKillAt + 2 > gameState.round ||
-      whiteWolf.isDeath
+      !whiteWolf.canUseAbility
     ) {
-      logger.info(`Skip in ${seconds} seconds`)
-      await sleep(seconds * 1000)
+      await sendCannotUseAbilityReason(whiteWolf)
+      await fakeDelay()
 
       return new StartWitchTurn().handle()
     }
@@ -44,7 +48,7 @@ export class StartWhiteWolfTurn implements IStep {
       whiteWolf.role.channel,
       embed,
       map,
-      whiteWolf.toString()
+      `${whiteWolf}. ${nextMessage}`
     )
 
     return new CheckWhiteWolfSelection(message, map)

@@ -36,11 +36,11 @@ export class Player<R extends IRole = IRole> {
     return !this.isDeath
   }
 
-  get isGuarded() {
+  private get isGuarded() {
     return gameState.bodyGuardSelection === this.raw.id
   }
 
-  get defaultFaction(): IFaction {
+  private get defaultFaction(): IFaction {
     return this._role.faction
   }
 
@@ -64,7 +64,15 @@ export class Player<R extends IRole = IRole> {
   }
 
   get canUseAbility() {
-    return !this.isDeath && this.raw.id !== gameState.blackwolfCurse
+    return (
+      !this.isDeath &&
+      this.raw.id !== gameState.blackwolfCurse &&
+      !this.isEffectedByCave
+    )
+  }
+
+  get isEffectedByCave() {
+    return this.raw.id === gameState.caveSelection
   }
 
   get wasDeathRecently() {

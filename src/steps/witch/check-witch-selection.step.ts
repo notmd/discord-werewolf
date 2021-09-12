@@ -4,6 +4,7 @@ import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
 import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
+import { CheckWitchSaveSelection } from './check-witch-save-selection.step'
 import { DisplayWitchKillSelection } from './display-witch-kill-selection.step'
 import { DisplayWitchSaveSelection } from './display-witch-save-selection.step'
 
@@ -35,14 +36,12 @@ export class CheckWitchSelection implements IStep {
     } else if (action === 'save') {
       if (gameState.recentlyDeath.size === 1) {
         const playerId = gameState.recentlyDeath.values().next().value as string
-        gameState.recentlyDeath.delete(playerId)
-        gameState.deathPlayers.delete(playerId)
-        gameState.witchUseSaved = true
 
-        const player = gameState.findPlayer(playerId)
+        const player = gameState.findPlayer(playerId)!
+        CheckWitchSaveSelection.save(player)
         await gameState
           .findChannel(Role.Witch)
-          ?.send(`Bạn đã cứu ${player?.raw.displayName}.`)
+          ?.send(`Bạn đã cứu ${player.raw.displayName}.`)
 
         return new StartOldHagTurn().handle()
       }

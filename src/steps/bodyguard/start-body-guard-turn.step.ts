@@ -1,5 +1,6 @@
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
+import { sendCannotUseAbilityReason } from '../../helper'
 import { logger } from '../../logger'
 import { BodyGuard } from '../../roles/body-guard.role'
 import { rand, sleep } from '../../utils'
@@ -9,19 +10,20 @@ import { CheckBodyGuardSelection } from './check-body-guard-selection.step'
 
 export class StartBodyGuardTurn implements IStep {
   async handle(): Promise<any> {
-    logger.info(`Start ${Role.BodyGuard} turn.`)
+    logger.info(`Start BodyGuard turn.`)
 
     if (!gameState.hasRole(Role.BodyGuard)) {
-      logger.warn(`Game does not has ${Role.BodyGuard} role. Skip...`)
+      logger.warn(`Game does not has BodyGuard role. Skip...`)
 
       return new StartSeerTurn().handle()
     }
 
-    const bodyGuard = gameState.findPlayerByRole<BodyGuard>(Role.BodyGuard)
+    const bodyGuard = gameState.findPlayerByRole<BodyGuard>(Role.BodyGuard)!
 
-    if (!bodyGuard || !bodyGuard.canUseAbility) {
+    if (!bodyGuard.canUseAbility) {
+      await sendCannotUseAbilityReason(bodyGuard)
       const seconds = rand(20, 30)
-      logger.warn(`Bodyguard cant use ability. Skip in ${seconds} seconds.`)
+      // logger.warn(`Bodyguard cant use ability. Skip in ${seconds} seconds.`)
       await sleep(seconds * 1000)
 
       return new StartSeerTurn().handle()

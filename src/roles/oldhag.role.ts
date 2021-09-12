@@ -10,7 +10,7 @@ export class OldHag extends BaseRole implements IRole {
   readonly name = 'Phù thủy già'
   readonly roomName = [Role.OldHag]
   readonly faction = new VillagerFaction()
-  readonly icon = '👷'
+  readonly icon = '🧑‍🦳'
 
   async onSleep() {
     if (gameState.oldHagSelection) {

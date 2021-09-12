@@ -3,6 +3,7 @@ import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
+import { nextMessage } from '../../utils'
 import { StartDisscusion } from '../start-discussion.step'
 import { StartSleep } from '../start-sleep.step'
 import { IStep } from '../step'
@@ -30,13 +31,17 @@ export class StartHunterTurn implements IStep {
 
     const hunterChannel = gameState.findChannel(Role.Hunter) as TextChannel
 
-    const { embed, map } = createVotingMessage(gameState.alivePlayers)
+    const { embed, map } = createVotingMessage(
+      gameState.alivePlayers.filter(
+        (p) => p.raw.id !== gameState.oldHagSelection
+      )
+    )
     embed.setTitle('Thợ săn, bạn đã chết. Giờ bạn mún bắn ai?')
     const message = await sendVotingMessage(
       hunterChannel,
       embed,
       map,
-      hunter.raw.toString()
+      `${hunter}. ${nextMessage}`
     )
 
     return new CheckHunterSelection(this.shouldStartDisscusion, message, map)

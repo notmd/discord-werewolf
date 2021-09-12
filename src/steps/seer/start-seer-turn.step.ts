@@ -1,9 +1,14 @@
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
-import { createVotingMessage, sendVotingMessage } from '../../helper'
+import {
+  createVotingMessage,
+  fakeDelay,
+  sendCannotUseAbilityReason,
+  sendVotingMessage,
+} from '../../helper'
 import { logger } from '../../logger'
 import { Seer } from '../../roles/seer.role'
-import { rand, sleep } from '../../utils'
+import { nextMessage } from '../../utils'
 import { StartCupidTurn } from '../cupid/start-cupid-turn.step'
 import { IStep } from '../step'
 import { CheckSeerSelectionStep } from './check-seer-selection.step'
@@ -16,12 +21,11 @@ export class StartSeerTurn implements IStep {
 
       return new StartCupidTurn().handle()
     }
-    const seer = gameState.findPlayerByRole<Seer>(Role.Seer)
+    const seer = gameState.findPlayerByRole<Seer>(Role.Seer)!
 
-    if (!seer || !seer.canUseAbility) {
-      const seconds = rand(20, 30)
-      // logger.warn(`Seer cant use ability. Skip in ${seconds} seconds.`)
-      await sleep(seconds * 1000)
+    if (!seer.canUseAbility) {
+      await sendCannotUseAbilityReason(seer)
+      await fakeDelay()
 
       return new StartCupidTurn().handle()
     }
@@ -35,7 +39,7 @@ export class StartSeerTurn implements IStep {
       seer.role.channel,
       embed,
       map,
-      seer.raw.toString()
+      `${seer.raw}. ${nextMessage}`
     )
 
     logger.info('Waiting Seer selection.')

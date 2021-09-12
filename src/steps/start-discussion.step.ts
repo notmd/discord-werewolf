@@ -31,7 +31,9 @@ export class StartDisscusion implements IStep {
     await muteAllDeathPlayer()
     const { embed, map } = createVotingMessage<'skip' | string>([
       { id: 'skip', text: 'Skip', icon: '⏩' },
-      ...gameState.alivePlayers,
+      ...gameState.alivePlayers.filter(
+        (p) => p.raw.id !== gameState.oldHagSelection
+      ),
     ])
     embed.setTitle('Vote giet nguoi đi các bạn ei')
     const votingMessage = await sendVotingMessage(
