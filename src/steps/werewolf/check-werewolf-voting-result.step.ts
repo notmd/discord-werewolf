@@ -33,10 +33,7 @@ export class CheckWereWolfVotingResult implements IStep {
     const player = gameState.findPlayer(playerId)!
     const wolfs = gameState.alivePlayers.filter((p) => p.role.in(WOLFS))
     const channel = gameState.findChannel(Role.WereWolf) as TextChannel
-    let hasBlackwolfVote = false
-    if (!player.role.in(WOLFS)) {
-      hasBlackwolfVote = await this.determineHasBlackwolfVote(playerId)
-    }
+    const hasBlackwolfVote = await this.determineHasBlackwolfVote(player)
     if (hasBlackwolfVote) {
       gameState.blackwolfCurse = playerId
       gameState.blackwolfCurseAt = gameState.round
@@ -52,19 +49,26 @@ export class CheckWereWolfVotingResult implements IStep {
     await channel.send(
       `Đã ${hasBlackwolfVote ? 'nguyền' : 'giết'} ${player.raw.displayName}.`
     )
-    // logger.info(`Were wolf kill ${player.raw.displayName}.`)
 
     return new StartWhiteWolfTurn().handle()
   }
 
-  private async determineHasBlackwolfVote(playerId: string): Promise<boolean> {
+  private async determineHasBlackwolfVote(player: Player): Promise<boolean> {
     const blackwolf = gameState.findPlayerByRole(Role.BlackWolf)
-    if (!blackwolf || blackwolf.canUseAbility || gameState.blackwolfCurse) {
+    if (
+      !blackwolf ||
+      !blackwolf.canUseAbility ||
+      gameState.blackwolfCurse ||
+      player.role.in(WOLFS)
+    ) {
       return false
     }
+
     const message = await this.votingMessage.fetch(true)
 
-    const votedEmoji = this.votingMap.findKey((value) => value === playerId)
+    const votedEmoji = this.votingMap.findKey(
+      (value) => value === player.raw.id
+    )
 
     if (!votedEmoji) {
       return false

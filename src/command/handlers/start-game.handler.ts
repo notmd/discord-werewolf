@@ -62,6 +62,7 @@ export class StartGameCommandHandler {
 
       return
     }
+    await this.message.react('👍')
     const mainVoiceChannel = await this.getMainVoiceChannelFromDiscord()
     const mainTextChannel = await this.getMainTextChannelFromDiscord()
     if (!mainVoiceChannel) {
@@ -122,18 +123,18 @@ export class StartGameCommandHandler {
     const generatedRoles = _(this.generateRole()).shuffle().shuffle().value()
 
     return Array.from(players.values()).map((p, i) => {
-      return Player.fromDiscord(p, generatedRoles[i] as IRole)
+      return Player.fromDiscord(p, generatedRoles[i]!)
     })
   }
 
   private async givePermisstionsToPlayers(players: Player[]) {
     let villagerIndex = 1
     for (const player of players) {
-      if (player.role.roomName !== undefined) {
-        const romeNames = Array.isArray(player.role.roomName)
-          ? player.role.roomName
-          : [player.role.roomName]
-        for (const room of romeNames) {
+      if (player.role.channelNames !== undefined) {
+        const channelNames = Array.isArray(player.role.channelNames)
+          ? player.role.channelNames
+          : [player.role.channelNames]
+        for (const room of channelNames) {
           const channel = gameState.findChannel(room) as TextChannel
           await sleep(200)
           await givePermission(channel, player)
@@ -246,6 +247,7 @@ export class StartGameCommandHandler {
   }
 
   private async revokeTextChannelsPermissions() {
+    logger.info('Revoking permissions')
     const channels = this.fetchTextChannels()
     if (channels) {
       for (const channel of channels.values()) {

@@ -2,6 +2,7 @@ import {
   Collection,
   Message,
   MessageEmbed,
+  MessageEmbedOptions,
   MessageOptions,
   Snowflake,
   TextChannel,
@@ -16,19 +17,21 @@ import { rand, sleep } from './utils'
 export const muteAllDeathPlayer = async () => {
   const deathPlayers = [...gameState.deathPlayers.keys()]
   for (const deathPlayer of deathPlayers) {
-    const p = gameState.findPlayer(deathPlayer)!
-    await mute(p)
+    const p = gameState.findPlayer(deathPlayer)
+    if (p) {
+      await mute(p)
+    }
   }
 }
 
 export const unmute = async (player: Player) => {
   if (!player.raw.voice.serverMute) {
-    await player.raw.voice.setMute(true)
+    await player.raw.voice.setMute(false)
   }
 }
 export const mute = async (player: Player) => {
   if (player.raw.voice.serverMute) {
-    await player.raw.voice.setMute(false)
+    await player.raw.voice.setMute(true)
   }
 }
 
@@ -87,9 +90,10 @@ export const createRolesEmbedMessage = () => {
 }
 
 export const createVotingMessage = <T extends string = Snowflake>(
-  players: Array<Player | { id: T; text: string; icon?: string }>
+  players: Array<Player | { id: T; text: string; icon?: string }>,
+  options: Omit<MessageEmbedOptions, 'description'> = {}
 ): { embed: MessageEmbed; map: Collection<string, T> } => {
-  const embed = new MessageEmbed()
+  const embed = new MessageEmbed(options)
   const map = new Collection<string, T>()
   const letters = [...Letters.values()]
   let letterIndex = 0
@@ -132,6 +136,8 @@ export const sendVotingMessage = async (
   messageOptions: Omit<MessageOptions, 'embeds'> & { embeds: MessageEmbed[] },
   map: Collection<string, Snowflake>
 ) => {
+  messageOptions.content += ` Chọn xong nhớ chat \`!next\`.`
+
   const message = await channel.send(messageOptions)
   await Promise.all(
     [...map.keys()].map((icon) => {
@@ -215,7 +221,7 @@ export const authorizeMessage = (
   message: Message,
   allowedId: Set<string> = new Set()
 ) => {
-  const ids = new Set([...allowedId, ADMIN_ID])
+  const ids = new Set<string>([...allowedId, ...ADMIN_ID])
   if (gameState.controller) {
     ids.add(gameState.controller)
   }

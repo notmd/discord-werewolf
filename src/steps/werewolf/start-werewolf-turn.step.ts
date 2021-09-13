@@ -3,10 +3,10 @@ import { Role, WOLFS } from '../../game-settings'
 import { gameState } from '../../game-state'
 import {
   createVotingMessage as createVoting,
+  fakeDelay,
   sendVotingMessage,
 } from '../../helper'
 import { logger } from '../../logger'
-import { nextMessage, rand, sleep } from '../../utils'
 import { IStep } from '../step'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
 import { CheckWereWolfVotingResult } from './check-werewolf-voting-result.step'
@@ -24,25 +24,25 @@ export class StartWereWolfTurn implements IStep {
 
     if (canUseAbilityWolfs.length === 0) {
       await wereWoflChannel.send(`Mấy con sói bị yếu hết ròi nha.`)
-      await sleep(1000 * rand(20, 30))
+      await fakeDelay()
 
       return new StartWitchTurn().handle()
     }
 
-    const { embed, map } = createVoting(gameState.alivePlayers)
-    embed.setTitle('Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?')
+    const { embed, map } = createVoting(gameState.alivePlayers, {
+      title: 'Dậy đi nào mấy con sói già. Mấy con sói già muốn giết ai?',
+    })
+
+    const content =
+      `${wolfs.join(', ')}.` +
+      (effectedByCaveWolfs.length > 0
+        ? ` Con sói ${effectedByCaveWolfs.join(',')} đã bị yếu.`
+        : '')
+
     const message = await sendVotingMessage(
       wereWoflChannel,
       {
-        content:
-          `${gameState.alivePlayers
-            .filter((p) => p.role.in(WOLFS))
-            .join(', ')}. ${nextMessage}` +
-          (effectedByCaveWolfs.length > 0)
-            ? `Con sói ${effectedByCaveWolfs
-                .map((w) => w.raw.displayName)
-                .join(', ')} bị yếu ròi.`
-            : '',
+        content,
         embeds: [embed],
       },
       map

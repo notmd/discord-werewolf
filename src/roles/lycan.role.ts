@@ -6,7 +6,7 @@ import { IRole } from './role.interface'
 export class Lycan extends BaseRole implements IRole {
   readonly id = Role.Lycan
   readonly name = 'Lycan'
-  readonly roomName = Role.Lycan
+  readonly channelNames = Role.Lycan
   readonly faction = new VillagerFaction()
   readonly icon = '🐺👷'
 }

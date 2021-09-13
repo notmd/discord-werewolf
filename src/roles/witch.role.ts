@@ -7,6 +7,6 @@ export class Witch extends BaseRole implements IRole {
   readonly id = Role.Witch
   readonly name = 'Phù thủy'
   readonly faction = new VillagerFaction()
-  readonly roomName = Role.Witch
+  readonly channelNames = Role.Witch
   readonly icon = '🧙‍♀️'
 }

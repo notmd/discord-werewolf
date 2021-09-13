@@ -8,7 +8,6 @@ import {
 } from '../../helper'
 import { logger } from '../../logger'
 import { Player } from '../../player'
-import { nextMessage } from '../../utils'
 import { IStep } from '../step'
 import { StartWitchTurn } from '../witch/start-witch-turn.step'
 import { CheckWhiteWolfSelection } from './check-whitewolf-selection.step'
@@ -46,7 +45,7 @@ export class StartWhiteWolfTurn implements IStep {
 
     const message = await sendVotingMessage(
       whiteWolf.role.channel,
-      { embeds: [embed], content: `${whiteWolf}. ${nextMessage}` },
+      { embeds: [embed], content: `${whiteWolf}.` },
       map
     )
 

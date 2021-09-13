@@ -1,6 +1,6 @@
 import { gameState } from '../game-state'
 import { logger } from '../logger'
-import { StartBodyGuardTurn } from './bodyguard/start-body-guard-turn.step'
+import { StartCaveTurn } from './cave/start-cave-turn.step'
 import { IStep } from './step'
 
 export class StartSleep implements IStep {
@@ -10,6 +10,6 @@ export class StartSleep implements IStep {
     logger.info('Start sleep.')
     await gameState.onSleep()
 
-    return new StartBodyGuardTurn().handle()
+    return new StartCaveTurn().handle()
   }
 }

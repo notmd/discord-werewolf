@@ -7,13 +7,14 @@ import {
   sendCannotUseAbilityReason,
   sendVotingMessage,
 } from '../../helper'
-import { nextMessage } from '../../utils'
+import { logger } from '../../logger'
 import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
 import { CheckWitchSelection } from './check-witch-selection.step'
 
 export class StartWitchTurn implements IStep {
   async handle() {
+    logger.info(`Start Witch turn`)
     if (!gameState.hasRole(Role.Witch)) {
       return new StartOldHagTurn().handle()
     }
@@ -47,7 +48,7 @@ export class StartWitchTurn implements IStep {
     )
     const message = await sendVotingMessage(
       channel,
-      { content: `${witch}. ${nextMessage}`, embeds: [embed] },
+      { content: `${witch}.`, embeds: [embed] },
       map
     )
 
@@ -61,7 +62,7 @@ export class StartWitchTurn implements IStep {
       icon?: string
     }> = [{ id: 'skip', text: 'Hem làm gì cả', icon: '⏩' }]
     if (!gameState.witchUseKilled) {
-      options.push({ id: 'kill', text: 'Giết', icon: '💀' })
+      options.push({ id: 'kill', text: 'Giết người khác', icon: '💀' })
     }
 
     if (!gameState.witchUseSaved) {

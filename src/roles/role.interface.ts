@@ -5,7 +5,7 @@ import { Role } from '../game-settings'
 export interface IRole {
   readonly id: Role
   readonly name: string
-  readonly roomName?: Role | Role[]
+  readonly channelNames?: Role | Role[]
   readonly faction: IFaction // this should be access only from the Player class as default faction
   readonly icon: string
   readonly channel: TextChannel

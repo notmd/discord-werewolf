@@ -7,7 +7,7 @@ export class Cupid extends BaseRole implements IRole {
   readonly id = Role.Cupid
   readonly name = 'Cupid'
   readonly roleAssignedNotification = true
-  readonly roomName = Role.Cupid
+  readonly channelNames = Role.Cupid
   readonly faction = new VillagerFaction()
   readonly icon = '💘'
 }

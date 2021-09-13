@@ -38,13 +38,13 @@ export class GameState {
   blackwolfCurseAt?: number = undefined
   blackwolfCurse?: string
 
-  whitewolfLastKillAt: number = -1 // round
+  whitewolfLastKillAt: number = 0 // round
 
   oldHagSelection?: Snowflake
   lastOlHagSelection?: Snowflake
 
   caveSelection?: Snowflake
-  lastCaveSelectio?: Snowflake
+  lastCaveSelection?: Snowflake
 
   constructor() {}
 

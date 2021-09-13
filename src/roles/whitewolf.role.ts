@@ -6,7 +6,7 @@ import { IRole } from './role.interface'
 export class WhiteWolf extends BaseRole implements IRole {
   readonly id = Role.WhiteWolf
   readonly name = 'Sói Trắng'
-  readonly roomName = [Role.WereWolf, Role.WhiteWolf]
+  readonly channelNames = [Role.WereWolf, Role.WhiteWolf]
   readonly faction = new WhiteWolfFaction()
   readonly icon = '🐺'
 }

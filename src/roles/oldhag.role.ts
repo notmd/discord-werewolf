@@ -8,7 +8,7 @@ import { IRole } from './role.interface'
 export class OldHag extends BaseRole implements IRole {
   readonly id = Role.OldHag
   readonly name = 'Phù thủy già'
-  readonly roomName = [Role.OldHag]
+  readonly channelNames = [Role.OldHag]
   readonly faction = new VillagerFaction()
   readonly icon = '🧑‍🦳'
 

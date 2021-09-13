@@ -10,13 +10,12 @@ import {
 import { BaseRole } from './base-role.abstract'
 import { IRole } from './role.interface'
 import { Collection } from 'discord.js'
-import { nextMessage } from '../utils'
 
 export class BodyGuard extends BaseRole implements IRole {
   readonly id = Role.BodyGuard
   readonly name = 'Bảo vệ'
   readonly faction = new VillagerFaction()
-  readonly roomName = Role.BodyGuard
+  readonly channelNames = Role.BodyGuard
   readonly icon = '🛡️'
 
   get protecablePlayer() {
@@ -30,6 +29,9 @@ export class BodyGuard extends BaseRole implements IRole {
     gameState.bodyGuardSelection = null
   }
 
+  /**
+   * @deprecated
+   */
   async protect(votes: Collection<Snowflake, number>): Promise<void> {
     const playerId = selectRandomPlayerFromVotes(votes)
 
@@ -41,15 +43,16 @@ export class BodyGuard extends BaseRole implements IRole {
     await this.channel.send(`Bạn đã bảo vệ ${player?.raw.displayName}`)
   }
 
+  /**
+   * @deprecated
+   */
   async displayProtectablePlayers() {
     const { embed, map } = createVotingMessage(this.protecablePlayer)
     embed.setTitle('Dậy đi nào bảo vệ ei. Bạn mún bảo vệ ai?')
     const message = await sendVotingMessage(
       this.channel,
       {
-        content: `${gameState
-          .findPlayerByRole(this.id)
-          ?.raw.toString()}. ${nextMessage}`,
+        content: `${gameState.findPlayerByRole(this.id)?.raw.toString()}.`,
         embeds: [embed],
       },
       map

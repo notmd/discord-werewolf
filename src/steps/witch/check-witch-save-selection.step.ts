@@ -2,7 +2,6 @@ import { Collection, Message, Snowflake } from 'discord.js'
 import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { collectVotes, selectRandomPlayerFromVotes } from '../../helper'
-import { logger } from '../../logger'
 import { Player } from '../../player'
 import { StartOldHagTurn } from '../oldhag/start-old-hag-turn.step'
 import { IStep } from '../step'
@@ -22,7 +21,7 @@ export class CheckWitchSaveSelection implements IStep {
   }
 
   async handle() {
-    logger.info('Checking Witch save selection.')
+    // logger.info('Checking Witch save selection.')
 
     const votes = await collectVotes(this.votingMessage, this.votingMap)
 

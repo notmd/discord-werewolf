@@ -6,7 +6,7 @@ import {
   sendCannotUseAbilityReason,
   sendVotingMessage,
 } from '../../helper'
-import { nextMessage } from '../../utils'
+import { logger } from '../../logger'
 import { IStep } from '../step'
 import { WakeUp } from '../wake-up.step'
 import { CheckOldHagSelection } from './check-old-hag-selection.step'
@@ -16,8 +16,9 @@ export class StartOldHagTurn implements IStep {
     if (!gameState.hasRole(Role.OldHag)) {
       return new WakeUp().handle()
     }
+    logger.info(`Start OlgHag turn`)
 
-    const oldHag = gameState.findPlayer(Role.OldHag)!
+    const oldHag = gameState.findPlayerByRole(Role.OldHag)!
 
     if (!oldHag.canUseAbility && !oldHag.wasDeathRecently) {
       await sendCannotUseAbilityReason(oldHag)
@@ -33,7 +34,7 @@ export class StartOldHagTurn implements IStep {
     embed.setTitle('Dậy đi phù thủy già. Bạn mún ai bị câm?')
     const message = await sendVotingMessage(
       oldHag.role.channel,
-      { content: `${oldHag}. ${nextMessage}`, embeds: [embed] },
+      { content: `${oldHag}.`, embeds: [embed] },
       map
     )
 

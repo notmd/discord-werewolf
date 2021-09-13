@@ -3,7 +3,6 @@ import { Role } from '../../game-settings'
 import { gameState } from '../../game-state'
 import { createVotingMessage, sendVotingMessage } from '../../helper'
 import { logger } from '../../logger'
-import { nextMessage } from '../../utils'
 import { StartDisscusion } from '../start-discussion.step'
 import { StartSleep } from '../start-sleep.step'
 import { IStep } from '../step'
@@ -39,7 +38,7 @@ export class StartHunterTurn implements IStep {
     embed.setTitle('Thợ săn, bạn đã chết. Giờ bạn mún bắn ai?')
     const message = await sendVotingMessage(
       hunterChannel,
-      { content: `${hunter}. ${nextMessage}`, embeds: [embed] },
+      { content: `${hunter}.`, embeds: [embed] },
       map
     )
 

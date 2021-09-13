@@ -8,7 +8,6 @@ import {
   sendVotingMessage,
 } from '../../helper'
 import { logger } from '../../logger'
-import { nextMessage } from '../../utils'
 import { IStep } from '../step'
 import { StartWereWolfTurn } from '../werewolf/start-werewolf-turn.step'
 import { CheckCupidSelection } from './check-cupid-selection.step'
@@ -41,7 +40,7 @@ export class StartCupidTurn implements IStep {
     embed.setTitle(`Dậy đi Cupid. Bạn mún ai iu nhau (chọn 2 người)?`)
     const message = await sendVotingMessage(
       channel,
-      { content: `${cupid}. ${nextMessage}`, embeds: [embed] },
+      { content: `${cupid}.`, embeds: [embed] },
       map
     )
 

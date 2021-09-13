@@ -43,10 +43,10 @@ export class StartMayorVote implements IStep {
     const message = await sendVotingMessage(
       channel as TextChannel,
       {
-        embeds: [],
+        embeds: [embed],
         content: gameState.mayorId
           ? gameState.findPlayer(gameState.mayorId)?.toString()
-          : '',
+          : 'Bầu Trưởng Làng đi các ban',
       },
       map
     )
